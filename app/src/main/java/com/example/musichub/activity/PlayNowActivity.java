@@ -41,6 +41,7 @@ import com.example.musichub.model.Song;
 import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -57,6 +58,7 @@ public class PlayNowActivity extends AppCompatActivity {
     private LottieAnimationView btnPlay;
     private boolean isPlaying;
     private SeekBar playerSeekBar;
+    private LinearProgressIndicator progressIndicator;
     private SharedPreferencesManager sharedPreferencesManager;
     private BottomSheetBehavior bottomSheetBehavior;
     private View layoutPlayer;
@@ -97,6 +99,7 @@ public class PlayNowActivity extends AppCompatActivity {
             currentTime = intent.getIntExtra("current_time", 0);
             total_time = intent.getIntExtra("total_time", 0);
             updateSeekBar(currentTime, total_time);
+            updateIndicator(currentTime, total_time);
         }
     };
 
@@ -139,6 +142,8 @@ public class PlayNowActivity extends AppCompatActivity {
         LinearLayout linear_play_pause = layoutPlayer.findViewById(R.id.linear_play_pause);
         LinearLayout linear_next = layoutPlayer.findViewById(R.id.linear_next);
         img_play_pause = layoutPlayer.findViewById(R.id.img_play_pause);
+        progressIndicator =layoutPlayer.findViewById(R.id.progressIndicator);
+
 
         songArrayList = new ArrayList<>();
         tabLayout.setVisibility(View.GONE);
@@ -380,6 +385,8 @@ public class PlayNowActivity extends AppCompatActivity {
 
         TextView txtTitle = layoutPlayer.findViewById(R.id.txtTile);
         TextView txtArtist = layoutPlayer.findViewById(R.id.txtArtist);
+        txtTitle.setSelected(true);
+        txtTitle.setSelected(true);
         RoundedImageView img_album_song = layoutPlayer.findViewById(R.id.img_album_song);
 
         Glide.with(this)
@@ -430,6 +437,14 @@ public class PlayNowActivity extends AppCompatActivity {
         playerSeekBar.setProgress(currentTime);
         tvCurrentTime.setText(formatTime(currentTime));
         tvFullTime.setText(formatTime((total_time)));
+    }
+
+    private void updateIndicator(int currentTime, int totalTime) {
+        if (totalTime > 0) {
+            float progress = (float) currentTime / totalTime;
+            int progressInt = (int) (progress * 100);
+            progressIndicator.setProgressCompat(progressInt, true);
+        }
     }
 
     private void sendActionToService(int action) {

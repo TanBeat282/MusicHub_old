@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/media_player_bar_view"
     android:layout_width="match_parent"
-    android:layout_height="76dp"
-    android:padding="8dp">
-
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,26 +14,25 @@
         <LinearLayout
             android:id="@+id/layoutPlayer"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/background_bottom_sheet"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_bottom_sheet_2"
             android:orientation="horizontal">
-
 
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/img_album_song"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:src="@color/white"
                 app:riv_corner_radius="5dp" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="15dp"
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:padding="10dp">
@@ -51,7 +48,7 @@
                     android:scrollHorizontally="true"
                     android:singleLine="true"
                     android:textColor="#FFF"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
 
@@ -59,13 +56,13 @@
                     android:id="@+id/txtArtist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#989898"
                     android:ellipsize="marquee"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
+                    android:textColor="#989898"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -108,19 +105,18 @@
 
             </LinearLayout>
 
+
         </LinearLayout>
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progressIndicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="-2dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="10dp"
             app:indicatorColor="@color/white"
             app:trackColor="@android:color/transparent"
             app:trackThickness="2dp" />
+
     </LinearLayout>
+
 
 </FrameLayout>

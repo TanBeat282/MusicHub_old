@@ -64,7 +64,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/action_bar"
-        android:layout_marginTop="50dp">
+        android:layout_above="@+id/layoutPlayerBottom"
+        android:layout_marginTop="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -117,7 +118,7 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/background_phat_tat_ca"
                         android:padding="6dp"
-                        android:text="Phát tất cả"
+                        android:text="Xem tất cả"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -142,8 +143,8 @@
                     android:orientation="vertical">
 
                     <com.makeramen.roundedimageview.RoundedImageView
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
                         android:layout_gravity="center"
                         android:src="@drawable/icon" />
                 </LinearLayout>
@@ -188,7 +189,7 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/background_phat_tat_ca"
                         android:padding="6dp"
-                        android:text="Phát tất cả"
+                        android:text="Xem tất cả"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -265,7 +266,7 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/background_phat_tat_ca"
                         android:padding="6dp"
-                        android:text="Phát tất cả"
+                        android:text="Xem tất cả"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -344,10 +345,10 @@
 
     <include
         android:id="@+id/layoutPlayerBottom"
-        layout="@layout/bottom_player_music_home"
+        layout="@layout/bottom_player_music_home_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="0dp"
         android:layout_alignParentBottom="true"
         android:visibility="gone" />
 

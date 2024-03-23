@@ -53,6 +53,7 @@ import com.github.kiulian.downloader.model.search.field.TypeField;
 import com.github.kiulian.downloader.model.videos.VideoDetails;
 import com.github.kiulian.downloader.model.videos.VideoInfo;
 import com.github.kiulian.downloader.model.videos.formats.VideoWithAudioFormat;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.json.JSONArray;
@@ -76,9 +77,11 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout layoutPlayer, linear_play_pause, linear_next, txtNoData;
     private TextView tvTitleSong, tvSingleSong;
     private RecyclerView rv_nghe_lai;
+    private LinearProgressIndicator progressIndicator;
     private Song mSong;
     private boolean isPlaying;
     private int action;
+    private int currentTime, total_time;
     private TopSongAdapter topSongAdapter;
     private BaiHatNhanhAdapter baiHatNhanhAdapter;
     private LichSuBaiHatAdapter lichSuBaiHatAdapter;
@@ -104,6 +107,14 @@ public class MainActivity extends AppCompatActivity {
                 setBackgroundBottomPlayer();
             }
             handleLayoutMusic(action);
+        }
+    };
+    private final BroadcastReceiver seekBarUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            currentTime = intent.getIntExtra("current_time", 0);
+            total_time = intent.getIntExtra("total_time", 0);
+            updateIndicator(currentTime, total_time);
         }
     };
 
@@ -132,7 +143,10 @@ public class MainActivity extends AppCompatActivity {
 
         img_album_song = layoutPlayerBottom.findViewById(R.id.img_album_song);
         tvTitleSong = layoutPlayerBottom.findViewById(R.id.txtTile);
+        tvTitleSong.setSelected(true);
         tvSingleSong = layoutPlayerBottom.findViewById(R.id.txtArtist);
+        tvSingleSong.setSelected(true);
+        progressIndicator = layoutPlayerBottom.findViewById(R.id.progressIndicator);
 
         ArrayList<Song> songListChonNhanh = new ArrayList<>();
         ArrayList<Song> songListBangXepHang = new ArrayList<>();
@@ -440,6 +454,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void updateIndicator(int currentTime, int totalTime) {
+        if (totalTime > 0) {
+            float progress = (float) currentTime / totalTime;
+            int progressInt = (int) (progress * 100);
+            progressIndicator.setProgressCompat(progressInt, true);
+        }
+    }
+
+
     private void sendActionToService(int action) {
         Intent intent = new Intent(this, MyService.class);
         intent.putExtra("action_music_service", action);
@@ -644,20 +667,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     @Override
     protected void onResume() {
         super.onResume();
         setBackgroundBottomPlayer();
         songListLichSuBaiHat.clear();
         getSongHistory();
+        new SearchTask().execute();
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("send_data_to_activity"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(seekBarUpdateReceiver, new IntentFilter("send_seekbar_update"));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(seekBarUpdateReceiver);
     }
 }
