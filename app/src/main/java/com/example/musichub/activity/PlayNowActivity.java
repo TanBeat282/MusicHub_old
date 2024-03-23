@@ -4,6 +4,7 @@ import static com.example.musichub.service.MyService.ACTION_NEXT;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
@@ -11,22 +12,29 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.webkit.URLUtil;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
@@ -35,6 +43,7 @@ import com.example.musichub.bottomsheet.BottomSheetInfoSong;
 import com.example.musichub.fragment.ContinueSongFragment;
 import com.example.musichub.fragment.LyricSongFragment;
 import com.example.musichub.fragment.RelatedSongFragment;
+import com.example.musichub.helper.FileUtils;
 import com.example.musichub.helper.Helper;
 import com.example.musichub.model.Artist;
 import com.example.musichub.model.Song;
@@ -46,10 +55,13 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.makeramen.roundedimageview.RoundedImageView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class PlayNowActivity extends AppCompatActivity {
+    private long downloadID;
+    private static final int REQUEST_WRITE_STORAGE_PERMISSION = 101;
     private TextView txtTitle, txtArtist, tvCurrentTime, tvFullTime, txtPlayform;
     private RoundedImageView imageAlbumArt;
     private ProgressBar progress_image;
@@ -58,7 +70,6 @@ public class PlayNowActivity extends AppCompatActivity {
     private LottieAnimationView btnPlay;
     private boolean isPlaying;
     private SeekBar playerSeekBar;
-    private LinearProgressIndicator progressIndicator;
     private SharedPreferencesManager sharedPreferencesManager;
     private BottomSheetBehavior bottomSheetBehavior;
     private View layoutPlayer;
@@ -67,7 +78,10 @@ public class PlayNowActivity extends AppCompatActivity {
     private LinearLayout linear_bottomsheet;
     private LinearLayout linear_bottom;
     private LinearLayout layoutPlayerTop;
+    private LinearLayout btn_down_audio;
     private ImageView img_play_pause, imageMore;
+    private ImageView img_download_audio;
+    private TextView txt_download_audio;
     private int currentTime, total_time;
     private ArrayList<Song> songArrayList;
 
@@ -99,7 +113,6 @@ public class PlayNowActivity extends AppCompatActivity {
             currentTime = intent.getIntExtra("current_time", 0);
             total_time = intent.getIntExtra("total_time", 0);
             updateSeekBar(currentTime, total_time);
-            updateIndicator(currentTime, total_time);
         }
     };
 
@@ -137,12 +150,15 @@ public class PlayNowActivity extends AppCompatActivity {
         linear_bottomsheet = findViewById(R.id.bottom_sheet);
         linear_bottom = findViewById(R.id.linear_bottom);
 
+        btn_down_audio = findViewById(R.id.btn_down_audio);
+        img_download_audio = findViewById(R.id.img_download_audio);
+        txt_download_audio = findViewById(R.id.txt_download_audio);
+
         layoutPlayerTop = layoutPlayer.findViewById(R.id.layoutPlayer);
 
         LinearLayout linear_play_pause = layoutPlayer.findViewById(R.id.linear_play_pause);
         LinearLayout linear_next = layoutPlayer.findViewById(R.id.linear_next);
         img_play_pause = layoutPlayer.findViewById(R.id.img_play_pause);
-        progressIndicator =layoutPlayer.findViewById(R.id.progressIndicator);
 
 
         songArrayList = new ArrayList<>();
@@ -227,6 +243,17 @@ public class PlayNowActivity extends AppCompatActivity {
             }
         });
 
+        btn_down_audio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isFileDownloaded(mSong.getName() + " - " + mSong.getArtist() + ".mp3")) {
+                    deleteFileIfExists(mSong.getName() + " - " + mSong.getArtist() + ".mp3");
+                } else {
+                    xinquyen();
+                }
+            }
+        });
+
         //bottomsheet
         linear_play_pause.setOnClickListener(v -> {
             if (!Helper.isMyServiceRunning(this, MyService.class)) {
@@ -270,7 +297,97 @@ public class PlayNowActivity extends AppCompatActivity {
             }
 
         });
+        registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+        if (isFileDownloaded(mSong.getName() + " - " + mSong.getArtist() + ".mp3")) {
+            txt_download_audio.setText("Đã tải xuống");
+            img_download_audio.setImageResource(R.drawable.ic_file_download_done);
+        } else {
+            txt_download_audio.setText("Tải xuống");
+            img_download_audio.setImageResource(R.drawable.ic_download);
+        }
     }
+
+    private boolean isFileDownloaded(String fileName) {
+        File musicFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
+        File destinationFile = new File(musicFolder, fileName);
+        return destinationFile.exists();
+    }
+
+    private void deleteFileIfExists(String fileName) {
+        File musicFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
+        File destinationFile = new File(musicFolder, fileName);
+        if (destinationFile.exists()) {
+            boolean deleted = destinationFile.delete();
+            if (deleted) {
+                txt_download_audio.setText("Tải xuống");
+                img_download_audio.setImageResource(R.drawable.ic_download);
+            } else {
+                Toast.makeText(PlayNowActivity.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                // Xóa file không thành công
+            }
+        } else {
+            Toast.makeText(PlayNowActivity.this, "Lỗi", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_WRITE_STORAGE_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                downloadImage(mSong.getLink_audio());
+            } else {
+                Toast.makeText(this, "Ứng dụng cần quyền ghi vào bộ nhớ để tải tệp về.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void xinquyen() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_WRITE_STORAGE_PERMISSION);
+        } else {
+            downloadImage(mSong.getLink_audio());
+        }
+    }
+
+    private void downloadImage(String url) {
+        File musicFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
+        if (!musicFolder.exists()) {
+            musicFolder.mkdirs();
+        }
+
+        String fileName = mSong.getName() + " - " + mSong.getArtist() + ".mp3"; // Sử dụng tên của mSong làm tên của file
+        File destinationFile = new File(musicFolder, fileName);
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                .setAllowedOverRoaming(false)
+                .setTitle(fileName)
+                .setDescription("Đang lưu...")
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_ONLY_COMPLETION) // Đặt VISIBILITY_VISIBLE
+                .setDestinationUri(Uri.fromFile(destinationFile));
+
+        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        downloadID = downloadManager.enqueue(request);
+    }
+
+
+
+
+    private final BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+            if (id == downloadID) {
+                Toast.makeText(PlayNowActivity.this, "Tải thành công", Toast.LENGTH_SHORT).show();
+                txt_download_audio.setText("Đã tải xuống");
+                img_download_audio.setImageResource(R.drawable.ic_file_download_done);
+            }
+        }
+    };
 
     private static class TabPagerAdapter extends FragmentStateAdapter {
 
@@ -378,6 +495,7 @@ public class PlayNowActivity extends AppCompatActivity {
             btnPlay.playAnimation();
         }
         imageAlbumArt.setVisibility(View.VISIBLE);
+
         progress_image.setVisibility(View.GONE);
     }
 
@@ -439,14 +557,6 @@ public class PlayNowActivity extends AppCompatActivity {
         tvFullTime.setText(formatTime((total_time)));
     }
 
-    private void updateIndicator(int currentTime, int totalTime) {
-        if (totalTime > 0) {
-            float progress = (float) currentTime / totalTime;
-            int progressInt = (int) (progress * 100);
-            progressIndicator.setProgressCompat(progressInt, true);
-        }
-    }
-
     private void sendActionToService(int action) {
         Intent intent = new Intent(this, MyService.class);
         intent.putExtra("action_music_service", action);
@@ -477,5 +587,6 @@ public class PlayNowActivity extends AppCompatActivity {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(seekBarUpdateReceiver);
+        unregisterReceiver(onDownloadComplete); // Hủy đăng ký BroadcastReceiver khi không cần nữa
     }
 }

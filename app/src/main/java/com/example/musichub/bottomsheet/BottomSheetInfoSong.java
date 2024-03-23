@@ -51,7 +51,6 @@ public class BottomSheetInfoSong extends BottomSheetDialogFragment {
     private BottomSheetDialog bottomSheetDialog;
     private SharedPreferencesManager sharedPreferencesManager;
     private RoundedImageView img_bg;
-    private ImageView img_bg2;
     private RelativeLayout layout_info;
     private RoundedImageView imageAlbumArt;
     private TextView txt_name_artist;
@@ -72,7 +71,6 @@ public class BottomSheetInfoSong extends BottomSheetDialogFragment {
 
         layout_info = bottomSheetDialog.findViewById(R.id.layout_info);
         img_bg = bottomSheetDialog.findViewById(R.id.img_bg);
-        img_bg2 = bottomSheetDialog.findViewById(R.id.img_bg2);
         imageAlbumArt = bottomSheetDialog.findViewById(R.id.imageAlbumArt);
         txt_name_artist = bottomSheetDialog.findViewById(R.id.txt_name_artist);
 
@@ -124,22 +122,16 @@ public class BottomSheetInfoSong extends BottomSheetDialogFragment {
                                 artist.setThumbnail(artistObject.getString("thumbnail"));
                                 song.setmArtist(artist);
                                 getActivity().runOnUiThread(new Runnable() {
+                                    @SuppressLint("ResourceType")
                                     @Override
                                     public void run() {
                                         if (song.getmArtist().getCover().startsWith("https://")) {
-                                            img_bg.setVisibility(View.VISIBLE);
-                                            img_bg2.setVisibility(View.GONE);
                                             Glide.with(context)
                                                     .load(song.getmArtist().getCover())
                                                     .into(img_bg);
                                         } else {
-                                            img_bg.setVisibility(View.GONE);
-                                            img_bg2.setVisibility(View.VISIBLE);
-
-                                            int[] colors = sharedPreferencesManager.restoreColorBackgrounState();
-                                            int color_background = colors[1];
-                                            ColorStateList colorStateList = ColorStateList.valueOf(color_background);
-                                            ViewCompat.setBackgroundTintList(img_bg2, colorStateList);
+                                            int color = getResources().getColor(R.color.colorPrimary);
+                                            img_bg.setImageResource(color);
                                         }
 
                                         Glide.with(context)

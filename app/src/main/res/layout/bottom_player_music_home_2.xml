@@ -23,9 +23,9 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
                 android:src="@color/white"
                 app:riv_corner_radius="5dp" />
 
@@ -113,8 +113,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:indicatorColor="@color/white"
-            app:trackColor="@android:color/transparent"
-            app:trackThickness="2dp" />
+            app:trackColor="@color/colorSecondaryText2"
+            app:trackThickness="1dp" />
 
     </LinearLayout>
 

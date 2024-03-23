@@ -19,6 +19,7 @@
             android:layout_height="60dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/background_bottom_sheet"
             android:orientation="horizontal">
 
@@ -29,8 +30,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="10dp"
-                android:src="@color/white"
-                app:riv_corner_radius="5dp" />
+                android:src="@color/white" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -59,13 +59,13 @@
                     android:id="@+id/txtArtist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#989898"
                     android:ellipsize="marquee"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
+                    android:textColor="#989898"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -109,18 +109,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <com.google.android.material.progressindicator.LinearProgressIndicator
-            android:id="@+id/progressIndicator"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="-2dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="10dp"
-            app:indicatorColor="@color/white"
-            app:trackColor="@android:color/transparent"
-            app:trackThickness="2dp" />
     </LinearLayout>
 
 </FrameLayout>

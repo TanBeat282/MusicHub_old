@@ -103,9 +103,6 @@ public class MainActivity extends AppCompatActivity {
             mSong = (Song) bundle.get("object_song");
             isPlaying = bundle.getBoolean("status_player");
             action = bundle.getInt("action_music");
-            if (action == MyService.ACTION_START || action == MyService.ACTION_NEXT || action == MyService.ACTION_PREVIOUS) {
-                setBackgroundBottomPlayer();
-            }
             handleLayoutMusic(action);
         }
     };
@@ -122,6 +119,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Helper.changeStatusBarColor(this, R.color.black);
+        Helper.changeNavigationColor(this, R.color.gray, true);
 
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
 
@@ -155,121 +155,15 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Khoi tạo RecyclerView và Adapter
-        SnapHelper snapHelperChonNhanh = new LinearSnapHelper() {
-            @Override
-            public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY) {
-                View centerView = findSnapView(layoutManager);
-                if (centerView == null) {
-                    return RecyclerView.NO_POSITION;
-                }
-                int position = layoutManager.getPosition(centerView);
-                int targetPosition = -1;
-                if (layoutManager.canScrollHorizontally()) {
-                    if (velocityX < 0) {
-                        targetPosition = position - 1;
-                    } else {
-                        targetPosition = position + 1;
-                    }
-                }
-                if (layoutManager instanceof GridLayoutManager) {
-                    if (targetPosition == -1 || targetPosition >= layoutManager.getItemCount()) {
-                        return RecyclerView.NO_POSITION;
-                    }
-                }
-                return targetPosition;
-            }
-        };
-        snapHelperChonNhanh.attachToRecyclerView(rv_chon_nhanh);
 
         GridLayoutManager layoutManagerChonNhanh = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
         rv_chon_nhanh.setLayoutManager(layoutManagerChonNhanh);
 
-
-        SnapHelper snapHelperBangXepHang = new LinearSnapHelper() {
-            @Override
-            public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY) {
-                View centerView = findSnapView(layoutManager);
-                if (centerView == null) {
-                    return RecyclerView.NO_POSITION;
-                }
-                int position = layoutManager.getPosition(centerView);
-                int targetPosition = -1;
-                if (layoutManager.canScrollHorizontally()) {
-                    if (velocityX < 0) {
-                        targetPosition = position - 1;
-                    } else {
-                        targetPosition = position + 1;
-                    }
-                }
-                if (layoutManager instanceof GridLayoutManager) {
-                    if (targetPosition == -1 || targetPosition >= layoutManager.getItemCount()) {
-                        return RecyclerView.NO_POSITION;
-                    }
-                }
-                return targetPosition;
-            }
-        };
-        snapHelperBangXepHang.attachToRecyclerView(rv_bang_xep_hang);
-
         GridLayoutManager layoutManagerBangXepHang = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
         rv_bang_xep_hang.setLayoutManager(layoutManagerBangXepHang);
 
-
-        SnapHelper snapHelperLichSuBaiHat = new LinearSnapHelper() {
-            @Override
-            public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY) {
-                View centerView = findSnapView(layoutManager);
-                if (centerView == null) {
-                    return RecyclerView.NO_POSITION;
-                }
-                int position = layoutManager.getPosition(centerView);
-                int targetPosition = -1;
-                if (layoutManager.canScrollHorizontally()) {
-                    if (velocityX < 0) {
-                        targetPosition = position - 1;
-                    } else {
-                        targetPosition = position + 1;
-                    }
-                }
-                if (layoutManager instanceof GridLayoutManager) {
-                    if (targetPosition == -1 || targetPosition >= layoutManager.getItemCount()) {
-                        return RecyclerView.NO_POSITION;
-                    }
-                }
-                return targetPosition;
-            }
-        };
-        snapHelperLichSuBaiHat.attachToRecyclerView(rv_nghe_lai);
-
         GridLayoutManager layoutManagerLichSuBaiHat = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
         rv_nghe_lai.setLayoutManager(layoutManagerLichSuBaiHat);
-
-
-        SnapHelper snapHelperVideoBaiHat = new LinearSnapHelper() {
-            @Override
-            public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY) {
-                View centerView = findSnapView(layoutManager);
-                if (centerView == null) {
-                    return RecyclerView.NO_POSITION;
-                }
-                int position = layoutManager.getPosition(centerView);
-                int targetPosition = -1;
-                if (layoutManager.canScrollHorizontally()) {
-                    if (velocityX < 0) {
-                        targetPosition = position - 1;
-                    } else {
-                        targetPosition = position + 1;
-                    }
-                }
-                if (layoutManager instanceof GridLayoutManager) {
-                    if (targetPosition == -1 || targetPosition >= layoutManager.getItemCount()) {
-                        return RecyclerView.NO_POSITION;
-                    }
-                }
-                return targetPosition;
-            }
-        };
-        snapHelperVideoBaiHat.attachToRecyclerView(rv_video_bai_hat_lien_quan);
 
         GridLayoutManager layoutManagerVideoBaiHat = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
         rv_video_bai_hat_lien_quan.setLayoutManager(layoutManagerVideoBaiHat);
@@ -297,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
         getSongCurrent();
         getBangXepHang();
         getSongHistory();
-        setBackgroundBottomPlayer();
 
 //        Window w = getWindow();
 //        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -430,6 +323,10 @@ public class MainActivity extends AppCompatActivity {
             }
             sendActionToService(MyService.ACTION_NEXT);
         });
+        int color = getResources().getColor(R.color.gray);
+        ColorStateList colorStateList = ColorStateList.valueOf(color);
+        ViewCompat.setBackgroundTintList(layoutPlayer, colorStateList);
+
     }
 
     private void setStatusButtonPlayOrPause() {
@@ -441,16 +338,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             img_play_pause.setImageResource(R.drawable.baseline_play_arrow_24);
 
-        }
-    }
-
-    private void setBackgroundBottomPlayer() {
-        int[] colors = sharedPreferencesManager.restoreColorBackgrounState();
-        int color_background = colors[0];
-
-        if (color_background != 0) {
-            ColorStateList colorStateList = ColorStateList.valueOf(color_background);
-            ViewCompat.setBackgroundTintList(layoutPlayer, colorStateList);
         }
     }
 
@@ -670,7 +557,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setBackgroundBottomPlayer();
         songListLichSuBaiHat.clear();
         getSongHistory();
         new SearchTask().execute();
