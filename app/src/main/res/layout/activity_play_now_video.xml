@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cons_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.PlayNowVideoActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp">
+
+        <ImageView
+            android:id="@+id/imageBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="-150dp"
+            android:layout_marginTop="-20dp"
+            android:layout_marginEnd="-150dp"
+            android:layout_marginBottom="-20dp"
+            android:background="@color/black"
+            android:scaleType="fitXY" />
+
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageBack"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:src="@drawable/baseline_keyboard_arrow_down_24"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/txtPlayform"
+                android:layout_width="310dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Now Playing"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/imageMore"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/baseline_more_vert_24"
+                app:tint="@color/white" />
+        </LinearLayout>
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/playerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/container"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginHorizontal="2dp"
+            android:layout_marginTop="150dp"
+            android:scaleType="centerCrop" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/playerView"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/meta_data_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toBottomOf="@id/imageAlbumArt" />
+
+                <TextView
+                    android:id="@+id/txtArtist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    app:layout_constraintTop_toBottomOf="@id/txtTitle" />
+
+            </LinearLayout>
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/cbFavorite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="5"
+                android:button="@drawable/selector_favorite_check_box"
+                android:clickable="true"
+                android:focusable="true"
+                app:buttonIconTint="@color/red"
+                app:buttonTint="@color/white">
+
+            </com.google.android.material.checkbox.MaterialCheckBox>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="100sp"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp">
+
+                <SeekBar
+                    android:id="@+id/playerSeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:progress="1"
+                    android:progressBackgroundTint="@color/white"
+                    android:progressTint="@color/white"
+                    android:thumbTint="@color/white" />
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/time_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvCurrentTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+
+                    android:gravity="start"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/tvFullTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="normal" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/controler_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="20dp">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/btPlayPause"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_centerInParent="true"
+                    android:background="@null"
+                    app:lottie_colorFilter="@color/white"
+                    app:lottie_rawRes="@raw/animation_lkmi7dh6" />
+
+                <ImageButton
+                    android:id="@+id/btNext"
+                    android:layout_width="50sp"
+                    android:layout_height="50sp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20sp"
+                    android:layout_toEndOf="@+id/btPlayPause"
+                    android:background="@null"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/baseline_skip_next_24"
+                    app:tint="@color/white">
+
+                </ImageButton>
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/btRepeat"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20sp"
+                    android:layout_toEndOf="@+id/btNext"
+                    android:button="@drawable/baseline_repeat_24"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:buttonIconTint="@color/selector_repeat_check_box"
+                    app:buttonTint="@color/selector_repeat_check_box" />
+
+                <ImageButton
+                    android:id="@+id/btPrevious"
+                    android:layout_width="50sp"
+                    android:layout_height="50sp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="20sp"
+                    android:layout_toStartOf="@+id/btPlayPause"
+                    android:background="@null"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/baseline_skip_previous_24"
+                    app:tint="@color/white">
+
+                </ImageButton>
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/btShuffle"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="20sp"
+                    android:layout_toStartOf="@+id/btPrevious"
+                    android:button="@drawable/baseline_shuffle_24"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:buttonIconTint="@color/selector_shuffle_check_box"
+                    app:buttonTint="@color/selector_shuffle_check_box" />
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <include layout="@layout/item_bottom_sheet_now_playing" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
