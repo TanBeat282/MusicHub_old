@@ -27,7 +27,6 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.webkit.URLUtil;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,14 +42,11 @@ import com.example.musichub.bottomsheet.BottomSheetInfoSong;
 import com.example.musichub.fragment.ContinueSongFragment;
 import com.example.musichub.fragment.LyricSongFragment;
 import com.example.musichub.fragment.RelatedSongFragment;
-import com.example.musichub.helper.FileUtils;
 import com.example.musichub.helper.Helper;
-import com.example.musichub.model.Artist;
 import com.example.musichub.model.Song;
 import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -74,6 +70,7 @@ public class PlayNowActivity extends AppCompatActivity {
     private BottomSheetBehavior bottomSheetBehavior;
     private View layoutPlayer;
     private TabLayout tabLayout;
+    private ViewPager2 viewPager;
     private LinearLayout linear_tablayout;
     private LinearLayout linear_bottomsheet;
     private LinearLayout linear_bottom;
@@ -144,7 +141,7 @@ public class PlayNowActivity extends AppCompatActivity {
         imageMore = findViewById(R.id.imageMore);
 
         layoutPlayer = findViewById(R.id.layoutPlayerBottom);
-        ViewPager2 viewPager = findViewById(R.id.viewPager);
+        viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
         linear_tablayout = findViewById(R.id.linear_tablayout);
         linear_bottomsheet = findViewById(R.id.bottom_sheet);
@@ -163,6 +160,7 @@ public class PlayNowActivity extends AppCompatActivity {
 
         songArrayList = new ArrayList<>();
         tabLayout.setVisibility(View.GONE);
+        viewPager.setVisibility(View.VISIBLE);
         linear_tablayout.setVisibility(View.VISIBLE);
 
         bottomSheetBehavior = BottomSheetBehavior.from(linear_bottomsheet);
@@ -177,6 +175,7 @@ public class PlayNowActivity extends AppCompatActivity {
                         layoutPlayer.setVisibility(View.VISIBLE);
 
                         tabLayout.setVisibility(View.VISIBLE);
+                        viewPager.setVisibility(View.VISIBLE);
                         linear_tablayout.setVisibility(View.GONE);
                         setDataSongBottomSheet();
                         break;
@@ -184,6 +183,7 @@ public class PlayNowActivity extends AppCompatActivity {
                         layoutPlayer.setVisibility(View.GONE);
 
                         tabLayout.setVisibility(View.GONE);
+                        viewPager.setVisibility(View.GONE);
                         linear_tablayout.setVisibility(View.VISIBLE);
                         break;
                 }
@@ -373,8 +373,6 @@ public class PlayNowActivity extends AppCompatActivity {
         DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         downloadID = downloadManager.enqueue(request);
     }
-
-
 
 
     private final BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {

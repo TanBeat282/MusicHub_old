@@ -1,17 +1,17 @@
 package com.example.musichub.activity;
 
 import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.SparseArray;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.musichub.R;
-
-import at.huber.youtubeExtractor.VideoMeta;
-import at.huber.youtubeExtractor.YouTubeExtractor;
-import at.huber.youtubeExtractor.YtFile;
+import com.example.musichub.api.categories.Chart;
+import com.example.musichub.api.categories.Search;
+import com.example.musichub.api.categories.Song;
+import com.example.musichub.api.categories.Video;
 
 public class Test2Activity extends AppCompatActivity {
 
@@ -20,18 +20,16 @@ public class Test2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test2);
-        String youtubeLink = "WX7dUj14Z00";
+        Song song = new Song(null, null);
+        Video video = new Video(null, null);
+        Search search = new Search(null, null);
+        Chart chart = new Chart(null, null);
+        try {
+            Log.d(">>>>>>>>>.", "onCreate: " + chart.getChartHome());
 
-        new YouTubeExtractor(this) {
-            @SuppressLint("StaticFieldLeak")
-            @Override
-            public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta) {
-                if (ytFiles != null) {
-                    int itag = 22;
-                    String downloadUrl = ytFiles.get(itag).getUrl();
-                    Log.d(">>>>>>>>>>>>>>>>>>>>>>", "onExtractionComplete: "+downloadUrl);
-                }
-            }
-        }.extract(youtubeLink, true, true); // Truyền giá trị true cho cả hai tham số audioOnly và meta
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
+
 }
