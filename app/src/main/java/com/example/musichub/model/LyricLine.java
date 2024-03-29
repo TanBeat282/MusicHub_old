@@ -1,6 +1,8 @@
 package com.example.musichub.model;
 
-public class LyricLine {
+import java.io.Serializable;
+
+public class LyricLine implements Serializable {
     private long startTime;
     private String content;
 

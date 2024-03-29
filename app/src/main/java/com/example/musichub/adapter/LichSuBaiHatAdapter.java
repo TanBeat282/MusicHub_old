@@ -19,29 +19,23 @@ import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.model.Song;
+import com.example.musichub.model.chart_home.Items;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 
 public class LichSuBaiHatAdapter extends RecyclerView.Adapter<LichSuBaiHatAdapter.ViewHolder> {
-    private ArrayList<Song> songList;
+    private ArrayList<Items> songList;
     private final Context context;
     private int selectedPosition = -1;
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setFilterList(ArrayList<Song> fillterList) {
+    public void setFilterList(ArrayList<Items> fillterList) {
         this.songList = fillterList;
         notifyDataSetChanged();
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void setPosition(ArrayList<Song> fillterList, int position) {
-        this.songList = fillterList;
-        this.selectedPosition = position;
-        notifyDataSetChanged();
-    }
-
-    public LichSuBaiHatAdapter(ArrayList<Song> songList, Context context) {
+    public LichSuBaiHatAdapter(ArrayList<Items> songList, Context context) {
         this.songList = songList;
         this.context = context;
     }
@@ -55,12 +49,12 @@ public class LichSuBaiHatAdapter extends RecyclerView.Adapter<LichSuBaiHatAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        Song song = songList.get(position);
+        Items items = songList.get(position);
 
-        holder.nameTextView.setText(song.getName());
-        holder.artistTextView.setText(song.getArtist());
+        holder.nameTextView.setText(items.getTitle());
+        holder.artistTextView.setText(items.getArtistsNames());
         Glide.with(context)
-                .load(song.getThumb_medium())
+                .load(items.getThumbnail())
                 .into(holder.thumbImageView);
 
         if (selectedPosition == position) {
@@ -75,7 +69,7 @@ public class LichSuBaiHatAdapter extends RecyclerView.Adapter<LichSuBaiHatAdapte
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, PlayNowActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putSerializable("song", song);
+            bundle.putSerializable("song", items);
             bundle.putInt("position_song", position);
             bundle.putSerializable("song_list", songList);
             bundle.putInt("title_now_playing", 0);
@@ -104,6 +98,21 @@ public class LichSuBaiHatAdapter extends RecyclerView.Adapter<LichSuBaiHatAdapte
             nameTextView = itemView.findViewById(R.id.nameTextView);
             aniPlay = itemView.findViewById(R.id.aniPlay);
         }
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    public void updatePlayingStatus(String currentPlayingEncodeId) {
+        if (songList != null) {
+            for (int i = 0; i < songList.size(); i++) {
+                Items item = songList.get(i);
+                if (item.getEncodeId().equals(currentPlayingEncodeId)) {
+                    selectedPosition = i;
+                    notifyDataSetChanged(); // Thông báo dữ liệu đã thay đổi để cập nhật giao diện
+                    return;
+                }
+            }
+        }
+        selectedPosition = -1; // Nếu không tìm thấy, không bài hát nào được chọn
+        notifyDataSetChanged();
     }
 
 }

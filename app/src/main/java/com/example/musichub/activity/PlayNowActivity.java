@@ -38,12 +38,18 @@ import android.widget.Toast;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
+import com.example.musichub.api.ApiService;
+import com.example.musichub.api.ApiServiceFactory;
+import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.bottomsheet.BottomSheetInfoSong;
 import com.example.musichub.fragment.ContinueSongFragment;
 import com.example.musichub.fragment.LyricSongFragment;
 import com.example.musichub.fragment.RelatedSongFragment;
-import com.example.musichub.helper.Helper;
-import com.example.musichub.model.Song;
+import com.example.musichub.helper.uliti.GetUrlAudioHelper;
+import com.example.musichub.helper.ui.Helper;
+import com.example.musichub.model.chart_home.Items;
+import com.example.musichub.model.song.SongAudio;
+import com.example.musichub.model.song.SongDetail;
 import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -54,6 +60,11 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PlayNowActivity extends AppCompatActivity {
     private long downloadID;
@@ -62,7 +73,8 @@ public class PlayNowActivity extends AppCompatActivity {
     private RoundedImageView imageAlbumArt;
     private ProgressBar progress_image;
     private ImageView imageBackground, imageBack;
-    private Song mSong;
+    private Items items;
+    private SongDetail songDetail;
     private LottieAnimationView btnPlay;
     private boolean isPlaying;
     private SeekBar playerSeekBar;
@@ -79,8 +91,10 @@ public class PlayNowActivity extends AppCompatActivity {
     private ImageView img_play_pause, imageMore;
     private ImageView img_download_audio;
     private TextView txt_download_audio;
+    private TextView txt_view_audio, txt_like, txt_comment;
     private int currentTime, total_time;
-    private ArrayList<Song> songArrayList;
+    private ArrayList<Items> songArrayList;
+    private GetUrlAudioHelper getUrlAudioHelper;
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -89,7 +103,7 @@ public class PlayNowActivity extends AppCompatActivity {
             if (bundle == null) {
                 return;
             }
-            mSong = (Song) bundle.get("object_song");
+            items = (Items) bundle.get("object_song");
             isPlaying = bundle.getBoolean("status_player");
             int action = bundle.getInt("action_music");
             if (action == MyService.ACTION_START || action == MyService.ACTION_NEXT || action == MyService.ACTION_PREVIOUS) {
@@ -97,9 +111,20 @@ public class PlayNowActivity extends AppCompatActivity {
                 progress_image.setVisibility(View.VISIBLE);
                 getColorBackground();
             }
-            setDataSong();
-            setDataSongBottomSheet();
-            setStatusButtonPlayOrPause();
+            getSongDetail(items.getEncodeId(), new SongdetailCallback() {
+                @Override
+                public void onSuccess(SongDetail songDetail1) {
+                    songDetail = songDetail1;
+                    setDataSong();
+                    setDataSongBottomSheet();
+                    setStatusButtonPlayOrPause();
+                }
+
+                @Override
+                public void onFailure(Throwable throwable) {
+
+                }
+            });
         }
     };
 
@@ -113,14 +138,14 @@ public class PlayNowActivity extends AppCompatActivity {
         }
     };
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "UnspecifiedRegisterReceiverFlag", "SetTextI18n"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_now);
 
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
-        mSong = sharedPreferencesManager.restoreSongState();
+        items = sharedPreferencesManager.restoreSongState();
         isPlaying = sharedPreferencesManager.restoreIsPlayState();
 
         txtTitle = findViewById(R.id.txtTitle);
@@ -151,13 +176,17 @@ public class PlayNowActivity extends AppCompatActivity {
         img_download_audio = findViewById(R.id.img_download_audio);
         txt_download_audio = findViewById(R.id.txt_download_audio);
 
+        txt_view_audio = findViewById(R.id.txt_view_audio);
+        txt_like = findViewById(R.id.txt_like);
+        txt_comment = findViewById(R.id.txt_comment);
+
         layoutPlayerTop = layoutPlayer.findViewById(R.id.layoutPlayer);
 
         LinearLayout linear_play_pause = layoutPlayer.findViewById(R.id.linear_play_pause);
         LinearLayout linear_next = layoutPlayer.findViewById(R.id.linear_next);
         img_play_pause = layoutPlayer.findViewById(R.id.img_play_pause);
 
-
+        getUrlAudioHelper = new GetUrlAudioHelper();
         songArrayList = new ArrayList<>();
         tabLayout.setVisibility(View.GONE);
         viewPager.setVisibility(View.VISIBLE);
@@ -222,8 +251,7 @@ public class PlayNowActivity extends AppCompatActivity {
         viewPager.setCurrentItem(1);
 
 
-        getDataSong();
-        setDataSong();
+        getBundleSong();
         getColorBackground();
         setStatusButtonPlayOrPause();
 
@@ -243,14 +271,11 @@ public class PlayNowActivity extends AppCompatActivity {
             }
         });
 
-        btn_down_audio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isFileDownloaded(mSong.getName() + " - " + mSong.getArtist() + ".mp3")) {
-                    deleteFileIfExists(mSong.getName() + " - " + mSong.getArtist() + ".mp3");
-                } else {
-                    xinquyen();
-                }
+        btn_down_audio.setOnClickListener(view -> {
+            if (isFileDownloaded(items.getTitle() + " - " + items.getArtistsNames() + ".mp3")) {
+                deleteFileIfExists(items.getTitle() + " - " + items.getArtistsNames() + ".mp3");
+            } else {
+                xinquyen();
             }
         });
 
@@ -298,22 +323,20 @@ public class PlayNowActivity extends AppCompatActivity {
 
         });
         registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-
-        if (isFileDownloaded(mSong.getName() + " - " + mSong.getArtist() + ".mp3")) {
-            txt_download_audio.setText("Đã tải xuống");
-            img_download_audio.setImageResource(R.drawable.ic_file_download_done);
-        } else {
-            txt_download_audio.setText("Tải xuống");
-            img_download_audio.setImageResource(R.drawable.ic_download);
-        }
     }
 
+
+    // download mp3
+    // check is download
     private boolean isFileDownloaded(String fileName) {
         File musicFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
         File destinationFile = new File(musicFolder, fileName);
         return destinationFile.exists();
     }
 
+
+    // delete file
+    @SuppressLint("SetTextI18n")
     private void deleteFileIfExists(String fileName) {
         File musicFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
         File destinationFile = new File(musicFolder, fileName);
@@ -331,36 +354,48 @@ public class PlayNowActivity extends AppCompatActivity {
         }
     }
 
-
+    // request permissions result
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_WRITE_STORAGE_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                downloadImage(mSong.getLink_audio());
+                downloadImage("Song.getLink_audio()");
             } else {
                 Toast.makeText(this, "Ứng dụng cần quyền ghi vào bộ nhớ để tải tệp về.", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
+    // request permissions
     private void xinquyen() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     REQUEST_WRITE_STORAGE_PERMISSION);
         } else {
-            downloadImage(mSong.getLink_audio());
+            getUrlAudioHelper.getSongAudio(items.getEncodeId(), new GetUrlAudioHelper.SongAudioCallback() {
+                @Override
+                public void onSuccess(SongAudio songAudio) {
+                    downloadImage(songAudio.getData().getLow());
+                }
+
+                @Override
+                public void onFailure(Throwable throwable) {
+
+                }
+            });
         }
     }
 
+    //download
     private void downloadImage(String url) {
         File musicFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
         if (!musicFolder.exists()) {
             musicFolder.mkdirs();
         }
 
-        String fileName = mSong.getName() + " - " + mSong.getArtist() + ".mp3"; // Sử dụng tên của mSong làm tên của file
+        String fileName = items.getTitle() + " - " + items.getArtistsNames() + ".mp3";
         File destinationFile = new File(musicFolder, fileName);
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
@@ -376,6 +411,7 @@ public class PlayNowActivity extends AppCompatActivity {
 
 
     private final BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
+        @SuppressLint("SetTextI18n")
         @Override
         public void onReceive(Context context, Intent intent) {
             long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
@@ -412,21 +448,99 @@ public class PlayNowActivity extends AppCompatActivity {
         }
     }
 
-    private void getDataSong() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle == null) {
-            return;
-        }
-        Song song = (Song) bundle.getSerializable("song");
-        int position_song = bundle.getInt("position_song");
-        songArrayList = (ArrayList<Song>) bundle.getSerializable("song_list");
-        if (song != null && songArrayList != null) {
-            clickStartService(song, position_song, songArrayList);
-        }
-        setTitleNowPlaying(bundle.getInt("title_now_playing"));
+    public interface SongdetailCallback {
+        void onSuccess(SongDetail songDetail1);
+
+        void onFailure(Throwable throwable);
     }
 
-    private void clickStartService(Song song, int position_song, ArrayList<Song> songList) {
+    private void getSongDetail(String encodeId, SongdetailCallback songdetailCallback) {
+        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
+            @Override
+            public void onServiceCreated(ApiService service) {
+                try {
+                    SongCategories songCategories = new SongCategories(null, null);
+                    Map<String, String> map = songCategories.getDetail(encodeId);
+
+
+                    retrofit2.Call<SongDetail> call = service.SONG_DETAIL_CALL(encodeId, map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                    call.enqueue(new Callback<SongDetail>() {
+                        @Override
+                        public void onResponse(Call<SongDetail> call, Response<SongDetail> response) {
+                            if (response.isSuccessful()) {
+                                SongDetail songDetail1 = response.body();
+                                if (songDetail1 != null) {
+                                    if (songDetail1.getErr() != -201) {
+                                        songdetailCallback.onSuccess(songDetail1);
+                                    } else {
+                                        songdetailCallback.onFailure(new RuntimeException("Error -201: Unable to get audio URL"));
+                                    }
+                                } else {
+                                    songdetailCallback.onFailure(new RuntimeException("Null response from server"));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<SongDetail> call, Throwable throwable) {
+                            songdetailCallback.onFailure(throwable);
+                        }
+                    });
+                } catch (Exception e) {
+                    songdetailCallback.onFailure(e);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+
+    private void getBundleSong() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle == null) {
+            getSongDetail(items.getEncodeId(), new SongdetailCallback() {
+                @Override
+                public void onSuccess(SongDetail songDetail1) {
+                    songDetail = songDetail1;
+                    setDataSong();
+                }
+
+                @Override
+                public void onFailure(Throwable throwable) {
+
+                }
+            });
+        } else {
+
+            items = (Items) bundle.getSerializable("song");
+            int position_song = bundle.getInt("position_song");
+            songArrayList = (ArrayList<Items>) bundle.getSerializable("song_list");
+            setTitleNowPlaying(bundle.getInt("title_now_playing"));
+
+            if (items != null && songArrayList != null) {
+                getSongDetail(items.getEncodeId(), new SongdetailCallback() {
+                    @Override
+                    public void onSuccess(SongDetail songDetail1) {
+                        songDetail = songDetail1;
+                        setDataSong();
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+
+                    }
+                });
+                clickStartService(items, position_song, songArrayList);
+            }
+        }
+
+    }
+
+    private void clickStartService(Items song, int position_song, ArrayList<Items> songList) {
         Intent intent = new Intent(this, MyService.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("object_song", song);
@@ -444,7 +558,7 @@ public class PlayNowActivity extends AppCompatActivity {
     }
 
     private void showBottomSheetInfo() {
-        BottomSheetInfoSong bottomSheetInfoSong = new BottomSheetInfoSong(PlayNowActivity.this, PlayNowActivity.this, mSong);
+        BottomSheetInfoSong bottomSheetInfoSong = new BottomSheetInfoSong(PlayNowActivity.this, PlayNowActivity.this, songDetail);
         bottomSheetInfoSong.show(getSupportFragmentManager(), bottomSheetInfoSong.getTag());
     }
 
@@ -473,13 +587,19 @@ public class PlayNowActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void setDataSong() {
         Glide.with(this)
-                .load(mSong.getThumb())
+                .load(items.getThumbnailM())
                 .into(imageAlbumArt);
 
-        txtTitle.setText(mSong.getName());
-        txtArtist.setText(mSong.getArtist());
+        txtTitle.setText(items.getTitle());
+        txtArtist.setText(items.getArtistsNames());
+
+        txt_view_audio.setText(String.valueOf(convertToIntString(songDetail.getData().getListen())));
+        txt_like.setText(String.valueOf(convertToIntString(songDetail.getData().getLike())));
+        txt_comment.setText(String.valueOf(convertToIntString(songDetail.getData().getComment())));
+
         updateSeekBar(currentTime, total_time);
 
         if (!Helper.isMyServiceRunning(this, MyService.class)) {
@@ -493,9 +613,38 @@ public class PlayNowActivity extends AppCompatActivity {
             btnPlay.playAnimation();
         }
         imageAlbumArt.setVisibility(View.VISIBLE);
-
         progress_image.setVisibility(View.GONE);
+
+        if (isFileDownloaded(items.getTitle() + " - " + items.getArtistsNames() + ".mp3")) {
+            txt_download_audio.setText("Đã tải xuống");
+            img_download_audio.setImageResource(R.drawable.ic_file_download_done);
+        } else {
+            txt_download_audio.setText("Tải xuống");
+            img_download_audio.setImageResource(R.drawable.ic_download);
+        }
     }
+
+    public String convertToIntString(int number) {
+        String numberString = String.valueOf(number);
+        int length = numberString.length();
+
+        if (length == 4) {
+            return numberString.charAt(0) + "." + numberString.charAt(1) + "K";
+        } else if (length == 5) {
+            return numberString.charAt(0) + numberString.charAt(1) + "K";
+        } else if (length == 6) {
+            return numberString.charAt(0) + numberString.charAt(1) + numberString.charAt(2) + "K";
+        } else if (length == 7) {
+            return numberString.charAt(0) + "." + numberString.charAt(1) + "M";
+        } else if (length == 8) {
+            return numberString.charAt(0) + numberString.charAt(1) + "M";
+        } else if (length == 9) {
+            return numberString.charAt(0) + numberString.charAt(1) + numberString.charAt(2) + "M";
+        } else {
+            return numberString;
+        }
+    }
+
 
     private void setDataSongBottomSheet() {
 
@@ -506,11 +655,11 @@ public class PlayNowActivity extends AppCompatActivity {
         RoundedImageView img_album_song = layoutPlayer.findViewById(R.id.img_album_song);
 
         Glide.with(this)
-                .load(mSong.getThumb_medium())
+                .load(items.getThumbnail())
                 .into(img_album_song);
 
-        txtTitle.setText(mSong.getName());
-        txtArtist.setText(mSong.getArtist());
+        txtTitle.setText(items.getTitle());
+        txtArtist.setText(items.getArtistsNames());
     }
 
     private void setBackground(int color_background, int color_bottomsheet) {
@@ -585,6 +734,6 @@ public class PlayNowActivity extends AppCompatActivity {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(seekBarUpdateReceiver);
-        unregisterReceiver(onDownloadComplete); // Hủy đăng ký BroadcastReceiver khi không cần nữa
+        unregisterReceiver(onDownloadComplete);
     }
 }

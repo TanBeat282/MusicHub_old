@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.musichub.model.Artist;
-import com.example.musichub.model.Song;
+import com.example.musichub.model.chart_home.Items;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -18,57 +18,33 @@ public class SharedPreferencesManager {
         this.context = context;
     }
 
-    public void saveSongState(Song song) {
+    public void saveSongState(Items song) {
         if (song != null) {
             SharedPreferences sharedPreferences = context.getSharedPreferences("music_prefs", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("song_id", song.getId());
-            editor.putString("song_name", song.getName());
-            editor.putString("song_artist", song.getArtist());
-            editor.putString("song_thumb", song.getThumb());
-            editor.putString("song_thumb_medium", song.getThumb_medium());
-            editor.putString("lyric_song", song.getLyric());
-            editor.putString("link_audio", song.getLink_audio());
-            editor.putString("code", song.getCode());
+
             Gson gson = new Gson();
-            String json = gson.toJson(song.getmArtist());
-            editor.putString("artist", json);
+            String jsonSong = gson.toJson(song);
+
+            editor.putString("song", jsonSong);
             editor.apply();
         }
     }
-
-    public Song restoreSongState() {
+    public Items restoreSongState() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("music_prefs", Context.MODE_PRIVATE);
-        String songId = sharedPreferences.getString("song_id", "");
-        String songName = sharedPreferences.getString("song_name", "");
-        String songArtist = sharedPreferences.getString("song_artist", "");
-        String songThumb = sharedPreferences.getString("song_thumb", "");
-        String songThumbMedium = sharedPreferences.getString("song_thumb_medium", "");
-        String songLyric = sharedPreferences.getString("lyric_song", "");
-        String linkAudio = sharedPreferences.getString("link_audio", "");
-        String code = sharedPreferences.getString("code", "");
-        String artistJson = sharedPreferences.getString("artist", "");
+        String jsonSong = sharedPreferences.getString("song", null);
 
-        Song restoredSong = new Song();
-        restoredSong.setId(songId);
-        restoredSong.setName(songName);
-        restoredSong.setArtist(songArtist);
-        restoredSong.setThumb(songThumb);
-        restoredSong.setThumb_medium(songThumbMedium);
-        restoredSong.setLyric(songLyric);
-        restoredSong.setLink_audio(linkAudio);
-        restoredSong.setCode(code);
-
-        // Giải mã chuỗi JSON để khôi phục lại trạng thái của đối tượng Artist
-        Gson gson = new Gson();
-        Artist restoredArtist = gson.fromJson(artistJson, Artist.class);
-        restoredSong.setmArtist(restoredArtist);
-
-        return restoredSong;
+        if (jsonSong != null) {
+            Gson gson = new Gson();
+            return gson.fromJson(jsonSong, Items.class);
+        } else {
+            return null;
+        }
     }
 
 
-    public void saveSongArrayList(ArrayList<Song> songArrayList) {
+
+    public void saveSongArrayList(ArrayList<Items> songArrayList) {
         Gson gson = new Gson();
         String songListJson = gson.toJson(songArrayList);
 
@@ -78,23 +54,23 @@ public class SharedPreferencesManager {
         editor.apply();
     }
 
-    public ArrayList<Song> restoreSongArrayList() {
+    public ArrayList<Items> restoreSongArrayList() {
         Gson gson = new Gson();
         SharedPreferences sharedPreferences = context.getSharedPreferences("songList", Context.MODE_PRIVATE);
         String song_list = sharedPreferences.getString("song_list", "");
 
-        ArrayList<Song> restoreSongList = gson.fromJson(song_list, new TypeToken<ArrayList<Song>>() {
+        ArrayList<Items> restoreSongList = gson.fromJson(song_list, new TypeToken<ArrayList<Items>>() {
         }.getType());
-        return new ArrayList<Song>(restoreSongList);
+        return new ArrayList<Items>(restoreSongList);
     }
 
     //history song
-    public ArrayList<Song> restoreSongArrayListHistory() {
+    public ArrayList<Items> restoreSongArrayListHistory() {
         Gson gson = new Gson();
         SharedPreferences sharedPreferences = context.getSharedPreferences("songListHistory", Context.MODE_PRIVATE);
         String song_list = sharedPreferences.getString("song_list_history", "");
 
-        ArrayList<Song> restoreSongList = gson.fromJson(song_list, new TypeToken<ArrayList<Song>>() {
+        ArrayList<Items> restoreSongList = gson.fromJson(song_list, new TypeToken<ArrayList<Items>>() {
         }.getType());
         if (restoreSongList == null) {
             restoreSongList = new ArrayList<>();
@@ -103,14 +79,14 @@ public class SharedPreferencesManager {
     }
 
 
-    public void saveSongArrayListHistory(Song song) {
-        ArrayList<Song> songArrayList = restoreSongArrayListHistory();
+    public void saveSongArrayListHistory(Items song) {
+        ArrayList<Items> songArrayList = restoreSongArrayListHistory();
         if (songArrayList == null) {
             songArrayList = new ArrayList<>();
         }
 
         for (int i = 0; i < songArrayList.size(); i++) {
-            if (songArrayList.get(i).getId().equals(song.getId())) { // Kiểm tra xem ID của bài hát có trùng không
+            if (songArrayList.get(i).getEncodeId().equals(song.getEncodeId())) { // Kiểm tra xem ID của bài hát có trùng không
                 songArrayList.remove(i); // Xóa bài hát nếu trùng
             }
         }

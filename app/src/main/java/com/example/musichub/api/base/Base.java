@@ -1,5 +1,10 @@
 package com.example.musichub.api.base;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.CookieManager;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -8,20 +13,22 @@ import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import okhttp3.CookieJar;
+import okhttp3.OkHttpClient;
+
 
 public class Base {
     private final String version;
     private final String ctime;
     private final String secretKey;
     private final String apiKey;
-    private final String baseURL = "https://zingmp3.vn";
-
     public Base(String apiKey, String secretKey) {
         this.version = "1.10.12"; // Default 0
         this.ctime = String.valueOf(System.currentTimeMillis() / 1000);
         this.secretKey = secretKey != null ? secretKey : "acOrvUS15XRW2o9JksiK1KgQ6Vbds8ZW";
         this.apiKey = apiKey != null ? apiKey : "X5BM3w8N7MKozC0B85o4KMlzLZKhV00y";
     }
+
 
     private String createHash256(String params) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -49,32 +56,12 @@ public class Base {
         return hexString.toString();
     }
 
-    protected String createRequest(String path, Map<String, String> params) {
-        // Tạo một bản sao của params để không làm thay đổi params gốc
-        Map<String, String> paramMap = new HashMap<>(params);
-
-        // Tạo chuỗi URL bắt đầu với baseURL và path
-        StringBuilder urlBuilder = new StringBuilder(baseURL + path + "?");
-
-        // Thêm các giá trị mặc định vào URL
-
-        // Kiểm tra xem params có trống không
-        if (!paramMap.isEmpty()) {
-            // Thêm các tham số từ map params
-            for (Map.Entry<String, String> entry : paramMap.entrySet()) {
-                // Kiểm tra nếu đây là key đầu tiên
-                if (entry.equals(paramMap.entrySet().iterator().next())) {
-                    urlBuilder.append(entry.getKey()).append("=").append(entry.getValue());
-                } else {
-                    urlBuilder.append("&").append(entry.getKey()).append("=").append(entry.getValue());
-                }
-            }
-        }
-        urlBuilder.append("&ctime=").append(ctime)
-                .append("&version=").append(version)
-                .append("&apiKey=").append(apiKey);
-
-        return urlBuilder.toString();
+    protected Map<String, String> createRequest() {
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("ctime", ctime);
+        paramMap.put("version", version);
+        paramMap.put("apiKey", apiKey);
+        return paramMap;
     }
 
 

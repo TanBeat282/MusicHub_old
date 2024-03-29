@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,29 +12,32 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.model.Song;
+import com.example.musichub.model.chart_home.Items;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
-    private ArrayList<Song> songList;
+    private ArrayList<Items> songList;
     private final Context context;
-    private SharedPreferences sharedPreferences;
+    private int selectedPosition = -1;
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setFillterList(ArrayList<Song> fillterList) {
+    public void setFillterList(ArrayList<Items> fillterList) {
         this.songList = fillterList;
         notifyDataSetChanged();
     }
 
-    public SearchAdapter(ArrayList<Song> songList, Context context) {
+    public SearchAdapter(ArrayList<Items> songList, Context context) {
         this.songList = songList;
         this.context = context;
     }
@@ -48,20 +52,27 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
-        Song song = songList.get(position);
+        Items items = songList.get(position);
 
-        holder.artistTextView.setText(song.getArtist());
-        holder.nameTextView.setText(song.getName());
-
+        holder.nameTextView.setText(items.getTitle());
+        holder.artistTextView.setText(items.getArtistsNames());
         Glide.with(context)
-                .load(song.getThumb_medium())
+                .load(items.getThumbnail())
                 .into(holder.thumbImageView);
+        if (selectedPosition == position) {
+            int colorSpotify = ContextCompat.getColor(context, R.color.colorSpotify);
+            holder.nameTextView.setTextColor(colorSpotify);
+            holder.aniPlay.setVisibility(View.VISIBLE);
+        } else {
+            holder.nameTextView.setTextColor(Color.WHITE);
+            holder.aniPlay.setVisibility(View.GONE);
+        }
 
         holder.itemView.setOnClickListener(v -> {
 
             Intent intent = new Intent(context, PlayNowActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putSerializable("song", song);
+            bundle.putSerializable("song", items);
             bundle.putInt("position_song", position);
             bundle.putSerializable("song_list", songList);
             bundle.putInt("title_now_playing", 1);
@@ -81,12 +92,30 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         public RoundedImageView thumbImageView;
         public TextView artistTextView;
         public TextView nameTextView;
+        public LottieAnimationView aniPlay;
 
         public ViewHolder(View itemView) {
             super(itemView);
             thumbImageView = itemView.findViewById(R.id.thumbImageView);
             artistTextView = itemView.findViewById(R.id.artistTextView);
             nameTextView = itemView.findViewById(R.id.nameTextView);
+            aniPlay = itemView.findViewById(R.id.aniPlay);
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void updatePlayingStatus(String currentPlayingEncodeId) {
+        if (songList != null) {
+            for (int i = 0; i < songList.size(); i++) {
+                Items item = songList.get(i);
+                if (item.getEncodeId().equals(currentPlayingEncodeId)) {
+                    selectedPosition = i;
+                    notifyDataSetChanged(); // Thông báo dữ liệu đã thay đổi để cập nhật giao diện
+                    return;
+                }
+            }
+        }
+        selectedPosition = -1; // Nếu không tìm thấy, không bài hát nào được chọn
+        notifyDataSetChanged();
     }
 }

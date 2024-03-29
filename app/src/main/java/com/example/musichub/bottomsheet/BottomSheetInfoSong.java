@@ -25,6 +25,7 @@ import com.example.musichub.MainActivity;
 import com.example.musichub.R;
 import com.example.musichub.model.Artist;
 import com.example.musichub.model.Song;
+import com.example.musichub.model.song.SongDetail;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -47,7 +48,7 @@ import okhttp3.ResponseBody;
 public class BottomSheetInfoSong extends BottomSheetDialogFragment {
     private final Context context;
     private final Activity activity;
-    private Song song;
+    private SongDetail song;
     private BottomSheetDialog bottomSheetDialog;
     private SharedPreferencesManager sharedPreferencesManager;
     private RoundedImageView img_bg;
@@ -55,7 +56,7 @@ public class BottomSheetInfoSong extends BottomSheetDialogFragment {
     private RoundedImageView imageAlbumArt;
     private TextView txt_name_artist;
 
-    public BottomSheetInfoSong(Context context, Activity activity, Song song) {
+    public BottomSheetInfoSong(Context context, Activity activity, SongDetail song) {
         this.context = context;
         this.activity = activity;
         this.song = song;
@@ -77,80 +78,21 @@ public class BottomSheetInfoSong extends BottomSheetDialogFragment {
         sharedPreferencesManager = new SharedPreferencesManager(context);
 
         getColorBackground();
-        getInfoSong(song.getId());
+
+        Glide.with(context)
+                .load(song.getData().getArtists().get(0).getThumbnailM())
+                .into(img_bg);
+
+//        int color = getResources().getColor(R.color.colorPrimary);
+//        img_bg.setImageResource(color);
+
+        Glide.with(context)
+                .load(song.getData().getArtists().get(0).getThumbnailM())
+                .into(imageAlbumArt);
+
+        txt_name_artist.setText(song.getData().getArtists().get(0).getName());
 
         return bottomSheetDialog;
-    }
-
-    private void getInfoSong(String id) {
-        OkHttpClient client = new OkHttpClient();
-
-        // Tạo request để gửi lời gọi HTTP GET đến URL
-        String url = "https://mp3.zing.vn/xhr/media/get-info?type=audio&id=" + id;
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    ResponseBody responseBody = response.body();
-                    if (responseBody != null) {
-                        String jsonString = responseBody.string();
-                        try {
-                            JSONObject jsonObject = new JSONObject(jsonString);
-                            JSONObject dataObject = jsonObject.getJSONObject("data");
-
-                            // Lấy mảng nghệ sĩ từ đối tượng data
-                            JSONArray artistsArray = dataObject.getJSONArray("artists");
-
-                            // Lặp qua mảng nghệ sĩ và lấy thông tin của nghệ sĩ đầu tiên
-                            if (artistsArray.length() > 0) {
-                                JSONObject artistObject = artistsArray.getJSONObject(0);
-
-                                Artist artist = new Artist();
-                                artist.setId(artistObject.getString("id"));
-                                artist.setName(artistObject.getString("name"));
-                                artist.setLink(artistObject.getString("link"));
-                                artist.setCover(artistObject.getString("cover"));
-                                artist.setThumbnail(artistObject.getString("thumbnail"));
-                                song.setmArtist(artist);
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @SuppressLint("ResourceType")
-                                    @Override
-                                    public void run() {
-                                        if (song.getmArtist().getCover().startsWith("https://")) {
-                                            Glide.with(context)
-                                                    .load(song.getmArtist().getCover())
-                                                    .into(img_bg);
-                                        } else {
-                                            int color = getResources().getColor(R.color.colorPrimary);
-                                            img_bg.setImageResource(color);
-                                        }
-
-                                        Glide.with(context)
-                                                .load(song.getmArtist().getThumbnail())
-                                                .into(imageAlbumArt);
-
-                                        txt_name_artist.setText(song.getmArtist().getName());
-                                    }
-                                });
-                            }
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        });
     }
     private void setBackground(int color_background, int color_bottomsheet) {
         Window window = activity.getWindow();

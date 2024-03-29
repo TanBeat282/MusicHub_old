@@ -1,34 +1,23 @@
 package com.example.musichub;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.core.view.ViewCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSnapHelper;
-import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
 
 import com.bumptech.glide.Glide;
 
@@ -38,38 +27,24 @@ import com.example.musichub.adapter.BaiHatNhanhAdapter;
 import com.example.musichub.adapter.LichSuBaiHatAdapter;
 import com.example.musichub.adapter.TopSongAdapter;
 import com.example.musichub.adapter.VideoAdapter;
-import com.example.musichub.helper.Helper;
-import com.example.musichub.model.Artist;
-import com.example.musichub.model.Song;
+import com.example.musichub.api.ApiService;
+import com.example.musichub.api.ApiServiceFactory;
+import com.example.musichub.api.categories.ChartCategories;
+import com.example.musichub.helper.ui.Helper;
+import com.example.musichub.model.chart_home.ChartHome;
+import com.example.musichub.model.chart_home.Items;
 import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.github.kiulian.downloader.YoutubeDownloader;
-import com.github.kiulian.downloader.downloader.request.RequestSearchResult;
-import com.github.kiulian.downloader.downloader.request.RequestVideoInfo;
-import com.github.kiulian.downloader.model.search.SearchResult;
-import com.github.kiulian.downloader.model.search.SearchResultVideoDetails;
-import com.github.kiulian.downloader.model.search.field.FormatField;
-import com.github.kiulian.downloader.model.search.field.TypeField;
-import com.github.kiulian.downloader.model.videos.VideoDetails;
-import com.github.kiulian.downloader.model.videos.VideoInfo;
-import com.github.kiulian.downloader.model.videos.formats.VideoWithAudioFormat;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.makeramen.roundedimageview.RoundedImageView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView img_play_pause;
@@ -78,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvTitleSong, tvSingleSong;
     private RecyclerView rv_nghe_lai;
     private LinearProgressIndicator progressIndicator;
-    private Song mSong;
+    private Items mSong;
     private boolean isPlaying;
     private int action;
     private int currentTime, total_time;
@@ -88,8 +63,9 @@ public class MainActivity extends AppCompatActivity {
     private VideoAdapter videoAdapter;
     private SharedPreferencesManager sharedPreferencesManager;
     private View layoutPlayerBottom;
-    private ArrayList<Song> songListVideoBaiHat;
-    private ArrayList<Song> songListLichSuBaiHat;
+    private ArrayList<Items> songListVideoBaiHat;
+    private ArrayList<Items> songListLichSuBaiHat;
+    private ArrayList<Items> songListBangXepHang;
 
     private final YoutubeDownloader downloader = new YoutubeDownloader();
 
@@ -100,10 +76,12 @@ public class MainActivity extends AppCompatActivity {
             if (bundle == null) {
                 return;
             }
-            mSong = (Song) bundle.get("object_song");
+            mSong = (Items) bundle.get("object_song");
             isPlaying = bundle.getBoolean("status_player");
             action = bundle.getInt("action_music");
             handleLayoutMusic(action);
+            checkIsPlayingHistory(mSong, songListLichSuBaiHat);
+            checkIsPlayingTop(mSong, songListBangXepHang);
         }
     };
     private final BroadcastReceiver seekBarUpdateReceiver = new BroadcastReceiver() {
@@ -148,10 +126,10 @@ public class MainActivity extends AppCompatActivity {
         tvSingleSong.setSelected(true);
         progressIndicator = layoutPlayerBottom.findViewById(R.id.progressIndicator);
 
-        ArrayList<Song> songListChonNhanh = new ArrayList<>();
-        ArrayList<Song> songListBangXepHang = new ArrayList<>();
+//        ArrayList<Items> songListChonNhanh = new ArrayList<>();
+        songListBangXepHang = new ArrayList<>();
         songListLichSuBaiHat = new ArrayList<>();
-        songListVideoBaiHat = new ArrayList<>();
+//        songListVideoBaiHat = new ArrayList<>();
 
 
         // Khoi tạo RecyclerView và Adapter
@@ -170,16 +148,16 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Khoi tạo Adapter
-        baiHatNhanhAdapter = new BaiHatNhanhAdapter(songListChonNhanh, MainActivity.this);
-        rv_chon_nhanh.setAdapter(baiHatNhanhAdapter);
+//        baiHatNhanhAdapter = new BaiHatNhanhAdapter(songListChonNhanh, MainActivity.this);
+//        rv_chon_nhanh.setAdapter(baiHatNhanhAdapter);
 
 
         topSongAdapter = new TopSongAdapter(songListBangXepHang, MainActivity.this);
         rv_bang_xep_hang.setAdapter(topSongAdapter);
 
 
-        videoAdapter = new VideoAdapter(songListVideoBaiHat, MainActivity.this);
-        rv_video_bai_hat_lien_quan.setAdapter(videoAdapter);
+//        videoAdapter = new VideoAdapter(songListVideoBaiHat, MainActivity.this);
+//        rv_video_bai_hat_lien_quan.setAdapter(videoAdapter);
 
 
         lichSuBaiHatAdapter = new LichSuBaiHatAdapter(songListLichSuBaiHat, MainActivity.this);
@@ -189,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
         txtNoData.setVisibility(View.VISIBLE);
 
         getSongCurrent();
-        getBangXepHang();
+        getBXH();
         getSongHistory();
 
 //        Window w = getWindow();
@@ -202,72 +180,55 @@ public class MainActivity extends AppCompatActivity {
         img_search.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SearchActivity.class)));
     }
 
-    private void getBangXepHang() {
-        OkHttpClient client = new OkHttpClient();
-
-        // Tạo request để gửi lời gọi HTTP GET đến URL
-        String url = "https://mp3.zing.vn/xhr/chart-realtime";
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
+    private void getBXH() {
+        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
+            public void onServiceCreated(ApiService service) {
+                try {
+                    ChartCategories chartCategories = new ChartCategories(null, null);
+                    Map<String, String> map = chartCategories.getChartHome();
+
+                    retrofit2.Call<ChartHome> call = service.CHART_HOME_CALL(map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                    call.enqueue(new Callback<ChartHome>() {
+                        @Override
+                        public void onResponse(Call<ChartHome> call, Response<ChartHome> response) {
+                            if (response.isSuccessful()) {
+                                ChartHome chartHome = response.body();
+                                if (chartHome != null && chartHome.getErr() == 0) {
+                                    ArrayList<Items> itemsArrayList = chartHome.getData().getRTChart().getItems();
+                                    if (!itemsArrayList.isEmpty()) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                songListBangXepHang = itemsArrayList;
+                                                topSongAdapter.setFilterList(itemsArrayList);
+                                                checkIsPlayingTop(mSong, itemsArrayList);
+                                            }
+                                        });
+                                    } else {
+                                        Log.d("TAG", "Items list is empty");
+                                    }
+                                } else {
+                                    Log.d("TAG", "Error: ");
+                                }
+                            } else {
+                                Log.d("TAG", "Failed to retrieve data: " + response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ChartHome> call, Throwable throwable) {
+
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("TAG", "Error: " + e.getMessage(), e);
+                }
             }
 
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    ResponseBody responseBody = response.body();
-                    if (responseBody != null) {
-                        String jsonString = responseBody.string();
-                        try {
-                            JSONObject jsonObject = new JSONObject(jsonString);
-                            JSONObject dataObject = jsonObject.getJSONObject("data");
-                            JSONArray songArray = dataObject.getJSONArray("song");
+            public void onError(Exception e) {
 
-                            ArrayList<Song> filteredSongList = new ArrayList<>();
-
-                            for (int i = 0; i < songArray.length(); i++) {
-
-                                JSONObject songObject = songArray.getJSONObject(i);
-
-                                Song song = new Song();
-
-                                //convert background
-                                String temp = songObject.getString("thumbnail");
-                                String prefix = "https://photo-resize-zmp3.zmdcdn.me/w94_r1x1_jpeg/";
-                                String urlThumb = "https://photo-resize-zmp3.zmdcdn.me/w480_r1x1_png/";
-
-                                // Tìm vị trí bắt đầu của Chan giá trị cần lấy
-                                int startIndex = temp.indexOf(prefix) + prefix.length();
-
-                                song.setThumb_medium(temp);
-                                song.setLyric(songObject.getString("lyric"));
-                                song.setThumb(urlThumb + temp.substring(startIndex));
-
-                                song.setArtist(songObject.getString("artists_names"));
-                                song.setId(songObject.getString("id"));
-                                song.setName(songObject.getString("name"));
-                                song.setCode(songObject.getString("code"));
-
-                                getLinkAudioSong(song.getCode(), link -> {
-                                    if (link != null) {
-                                        song.setLink_audio(link);
-                                    } else {
-                                        runOnUiThread(() -> Toast.makeText(MainActivity.this, "Lỗi truy vấn.", Toast.LENGTH_SHORT).show());
-                                    }
-                                });
-                                filteredSongList.add(song);
-                            }
-                            runOnUiThread(() -> topSongAdapter.setFilterList(filteredSongList));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
             }
         });
     }
@@ -302,10 +263,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Glide.with(this)
-                .load(mSong.getThumb_medium())
+                .load(mSong.getThumbnail())
                 .into(img_album_song);
-        tvTitleSong.setText(mSong.getName());
-        tvSingleSong.setText(mSong.getArtist());
+        tvTitleSong.setText(mSong.getArtistsNames());
+        tvSingleSong.setText(mSong.getArtistsNames());
 
         linear_play_pause.setOnClickListener(v -> {
             if (!Helper.isMyServiceRunning(MainActivity.this, MyService.class)) {
@@ -360,8 +321,8 @@ public class MainActivity extends AppCompatActivity {
         mSong = sharedPreferencesManager.restoreSongState();
         isPlaying = sharedPreferencesManager.restoreIsPlayState();
         action = sharedPreferencesManager.restoreActionState();
-        getBaiHatNhanh(mSong);
-        new SearchTask().execute();
+//        getBaiHatNhanh(mSong);
+//        new SearchTask().execute();
         handleLayoutMusic(action);
     }
 
@@ -373,184 +334,95 @@ public class MainActivity extends AppCompatActivity {
         } else {
             rv_nghe_lai.setVisibility(View.VISIBLE);
             txtNoData.setVisibility(View.GONE);
+
             lichSuBaiHatAdapter.setFilterList(songListLichSuBaiHat);
+            checkIsPlayingHistory(mSong, songListLichSuBaiHat);
         }
 
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private class SearchTask extends AsyncTask<Void, Void, SearchResult> {
-        @Override
-        protected SearchResult doInBackground(Void... voids) {
-            RequestSearchResult request = new RequestSearchResult(mSong.getName())
-                    .filter(
-                            TypeField.VIDEO,
-                            FormatField.HD);
+//    @SuppressLint("StaticFieldLeak")
+//    private class SearchTask extends AsyncTask<Void, Void, SearchResult> {
+//        @Override
+//        protected SearchResult doInBackground(Void... voids) {
+//            RequestSearchResult request = new RequestSearchResult(mSong.getTitle())
+//                    .filter(
+//                            TypeField.VIDEO,
+//                            FormatField.HD);
+//
+//            return downloader.search(request).data();
+//        }
+//
+//        @Override
+//        protected void onPostExecute(SearchResult result) {
+//            List<SearchResultVideoDetails> videos = result.videos();
+//
+//            for (SearchResultVideoDetails searchResultVideoDetails : videos) {
+//                new GetVideoInfoTask().execute(searchResultVideoDetails.videoId());
+//            }
+//        }
+//    }
 
-            return downloader.search(request).data();
+    //    private class GetVideoInfoTask extends AsyncTask<String, Void, VideoInfo> {
+//        @Override
+//        protected VideoInfo doInBackground(String... videoIds) {
+//            RequestVideoInfo request = new RequestVideoInfo(videoIds[0]);
+//            com.github.kiulian.downloader.downloader.response.Response<VideoInfo> response = downloader.getVideoInfo(request);
+//            VideoInfo info = response.data();
+//            return info;
+//        }
+//
+//        @SuppressLint("NotifyDataSetChanged")
+//        @Override
+//        protected void onPostExecute(VideoInfo info) {
+//            VideoDetails details = info.details();
+//            List<VideoWithAudioFormat> videoWithAudioFormats = info.videoWithAudioFormats();
+//
+//            Items song = new Items();
+//            song.setId(details.videoId());
+//            song.setArtist(String.valueOf(details.viewCount()));
+//            song.setThumb_medium(details.thumbnails().get(0));
+//            song.setThumb(details.thumbnails().get(0));
+//            song.setName(details.title());
+//            song.setLyric(null);
+//            song.setLink_audio(videoWithAudioFormats.get(1).url());
+//
+//            songListVideoBaiHat.add(song);
+//            videoAdapter.notifyDataSetChanged();
+//
+//        }
+//
+//    }
+    private void checkIsPlayingTop(Items items, ArrayList<Items> songList) {
+        if (items == null || songList == null) {
+            return;
         }
 
-        @Override
-        protected void onPostExecute(SearchResult result) {
-            List<SearchResultVideoDetails> videos = result.videos();
-
-            for (SearchResultVideoDetails searchResultVideoDetails : videos) {
-                new GetVideoInfoTask().execute(searchResultVideoDetails.videoId());
-            }
-        }
-    }
-
-    private class GetVideoInfoTask extends AsyncTask<String, Void, VideoInfo> {
-        @Override
-        protected VideoInfo doInBackground(String... videoIds) {
-            RequestVideoInfo request = new RequestVideoInfo(videoIds[0]);
-            com.github.kiulian.downloader.downloader.response.Response<VideoInfo> response = downloader.getVideoInfo(request);
-            VideoInfo info = response.data();
-            return info;
-        }
-
-        @SuppressLint("NotifyDataSetChanged")
-        @Override
-        protected void onPostExecute(VideoInfo info) {
-            VideoDetails details = info.details();
-            List<VideoWithAudioFormat> videoWithAudioFormats = info.videoWithAudioFormats();
-
-            Song song = new Song();
-            song.setId(details.videoId());
-            song.setArtist(String.valueOf(details.viewCount()));
-            song.setThumb_medium(details.thumbnails().get(0));
-            song.setThumb(details.thumbnails().get(0));
-            song.setName(details.title());
-            song.setLyric(null);
-            song.setLink_audio(videoWithAudioFormats.get(1).url());
-
-            songListVideoBaiHat.add(song);
-            videoAdapter.notifyDataSetChanged();
-
-        }
-
-    }
-
-    private void getBaiHatNhanh(Song song) {
-        if (song != null) {
-
-            OkHttpClient client = new OkHttpClient();
-            String url = " http://mp3.zing.vn/xhr/recommend?type=audio&id=" + song.getId();
-            Request request = new Request.Builder()
-                    .url(url)
-                    .build();
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    e.printStackTrace();
-                }
-
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    if (response.isSuccessful()) {
-                        ResponseBody responseBody = response.body();
-                        if (responseBody != null) {
-                            String jsonString = responseBody.string();
-                            try {
-                                JSONObject jsonObject = new JSONObject(jsonString);
-                                JSONObject dataObject = jsonObject.getJSONObject("data");
-                                JSONArray songArray = dataObject.getJSONArray("items");
-
-                                ArrayList<Song> filteredSongList = new ArrayList<>();
-
-                                for (int i = 0; i < songArray.length(); i++) {
-
-                                    JSONObject songObject = songArray.getJSONObject(i);
-
-                                    Song song = new Song();
-
-                                    //convert background
-                                    String temp = songObject.getString("thumbnail");
-                                    String prefix = "https://photo-resize-zmp3.zmdcdn.me/w94_r1x1_jpeg/";
-                                    String urlThumb = "https://photo-resize-zmp3.zmdcdn.me/w480_r1x1_png/";
-
-                                    // Tìm vị trí bắt đầu của Chan giá trị cần lấy
-                                    int startIndex = temp.indexOf(prefix) + prefix.length();
-
-                                    song.setThumb_medium(songObject.getString("thumbnail"));
-                                    song.setLyric(songObject.getString("lyric"));
-                                    song.setThumb(urlThumb + temp.substring(startIndex));
-
-                                    song.setArtist(songObject.getString("performer"));
-                                    song.setId(songObject.getString("id"));
-                                    song.setName(songObject.getString("name"));
-                                    song.setCode(songObject.getString("code"));
-
-                                    getLinkAudioSong(song.getCode(), new LinkAudioCallback() {
-                                        @Override
-                                        public void onLinkReceived(String link) {
-                                            if (link != null) {
-                                                song.setLink_audio(link);
-                                            } else {
-                                                runOnUiThread(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        Toast.makeText(MainActivity.this, "Lỗi truy vấn.", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    });
-
-                                    filteredSongList.add(song);
-                                }
-                                runOnUiThread(() -> baiHatNhanhAdapter.setFilterList(filteredSongList));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }
-
-    public interface LinkAudioCallback {
-        void onLinkReceived(String link);
-    }
-
-
-    private void getLinkAudioSong(String code_song, final LinkAudioCallback callback) {
-        OkHttpClient client = new OkHttpClient();
-
-        // Tạo request để gửi lời gọi HTTP GET đến URL
-        String url = "https://mp3.zing.vn/xhr/media/get-source?type=audio&key=" + code_song;
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
-                callback.onLinkReceived(null); // Gọi callback với giá trị null khi xảy ra lỗi
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    ResponseBody responseBody = response.body();
-                    if (responseBody != null) {
-                        String jsonString = responseBody.string();
-                        try {
-                            JSONObject jsonObject = new JSONObject(jsonString);
-                            JSONObject dataObject = jsonObject.getJSONObject("data");
-                            JSONObject sourceObject = dataObject.getJSONObject("source");
-                            String link128 = sourceObject.getString("128");
-                            callback.onLinkReceived(link128); // Gọi callback với giá trị link128 khi thành công
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            callback.onLinkReceived(null); // Gọi callback với giá trị null khi có lỗi xử lý JSON
-                        }
-                    }
+        String currentEncodeId = items.getEncodeId();
+        if (currentEncodeId != null && !currentEncodeId.isEmpty()) {
+            for (Items song : songList) {
+                if (currentEncodeId.equals(song.getEncodeId())) {
+                    topSongAdapter.updatePlayingStatus(currentEncodeId);
+                    break;
                 }
             }
-        });
+        }
+    }
+
+    private void checkIsPlayingHistory(Items items, ArrayList<Items> songList) {
+        if (items == null || songList == null) {
+            return;
+        }
+
+        String currentEncodeId = items.getEncodeId();
+        if (currentEncodeId != null && !currentEncodeId.isEmpty()) {
+            for (Items song : songList) {
+                if (currentEncodeId.equals(song.getEncodeId())) {
+                    lichSuBaiHatAdapter.updatePlayingStatus(currentEncodeId);
+                    break;
+                }
+            }
+        }
     }
 
 
@@ -559,7 +431,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         songListLichSuBaiHat.clear();
         getSongHistory();
-        new SearchTask().execute();
+//        new SearchTask().execute();
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("send_data_to_activity"));
         LocalBroadcastManager.getInstance(this).registerReceiver(seekBarUpdateReceiver, new IntentFilter("send_seekbar_update"));
     }

@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +22,9 @@ import android.widget.LinearLayout;
 
 import com.example.musichub.R;
 import com.example.musichub.adapter.LyricsAdapter;
+import com.example.musichub.helper.uliti.GetUrlAudioHelper;
 import com.example.musichub.model.LyricLine;
-import com.example.musichub.model.Song;
+import com.example.musichub.model.chart_home.Items;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 
 import java.io.BufferedReader;
@@ -45,11 +45,12 @@ public class LyricSongFragment extends Fragment {
     private Handler lyricHandler;
     private ExecutorService executor;
     private Handler handler;
-    private SharedPreferencesManager sharedPreferencesManager;
-    private Song song;
+    private Items song;
     private int currentTime, total_time;
     private boolean isPlaying;
     private int action;
+    private GetUrlAudioHelper getUrlAudioHelper;
+    private SharedPreferencesManager sharedPreferencesManager;
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -58,7 +59,7 @@ public class LyricSongFragment extends Fragment {
             if (bundle == null) {
                 return;
             }
-            song = (Song) bundle.get("object_song");
+            song = (Items) bundle.get("object_song");
             isPlaying = bundle.getBoolean("status_player");
             action = bundle.getInt("action_music");
             getDataSong(song);
@@ -91,10 +92,12 @@ public class LyricSongFragment extends Fragment {
         sharedPreferencesManager = new SharedPreferencesManager(requireContext());
         song = sharedPreferencesManager.restoreSongState();
 
+        getUrlAudioHelper = new GetUrlAudioHelper();
+
         executor = Executors.newSingleThreadExecutor();
         handler = new Handler(Looper.getMainLooper());
 
-        lyrics = new ArrayList<>(); // hoặc lyrics = new ArrayList<>(danh_sach_lyrics_da_co);
+        lyrics = new ArrayList<>();
 
         recyclerViewLyrics = view.findViewById(R.id.recyclerViewLyrics);
         txtNoData = view.findViewById(R.id.txtNoData);
@@ -107,7 +110,7 @@ public class LyricSongFragment extends Fragment {
         recyclerViewLyrics.setVisibility(View.GONE);
         txtNoData.setVisibility(View.VISIBLE);
 
-        // Khởi tạo danh sách lyricLines và lyricHandler
+
         lyrics = new ArrayList<>();
         lyricHandler = new Handler();
 
@@ -210,16 +213,28 @@ public class LyricSongFragment extends Fragment {
         return lyricLines;
     }
 
-    private void getDataSong(Song song) {
+    private void getDataSong(Items song) {
         if (song != null) {
-            if (!song.getLyric().isEmpty() && !song.getLyric().equals(" ")) {
-                startGetLyricTask(song.getLyric());
-                recyclerViewLyrics.setVisibility(View.VISIBLE);
-                txtNoData.setVisibility(View.GONE);
-            } else {
-                recyclerViewLyrics.setVisibility(View.GONE);
-                txtNoData.setVisibility(View.VISIBLE);
-            }
+            getUrlAudioHelper.getLyricUrl(song.getEncodeId(), new GetUrlAudioHelper.LyricUrlCallback() {
+                @Override
+                public void onSuccess(String lyricUrl) {
+                    // Kiểm tra cả null và rỗng
+                    if (lyricUrl != null && !lyricUrl.isEmpty() && !lyricUrl.trim().equals("")) {
+                        startGetLyricTask(lyricUrl);
+                        recyclerViewLyrics.setVisibility(View.VISIBLE);
+                        txtNoData.setVisibility(View.GONE);
+                    } else {
+                        recyclerViewLyrics.setVisibility(View.GONE);
+                        txtNoData.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable throwable) {
+
+                }
+            });
+
         }
     }
 

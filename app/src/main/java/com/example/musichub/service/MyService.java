@@ -33,10 +33,13 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.musichub.MainActivity;
+
+import com.example.musichub.helper.uliti.GetUrlAudioHelper;
+import com.example.musichub.model.chart_home.Items;
+import com.example.musichub.model.song.SongAudio;
 import com.example.musichub.receiver.MyReceiver;
 import com.example.musichub.R;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
-import com.example.musichub.model.Song;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,14 +53,16 @@ public class MyService extends Service {
     public static final int ACTION_NEXT = 5;
     public static final int ACTION_PREVIOUS = 6;
     private boolean isPlaying = false;
-    private Song mSong;
+    private Items mSong;
     private String currentSongId = "";
-    private ArrayList<Song> mSongList;
+    private ArrayList<Items> mSongList;
     private int mPositionSong = -1;
     private SharedPreferencesManager sharedPreferencesManager;
     private final Handler seekBarHandler = new Handler();
     private final Handler stopServiceHandler = new Handler();
-    private Handler autoNextSongHandler = new Handler();
+    private final Handler autoNextSongHandler = new Handler();
+    private final GetUrlAudioHelper getUrlAudioHelper = new GetUrlAudioHelper();
+
 
     @Override
     public void onCreate() {
@@ -76,10 +81,10 @@ public class MyService extends Service {
 
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-            Song song = (Song) bundle.getSerializable("object_song");
+            Items song = (Items) bundle.getSerializable("object_song");
             int positionSong = bundle.getInt("position_song");
             if (bundle.containsKey("song_list")) {
-                mSongList = (ArrayList<Song>) bundle.getSerializable("song_list");
+                mSongList = (ArrayList<Items>) bundle.getSerializable("song_list");
             }
 
             if (song != null) {
@@ -112,16 +117,16 @@ public class MyService extends Service {
         return START_NOT_STICKY;
     }
 
-    private void saveSongListAndPosition(Song mSong, int positionSong, ArrayList<Song> mSongList) {
+    private void saveSongListAndPosition(Items mSong, int positionSong, ArrayList<Items> mSongList) {
         sharedPreferencesManager.saveSongState(mSong);
         sharedPreferencesManager.saveSongPosition(positionSong);
         sharedPreferencesManager.saveSongArrayList(mSongList);
     }
 
     private void getSongListAndPosition() {
-        ArrayList<Song> songs = sharedPreferencesManager.restoreSongArrayList();
+        ArrayList<Items> songs = sharedPreferencesManager.restoreSongArrayList();
         int position = sharedPreferencesManager.restoreSongPosition();
-        Song song = sharedPreferencesManager.restoreSongState();
+        Items song = sharedPreferencesManager.restoreSongState();
 
         mSongList = songs;
         mSong = song;
@@ -131,43 +136,53 @@ public class MyService extends Service {
         saveSongListAndPosition(mSong, position, mSongList);
     }
 
-    private void startMusic(Song song) {
-        getColor(song.getThumb_medium());
-        if (mediaPlayer == null) {
-            mediaPlayer = new MediaPlayer();
+    private void startMusic(Items song) {
+        getColor(song.getThumbnailM());
+        getUrlAudioHelper.getSongAudio(song.getEncodeId(), new GetUrlAudioHelper.SongAudioCallback() {
+            @Override
+            public void onSuccess(SongAudio songAudio) {
+                if (mediaPlayer == null) {
+                    mediaPlayer = new MediaPlayer();
 
-            // Set audio attributes for MediaPlayer
-            mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build());
-        }
+                    // Set audio attributes for MediaPlayer
+                    mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .build());
+                }
 
-        if (!currentSongId.equals(song.getId())) {
-            try {
-                mediaPlayer.reset(); // Reset mediaPlayer if it's already in use
-                mediaPlayer.setDataSource(song.getLink_audio());
-                mediaPlayer.prepareAsync();
-                mediaPlayer.setOnPreparedListener(mp -> {
+                if (!currentSongId.equals(song.getEncodeId())) {
+                    try {
+                        mediaPlayer.reset();
+                        mediaPlayer.setDataSource(songAudio.getData().getLow());
+                        mediaPlayer.prepareAsync();
+                        mediaPlayer.setOnPreparedListener(mp -> {
 
-                    mediaPlayer.start();
-                    isPlaying = true;
-                    currentSongId = song.getId();
-                    sendActionToActivity(ACTION_START);
-                    startUpdatingSeekBar();
+                            mediaPlayer.start();
+                            isPlaying = true;
+                            currentSongId = song.getEncodeId();
+                            sendActionToActivity(ACTION_START);
+                            startUpdatingSeekBar();
 
-                    sharedPreferencesManager.saveSongState(song);
-                    sharedPreferencesManager.saveIsPlayState(true);
-                    sharedPreferencesManager.saveActionState(MyService.ACTION_START);
-                    sharedPreferencesManager.saveSongArrayListHistory(song);
+                            sharedPreferencesManager.saveSongState(song);
+                            sharedPreferencesManager.saveIsPlayState(true);
+                            sharedPreferencesManager.saveActionState(MyService.ACTION_START);
+                            sharedPreferencesManager.saveSongArrayListHistory(song);
 
-                    autoNextSongHandler.removeCallbacks(autoNextSongRunnable);
-                    autoNextSongHandler.postDelayed(autoNextSongRunnable, 1000);
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
+                            autoNextSongHandler.removeCallbacks(autoNextSongRunnable);
+                            autoNextSongHandler.postDelayed(autoNextSongRunnable, 1000);
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+
+            }
+        });
     }
 
     private void handleActionMusic(int action) {
@@ -272,10 +287,10 @@ public class MyService extends Service {
         }
     }
 
-    private void sendNotificationMedia(Song song, boolean isPlaying) {
+    private void sendNotificationMedia(Items song, boolean isPlaying) {
         Glide.with(getApplicationContext())
                 .asBitmap()
-                .load(song.getThumb_medium())
+                .load(song.getThumbnail())
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -283,14 +298,14 @@ public class MyService extends Service {
 
                         mediaSessionCompat.setMetadata(
                                 new MediaMetadataCompat.Builder()
-                                        .putString(MediaMetadata.METADATA_KEY_TITLE, mSong.getName())
-                                        .putString(MediaMetadata.METADATA_KEY_ARTIST, mSong.getArtist())
+                                        .putString(MediaMetadata.METADATA_KEY_TITLE, mSong.getTitle())
+                                        .putString(MediaMetadata.METADATA_KEY_ARTIST, mSong.getArtistsNames())
                                         .build());
 
                         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                                 .setSmallIcon(R.drawable.ic_android_black_24dp)
-                                .setContentTitle(song.getName())
-                                .setContentText(song.getArtist())
+                                .setContentTitle(song.getTitle())
+                                .setContentText(song.getArtistsNames())
                                 .setLargeIcon(resource)
                                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                                         .setShowActionsInCompactView(0, 1, 2)
