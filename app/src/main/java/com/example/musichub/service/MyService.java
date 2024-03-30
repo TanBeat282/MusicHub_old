@@ -43,6 +43,7 @@ import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MyService extends Service {
     private MediaPlayer mediaPlayer;
@@ -151,7 +152,7 @@ public class MyService extends Service {
                             .build());
                 }
 
-                if (!currentSongId.equals(song.getEncodeId())) {
+                if (sharedPreferencesManager.restoreIsRepeatOneState()) {
                     try {
                         mediaPlayer.reset();
                         mediaPlayer.setDataSource(songAudio.getData().getLow());
@@ -174,6 +175,32 @@ public class MyService extends Service {
                         });
                     } catch (IOException e) {
                         e.printStackTrace();
+                    }
+                } else {
+                    if (!currentSongId.equals(song.getEncodeId())) {
+                        try {
+                            mediaPlayer.reset();
+                            mediaPlayer.setDataSource(songAudio.getData().getLow());
+                            mediaPlayer.prepareAsync();
+                            mediaPlayer.setOnPreparedListener(mp -> {
+
+                                mediaPlayer.start();
+                                isPlaying = true;
+                                currentSongId = song.getEncodeId();
+                                sendActionToActivity(ACTION_START);
+                                startUpdatingSeekBar();
+
+                                sharedPreferencesManager.saveSongState(song);
+                                sharedPreferencesManager.saveIsPlayState(true);
+                                sharedPreferencesManager.saveActionState(MyService.ACTION_START);
+                                sharedPreferencesManager.saveSongArrayListHistory(song);
+
+                                autoNextSongHandler.removeCallbacks(autoNextSongRunnable);
+                                autoNextSongHandler.postDelayed(autoNextSongRunnable, 1000);
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -211,18 +238,30 @@ public class MyService extends Service {
 
     private void nextMusic() {
         if (mediaPlayer != null) {
+
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.stop();
+                mediaPlayer.reset(); // Reset mediaPlayer
                 isPlaying = false;
             }
 
-            if (mPositionSong >= mSongList.size()) {
-                mPositionSong = 0;
-            } else {
-                mPositionSong++;
-            }
+            // Nếu không phải trạng thái lặp lại một bài hát
+            if (!sharedPreferencesManager.restoreIsRepeatOneState()) {
+                if (sharedPreferencesManager.restoreIsShuffleState()) {
+                    // Trạng thái shuffle
+                    Random random = new Random();
+                    mPositionSong = random.nextInt(mSongList.size()); // Chọn một chỉ số ngẫu nhiên
+                } else {
+                    // Trạng thái không shuffle
+                    mPositionSong++;
+                    if (mPositionSong >= mSongList.size()) {
+                        mPositionSong = 0;
+                    }
+                }
+            } // Không cần thay đổi mPositionSong nếu đang trong trạng thái lặp lại một bài
 
             if (mPositionSong >= 0 && mPositionSong < mSongList.size()) {
+                // Lấy bài hát từ danh sách và phát
                 mSong = mSongList.get(mPositionSong);
                 startMusic(mSong);
                 sendNotificationMedia(mSong, true);
@@ -231,17 +270,27 @@ public class MyService extends Service {
         }
     }
 
+
     private void previousMusic() {
         if (mediaPlayer != null) {
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.stop();
+                mediaPlayer.reset(); // Reset mediaPlayer
                 isPlaying = false;
             }
 
-            if (mPositionSong < 0) {
-                mPositionSong = mSongList.size() - 1;
-            } else {
-                mPositionSong--;
+            if (!sharedPreferencesManager.restoreIsRepeatOneState()) {
+
+                if (sharedPreferencesManager.restoreIsShuffleState()) {
+                    Random random = new Random();
+                    mPositionSong = random.nextInt(mSongList.size()); // Chọn một chỉ số ngẫu nhiên
+                } else {
+                    if (mPositionSong < 0) {
+                        mPositionSong = mSongList.size() - 1;
+                    } else {
+                        mPositionSong--;
+                    }
+                }
             }
 
             if (mPositionSong >= 0 && mPositionSong < mSongList.size()) {

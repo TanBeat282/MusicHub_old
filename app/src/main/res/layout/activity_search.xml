@@ -19,6 +19,7 @@
         android:queryHint="Bạn nghe gì?"
         android:textColorHint="@color/white"
         app:defaultQueryHint="Bạn muốn nghe gì?"
+        android:textColor="@color/white"
         app:iconifiedByDefault="false"
         app:marginTopSystemWindowInsets="true"
         app:queryBackground="@null" />

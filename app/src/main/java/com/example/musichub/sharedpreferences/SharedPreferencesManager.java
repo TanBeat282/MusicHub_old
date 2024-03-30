@@ -2,14 +2,11 @@ package com.example.musichub.sharedpreferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import com.example.musichub.model.Artist;
 import com.example.musichub.model.chart_home.Items;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SharedPreferencesManager {
     private final Context context;
@@ -41,8 +38,6 @@ public class SharedPreferencesManager {
             return null;
         }
     }
-
-
 
     public void saveSongArrayList(ArrayList<Items> songArrayList) {
         Gson gson = new Gson();
@@ -136,6 +131,40 @@ public class SharedPreferencesManager {
         SharedPreferences sharedPreferences = context.getSharedPreferences("music_is_play", Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean("is_play", false);
     }
+
+
+    public void saveIsShuffleState(boolean is_shuffle) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("music_is_shuffle", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("is_shuffle", is_shuffle).apply();
+    }
+
+    public boolean restoreIsShuffleState() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("music_is_shuffle", Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean("is_shuffle", false);
+    }
+
+    public void saveIsRepeatState(boolean is_repeat) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("music_is_repeat", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("is_repeat", is_repeat).apply();
+    }
+
+    public boolean restoreIsRepeatState() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("music_is_repeat", Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean("is_repeat", false);
+    }
+    public void saveIsRepeatOneState(boolean is_repeat_one) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("music_is_repeat_one", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("is_repeat_one", is_repeat_one).apply();
+    }
+
+    public boolean restoreIsRepeatOneState() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("music_is_repeat_one", Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean("is_repeat_one", false);
+    }
+
 
     public void saveColorBackgroundState(int color_background, int color_bottomsheet) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("music_color", Context.MODE_PRIVATE);

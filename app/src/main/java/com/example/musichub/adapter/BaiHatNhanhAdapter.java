@@ -20,31 +20,25 @@ import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.model.Song;
+import com.example.musichub.model.chart_home.Items;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 
 public class BaiHatNhanhAdapter extends RecyclerView.Adapter<BaiHatNhanhAdapter.ViewHolder> {
-    private ArrayList<Song> songList;
+    private ArrayList<Items> songList;
     private final Context context;
     private int selectedPosition = -1;
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void setFilterList(ArrayList<Song> fillterList) {
-        this.songList = fillterList;
-        notifyDataSetChanged();
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    public void setPosition(ArrayList<Song> fillterList, int position) {
-        this.songList = fillterList;
-        this.selectedPosition = position;
-        notifyDataSetChanged();
-    }
-
-    public BaiHatNhanhAdapter(ArrayList<Song> songList, Context context) {
+    public BaiHatNhanhAdapter(ArrayList<Items> songList, Context context) {
         this.songList = songList;
         this.context = context;
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setFilterList(ArrayList<Items> fillterList) {
+        this.songList = fillterList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -56,12 +50,12 @@ public class BaiHatNhanhAdapter extends RecyclerView.Adapter<BaiHatNhanhAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        Song song = songList.get(position);
+        Items song = songList.get(position);
 
-        holder.nameTextView.setText(song.getName());
-        holder.artistTextView.setText(song.getArtist());
+        holder.nameTextView.setText(song.getTitle());
+        holder.artistTextView.setText(song.getArtistsNames());
         Glide.with(context)
-                .load(song.getThumb_medium())
+                .load(song.getThumbnail())
                 .into(holder.thumbImageView);
 
         if (selectedPosition == position) {
@@ -106,5 +100,22 @@ public class BaiHatNhanhAdapter extends RecyclerView.Adapter<BaiHatNhanhAdapter.
             aniPlay = itemView.findViewById(R.id.aniPlay);
         }
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void updatePlayingStatus(String currentPlayingEncodeId) {
+        if (songList != null) {
+            for (int i = 0; i < songList.size(); i++) {
+                Items item = songList.get(i);
+                if (item.getEncodeId().equals(currentPlayingEncodeId)) {
+                    selectedPosition = i;
+                    notifyDataSetChanged(); // Thông báo dữ liệu đã thay đổi để cập nhật giao diện
+                    return;
+                }
+            }
+        }
+        selectedPosition = -1; // Nếu không tìm thấy, không bài hát nào được chọn
+        notifyDataSetChanged();
+    }
+
 
 }

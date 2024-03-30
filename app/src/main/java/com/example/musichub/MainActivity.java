@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -25,14 +26,22 @@ import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.activity.SearchActivity;
 import com.example.musichub.adapter.BaiHatNhanhAdapter;
 import com.example.musichub.adapter.LichSuBaiHatAdapter;
+import com.example.musichub.adapter.Top100Adapter;
 import com.example.musichub.adapter.TopSongAdapter;
 import com.example.musichub.adapter.VideoAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
+import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.model.chart_home.ChartHome;
+import com.example.musichub.model.chart_home.Home.Home;
 import com.example.musichub.model.chart_home.Items;
+import com.example.musichub.model.chart_home.NewRelease.NewRelease;
+import com.example.musichub.model.chart_home.Top100.DataTop100;
+import com.example.musichub.model.chart_home.Top100.ItemsTop100;
+import com.example.musichub.model.chart_home.Top100.Top100;
+import com.example.musichub.model.playlist.Playlist;
 import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.github.kiulian.downloader.YoutubeDownloader;
@@ -61,11 +70,17 @@ public class MainActivity extends AppCompatActivity {
     private BaiHatNhanhAdapter baiHatNhanhAdapter;
     private LichSuBaiHatAdapter lichSuBaiHatAdapter;
     private VideoAdapter videoAdapter;
+    private Top100Adapter top100AdapterNoiBat;
+    private Top100Adapter top100AdapterVietNam;
+    private Top100Adapter top100AdapterChauA;
+    private Top100Adapter top100AdapterAuMy;
     private SharedPreferencesManager sharedPreferencesManager;
     private View layoutPlayerBottom;
     private ArrayList<Items> songListVideoBaiHat;
+    private ArrayList<Items> songListChonNhanh;
     private ArrayList<Items> songListLichSuBaiHat;
     private ArrayList<Items> songListBangXepHang;
+    private ArrayList<ItemsTop100> itemsTop100sNoiBat, itemsTop100sVietNam, itemsTop100sChauA, itemsTop100sAuMy;
 
     private final YoutubeDownloader downloader = new YoutubeDownloader();
 
@@ -105,6 +120,10 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView rv_chon_nhanh = findViewById(R.id.rv_chon_nhanh);
         RecyclerView rv_bang_xep_hang = findViewById(R.id.rv_bang_xep_hang);
+        RecyclerView rv_noibat = findViewById(R.id.rv_noibat);
+        RecyclerView rv_nhac_vietNam = findViewById(R.id.rv_nhac_vietNam);
+        RecyclerView rv_nhac_chauA = findViewById(R.id.rv_nhac_chauA);
+        RecyclerView rv_nhac_auMy = findViewById(R.id.rv_nhac_auMy);
         rv_nghe_lai = findViewById(R.id.rv_nghe_lai);
         RecyclerView rv_video_bai_hat_lien_quan = findViewById(R.id.rv_video_bai_hat_lien_quan);
 
@@ -126,11 +145,15 @@ public class MainActivity extends AppCompatActivity {
         tvSingleSong.setSelected(true);
         progressIndicator = layoutPlayerBottom.findViewById(R.id.progressIndicator);
 
-//        ArrayList<Items> songListChonNhanh = new ArrayList<>();
+        songListChonNhanh = new ArrayList<>();
         songListBangXepHang = new ArrayList<>();
         songListLichSuBaiHat = new ArrayList<>();
-//        songListVideoBaiHat = new ArrayList<>();
+        songListVideoBaiHat = new ArrayList<>();
 
+        itemsTop100sNoiBat = new ArrayList<>();
+        itemsTop100sVietNam = new ArrayList<>();
+        itemsTop100sChauA = new ArrayList<>();
+        itemsTop100sAuMy = new ArrayList<>();
 
         // Khoi tạo RecyclerView và Adapter
 
@@ -147,9 +170,19 @@ public class MainActivity extends AppCompatActivity {
         rv_video_bai_hat_lien_quan.setLayoutManager(layoutManagerVideoBaiHat);
 
 
+        LinearLayoutManager layoutManagerNoiBat = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rv_noibat.setLayoutManager(layoutManagerNoiBat);
+        LinearLayoutManager layoutManagerVietNam = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rv_nhac_vietNam.setLayoutManager(layoutManagerVietNam);
+        LinearLayoutManager layoutManagerChauA = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rv_nhac_chauA.setLayoutManager(layoutManagerChauA);
+        LinearLayoutManager layoutManagerAuMy = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rv_nhac_auMy.setLayoutManager(layoutManagerAuMy);
+
+
         // Khoi tạo Adapter
-//        baiHatNhanhAdapter = new BaiHatNhanhAdapter(songListChonNhanh, MainActivity.this);
-//        rv_chon_nhanh.setAdapter(baiHatNhanhAdapter);
+        baiHatNhanhAdapter = new BaiHatNhanhAdapter(songListChonNhanh, MainActivity.this);
+        rv_chon_nhanh.setAdapter(baiHatNhanhAdapter);
 
 
         topSongAdapter = new TopSongAdapter(songListBangXepHang, MainActivity.this);
@@ -163,12 +196,26 @@ public class MainActivity extends AppCompatActivity {
         lichSuBaiHatAdapter = new LichSuBaiHatAdapter(songListLichSuBaiHat, MainActivity.this);
         rv_nghe_lai.setAdapter(lichSuBaiHatAdapter);
 
+
+        top100AdapterNoiBat = new Top100Adapter(itemsTop100sNoiBat, MainActivity.this);
+        rv_noibat.setAdapter(top100AdapterNoiBat);
+        top100AdapterVietNam = new Top100Adapter(itemsTop100sVietNam, MainActivity.this);
+        rv_nhac_vietNam.setAdapter(top100AdapterVietNam);
+        top100AdapterChauA = new Top100Adapter(itemsTop100sChauA, MainActivity.this);
+        rv_nhac_chauA.setAdapter(top100AdapterChauA);
+        top100AdapterAuMy = new Top100Adapter(itemsTop100sAuMy, MainActivity.this);
+        rv_nhac_auMy.setAdapter(top100AdapterAuMy);
+
+
         rv_nghe_lai.setVisibility(View.GONE);
         txtNoData.setVisibility(View.VISIBLE);
 
         getSongCurrent();
         getBXH();
+        getTop100();
+        getNewRelese();
         getSongHistory();
+        getPlaylist();
 
 //        Window w = getWindow();
 //        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -178,6 +225,101 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
         img_search.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SearchActivity.class)));
+    }
+
+    private void getPlaylist() {
+        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
+            @Override
+            public void onServiceCreated(ApiService service) {
+                try {
+                    SongCategories songCategories = new SongCategories(null, null);
+                    Map<String, String> map = songCategories.getPlaylist("ZWZB969E");
+
+                    retrofit2.Call<Playlist> call = service.PLAYLIST_CALL("ZWZB969E", map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                    call.enqueue(new Callback<Playlist>() {
+                        @Override
+                        public void onResponse(Call<Playlist> call, Response<Playlist> response) {
+                            if (response.isSuccessful()) {
+                                Playlist playlist = response.body();
+                                if (playlist != null && playlist.getErr() == 0) {
+                                    String requestUrl = call.request().url().toString();
+                                    Log.d(">>>>>>>>>>>>>>>>>>>", playlist.getMsg() + " - " + requestUrl);
+                                } else {
+                                    Log.d("TAG", "Error: ");
+                                }
+                            } else {
+                                Log.d("TAG", "Failed to retrieve data: " + response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Playlist> call, Throwable throwable) {
+
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("TAG", "Error: " + e.getMessage(), e);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+    private void getNewRelese() {
+        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
+            @Override
+            public void onServiceCreated(ApiService service) {
+                try {
+                    ChartCategories chartCategories = new ChartCategories(null, null);
+                    Map<String, String> map = chartCategories.getNewReleaseChart();
+
+                    retrofit2.Call<NewRelease> call = service.NEW_RELEASE_CALL(map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                    call.enqueue(new Callback<NewRelease>() {
+                        @Override
+                        public void onResponse(Call<NewRelease> call, Response<NewRelease> response) {
+                            if (response.isSuccessful()) {
+                                NewRelease newRelease = response.body();
+                                if (newRelease != null && newRelease.getErr() == 0) {
+                                    ArrayList<Items> itemsArrayList = newRelease.getData().getItems();
+                                    if (!itemsArrayList.isEmpty()) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                songListChonNhanh = itemsArrayList;
+                                                baiHatNhanhAdapter.setFilterList(itemsArrayList);
+                                                checkIsPlayingTop(mSong, itemsArrayList);
+                                            }
+                                        });
+                                    } else {
+                                        Log.d("TAG", "Items list is empty");
+                                    }
+                                } else {
+                                    Log.d("TAG", "Error: ");
+                                }
+                            } else {
+                                Log.d("TAG", "Failed to retrieve data: " + response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<NewRelease> call, Throwable throwable) {
+
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("TAG", "Error: " + e.getMessage(), e);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 
     private void getBXH() {
@@ -218,6 +360,64 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<ChartHome> call, Throwable throwable) {
+
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("TAG", "Error: " + e.getMessage(), e);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+
+    private void getTop100() {
+        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
+            @Override
+            public void onServiceCreated(ApiService service) {
+                try {
+                    ChartCategories chartCategories = new ChartCategories(null, null);
+                    Map<String, String> map = chartCategories.getTop100();
+
+                    retrofit2.Call<Top100> call = service.TOP100_CALL(map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                    call.enqueue(new Callback<Top100>() {
+                        @Override
+                        public void onResponse(Call<Top100> call, Response<Top100> response) {
+                            if (response.isSuccessful()) {
+                                Top100 top100 = response.body();
+                                if (top100 != null && top100.getErr() == 0) {
+                                    ArrayList<ItemsTop100> itemsTop100sNoiBat = top100.getDataTop100().get(0).getItems();
+                                    ArrayList<ItemsTop100> itemsTop100sVietNam = top100.getDataTop100().get(1).getItems();
+                                    ArrayList<ItemsTop100> itemsTop100sChauA = top100.getDataTop100().get(2).getItems();
+                                    ArrayList<ItemsTop100> itemsTop100sAuMy = top100.getDataTop100().get(3).getItems();
+                                    if (!itemsTop100sNoiBat.isEmpty() && !itemsTop100sVietNam.isEmpty() && !itemsTop100sChauA.isEmpty() && !itemsTop100sAuMy.isEmpty()) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                top100AdapterNoiBat.setFilterList(itemsTop100sNoiBat);
+                                                top100AdapterVietNam.setFilterList(itemsTop100sVietNam);
+                                                top100AdapterChauA.setFilterList(itemsTop100sChauA);
+                                                top100AdapterAuMy.setFilterList(itemsTop100sAuMy);
+                                            }
+                                        });
+                                    } else {
+                                        Log.d("TAG", "Items list is empty");
+                                    }
+                                } else {
+                                    Log.d("TAG", "Error: ");
+                                }
+                            } else {
+                                Log.d("TAG", "Failed to retrieve data: " + response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Top100> call, Throwable throwable) {
 
                         }
                     });
