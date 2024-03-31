@@ -1,5 +1,7 @@
 package com.example.musichub.helper.uliti;
 
+import android.util.Log;
+
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
@@ -40,6 +42,7 @@ public class GetUrlAudioHelper {
                         public void onResponse(Call<SongAudio> call, Response<SongAudio> response) {
                             if (response.isSuccessful()) {
                                 SongAudio songAudio = response.body();
+                                Log.d(">>>>>>>>>>>>>>>", "onResponse: "+call.request().url().toString());
                                 if (songAudio != null) {
                                     if (songAudio.getErr() != -201) {
                                         callback.onSuccess(songAudio);

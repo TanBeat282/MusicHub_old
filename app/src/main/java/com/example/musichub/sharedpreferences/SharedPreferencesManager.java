@@ -2,7 +2,7 @@ package com.example.musichub.sharedpreferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.example.musichub.model.chart_home.Items;
+import com.example.musichub.model.chart.chart_home.Items;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

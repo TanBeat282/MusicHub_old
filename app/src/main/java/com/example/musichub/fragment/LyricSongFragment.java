@@ -24,7 +24,7 @@ import com.example.musichub.R;
 import com.example.musichub.adapter.LyricsAdapter;
 import com.example.musichub.helper.uliti.GetUrlAudioHelper;
 import com.example.musichub.model.LyricLine;
-import com.example.musichub.model.chart_home.Items;
+import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 
 import java.io.BufferedReader;

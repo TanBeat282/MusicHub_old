@@ -1,6 +1,6 @@
 package com.example.musichub.model.search;
 
-import com.example.musichub.model.chart_home.Artists;
+import com.example.musichub.model.chart.chart_home.Artists;
 
 import java.io.Serializable;
 import java.util.List;

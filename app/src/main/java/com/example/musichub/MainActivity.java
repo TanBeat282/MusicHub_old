@@ -32,16 +32,12 @@ import com.example.musichub.adapter.VideoAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
-import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.helper.ui.Helper;
-import com.example.musichub.model.chart_home.ChartHome;
-import com.example.musichub.model.chart_home.Home.Home;
-import com.example.musichub.model.chart_home.Items;
-import com.example.musichub.model.chart_home.NewRelease.NewRelease;
-import com.example.musichub.model.chart_home.Top100.DataTop100;
-import com.example.musichub.model.chart_home.Top100.ItemsTop100;
-import com.example.musichub.model.chart_home.Top100.Top100;
-import com.example.musichub.model.playlist.Playlist;
+import com.example.musichub.model.chart.chart_home.ChartHome;
+import com.example.musichub.model.chart.chart_home.Items;
+import com.example.musichub.model.chart.new_release.NewRelease;
+import com.example.musichub.model.chart.top100.ItemsTop100;
+import com.example.musichub.model.chart.top100.Top100;
 import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.github.kiulian.downloader.YoutubeDownloader;
@@ -215,7 +211,6 @@ public class MainActivity extends AppCompatActivity {
         getTop100();
         getNewRelese();
         getSongHistory();
-        getPlaylist();
 
 //        Window w = getWindow();
 //        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -225,48 +220,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
         img_search.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SearchActivity.class)));
-    }
-
-    private void getPlaylist() {
-        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
-            @Override
-            public void onServiceCreated(ApiService service) {
-                try {
-                    SongCategories songCategories = new SongCategories(null, null);
-                    Map<String, String> map = songCategories.getPlaylist("ZWZB969E");
-
-                    retrofit2.Call<Playlist> call = service.PLAYLIST_CALL("ZWZB969E", map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
-                    call.enqueue(new Callback<Playlist>() {
-                        @Override
-                        public void onResponse(Call<Playlist> call, Response<Playlist> response) {
-                            if (response.isSuccessful()) {
-                                Playlist playlist = response.body();
-                                if (playlist != null && playlist.getErr() == 0) {
-                                    String requestUrl = call.request().url().toString();
-                                    Log.d(">>>>>>>>>>>>>>>>>>>", playlist.getMsg() + " - " + requestUrl);
-                                } else {
-                                    Log.d("TAG", "Error: ");
-                                }
-                            } else {
-                                Log.d("TAG", "Failed to retrieve data: " + response.code());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<Playlist> call, Throwable throwable) {
-
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.e("TAG", "Error: " + e.getMessage(), e);
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        });
     }
 
     private void getNewRelese() {
@@ -465,7 +418,7 @@ public class MainActivity extends AppCompatActivity {
         Glide.with(this)
                 .load(mSong.getThumbnail())
                 .into(img_album_song);
-        tvTitleSong.setText(mSong.getArtistsNames());
+        tvTitleSong.setText(mSong.getTitle());
         tvSingleSong.setText(mSong.getArtistsNames());
 
         linear_play_pause.setOnClickListener(v -> {

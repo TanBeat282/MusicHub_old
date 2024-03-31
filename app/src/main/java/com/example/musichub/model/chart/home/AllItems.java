@@ -1,10 +1,11 @@
-package com.example.musichub.model.chart_home;
+package com.example.musichub.model.chart.home;
 
-import java.io.Serializable;
+import com.example.musichub.model.chart.chart_home.Artists;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Promotes implements Serializable {
+public class AllItems {
     private String encodeId;
     private String title;
     private String alias;
@@ -22,13 +23,11 @@ public class Promotes implements Serializable {
     private boolean preRelease;
     private long releaseDate;
     private List<String> genreIds;
-    private Album album;
     private String distributor;
+    private boolean isIndie;
     private int streamingStatus;
-    private List<Integer> streamPrivileges;
     private List<Integer> downloadPrivileges;
     private boolean allowAudioAds;
-    private boolean hasLyric;
 
     public String getEncodeId() {
         return encodeId;
@@ -166,14 +165,6 @@ public class Promotes implements Serializable {
         this.genreIds = genreIds;
     }
 
-    public Album getAlbum() {
-        return album;
-    }
-
-    public void setAlbum(Album album) {
-        this.album = album;
-    }
-
     public String getDistributor() {
         return distributor;
     }
@@ -182,20 +173,20 @@ public class Promotes implements Serializable {
         this.distributor = distributor;
     }
 
+    public boolean isIndie() {
+        return isIndie;
+    }
+
+    public void setIndie(boolean indie) {
+        isIndie = indie;
+    }
+
     public int getStreamingStatus() {
         return streamingStatus;
     }
 
     public void setStreamingStatus(int streamingStatus) {
         this.streamingStatus = streamingStatus;
-    }
-
-    public List<Integer> getStreamPrivileges() {
-        return streamPrivileges;
-    }
-
-    public void setStreamPrivileges(List<Integer> streamPrivileges) {
-        this.streamPrivileges = streamPrivileges;
     }
 
     public List<Integer> getDownloadPrivileges() {
@@ -212,13 +203,5 @@ public class Promotes implements Serializable {
 
     public void setAllowAudioAds(boolean allowAudioAds) {
         this.allowAudioAds = allowAudioAds;
-    }
-
-    public boolean isHasLyric() {
-        return hasLyric;
-    }
-
-    public void setHasLyric(boolean hasLyric) {
-        this.hasLyric = hasLyric;
     }
 }

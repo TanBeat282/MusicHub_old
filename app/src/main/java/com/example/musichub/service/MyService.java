@@ -35,7 +35,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.musichub.MainActivity;
 
 import com.example.musichub.helper.uliti.GetUrlAudioHelper;
-import com.example.musichub.model.chart_home.Items;
+import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.song.SongAudio;
 import com.example.musichub.receiver.MyReceiver;
 import com.example.musichub.R;

@@ -1,11 +1,22 @@
-package com.example.musichub.model.chart_home.NewRelease;
-;
+package com.example.musichub.model.chart.chart_home;
 
-public class NewRelease {
+import java.io.Serializable;
+
+public class ChartHome implements Serializable {
     private int err;
     private String msg;
-    private DataNewRelease data;
+    private Data data;
     private long timestamp;
+
+    public ChartHome() {
+    }
+
+    public ChartHome(int err, String msg, Data data, long timestamp) {
+        this.err = err;
+        this.msg = msg;
+        this.data = data;
+        this.timestamp = timestamp;
+    }
 
     public int getErr() {
         return err;
@@ -23,11 +34,11 @@ public class NewRelease {
         this.msg = msg;
     }
 
-    public DataNewRelease getData() {
+    public Data getData() {
         return data;
     }
 
-    public void setData(DataNewRelease data) {
+    public void setData(Data data) {
         this.data = data;
     }
 

@@ -1,13 +1,13 @@
 package com.example.musichub.model.playlist;
 
-import com.example.musichub.model.chart_home.Artists;
-import com.example.musichub.model.chart_home.Items;
+import com.example.musichub.model.chart.chart_home.Artists;
 import com.example.musichub.model.song.Genres;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataPlaylist {
+public class DataPlaylist implements Serializable {
     private String encodeId;
     private String title;
     private String thumbnail;
@@ -38,7 +38,7 @@ public class DataPlaylist {
     private long contentLastUpdate;
     private Artists artist;
     private ArrayList<Genres> genres;
-    private ArrayList<Items> song;
+    private DataItems song;
     private int like;
     private int listen;
     private boolean liked;
@@ -283,11 +283,11 @@ public class DataPlaylist {
         this.genres = genres;
     }
 
-    public ArrayList<Items> getSong() {
+    public DataItems getSong() {
         return song;
     }
 
-    public void setSong(ArrayList<Items> song) {
+    public void setSong(DataItems song) {
         this.song = song;
     }
 

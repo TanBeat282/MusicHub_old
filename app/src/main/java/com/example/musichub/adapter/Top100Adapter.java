@@ -3,7 +3,6 @@ package com.example.musichub.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,16 +10,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
-import com.example.musichub.activity.PlayNowActivity;
-import com.example.musichub.model.chart_home.Items;
-import com.example.musichub.model.chart_home.Top100.DataTop100;
-import com.example.musichub.model.chart_home.Top100.ItemsTop100;
+import com.example.musichub.activity.ViewPlaylistActivity;
+import com.example.musichub.model.chart.top100.ItemsTop100;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
@@ -34,6 +29,7 @@ public class Top100Adapter extends RecyclerView.Adapter<Top100Adapter.ViewHolder
         this.itemsTop100s = fillterList;
         notifyDataSetChanged();
     }
+
     public Top100Adapter(ArrayList<ItemsTop100> itemsTop100s, Context context) {
         this.itemsTop100s = itemsTop100s;
         this.context = context;
@@ -54,6 +50,19 @@ public class Top100Adapter extends RecyclerView.Adapter<Top100Adapter.ViewHolder
         Glide.with(context)
                 .load(itemsTop100.getThumbnailM())
                 .into(holder.thumbImageView);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.itemView.setOnClickListener(v -> {
+                    Intent intent = new Intent(context, ViewPlaylistActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("song", itemsTop100);
+                    intent.putExtras(bundle);
+
+                    context.startActivity(intent);
+                });
+            }
+        });
     }
 
 

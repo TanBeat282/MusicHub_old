@@ -1,4 +1,4 @@
-package com.example.musichub.model.chart_home.Top100;
+package com.example.musichub.model.chart.top100;
 
 
 import java.util.ArrayList;

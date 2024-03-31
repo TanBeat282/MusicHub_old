@@ -1,20 +1,18 @@
-package com.example.musichub.model.chart_home;
-
-import com.example.musichub.model.Artist;
+package com.example.musichub.model.chart.chart_home;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Items implements Serializable {
+public class Promotes implements Serializable {
     private String encodeId;
     private String title;
     private String alias;
     private boolean isOffical;
     private String username;
     private String artistsNames;
-    private List<Artists> artists;
+    private ArrayList<Artists> artists;
     private boolean isWorldWide;
-    private PreviewInfo previewInfo;
     private String thumbnailM;
     private String link;
     private String thumbnail;
@@ -22,18 +20,15 @@ public class Items implements Serializable {
     private boolean zingChoice;
     private boolean isPrivate;
     private boolean preRelease;
-    private String releaseDate;
+    private long releaseDate;
     private List<String> genreIds;
     private Album album;
     private String distributor;
-    private boolean isIndie;
     private int streamingStatus;
+    private List<Integer> streamPrivileges;
+    private List<Integer> downloadPrivileges;
     private boolean allowAudioAds;
     private boolean hasLyric;
-    private int rakingStatus;
-    private int score;
-    private int totalTopZing;
-    private Artist artist;
 
     public String getEncodeId() {
         return encodeId;
@@ -83,11 +78,11 @@ public class Items implements Serializable {
         this.artistsNames = artistsNames;
     }
 
-    public List<Artists> getArtists() {
+    public ArrayList<Artists> getArtists() {
         return artists;
     }
 
-    public void setArtists(List<Artists> artists) {
+    public void setArtists(ArrayList<Artists> artists) {
         this.artists = artists;
     }
 
@@ -97,14 +92,6 @@ public class Items implements Serializable {
 
     public void setWorldWide(boolean worldWide) {
         isWorldWide = worldWide;
-    }
-
-    public PreviewInfo getPreviewInfo() {
-        return previewInfo;
-    }
-
-    public void setPreviewInfo(PreviewInfo previewInfo) {
-        this.previewInfo = previewInfo;
     }
 
     public String getThumbnailM() {
@@ -163,11 +150,11 @@ public class Items implements Serializable {
         this.preRelease = preRelease;
     }
 
-    public String getReleaseDate() {
+    public long getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(String releaseDate) {
+    public void setReleaseDate(long releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -195,20 +182,28 @@ public class Items implements Serializable {
         this.distributor = distributor;
     }
 
-    public boolean isIndie() {
-        return isIndie;
-    }
-
-    public void setIndie(boolean indie) {
-        isIndie = indie;
-    }
-
     public int getStreamingStatus() {
         return streamingStatus;
     }
 
     public void setStreamingStatus(int streamingStatus) {
         this.streamingStatus = streamingStatus;
+    }
+
+    public List<Integer> getStreamPrivileges() {
+        return streamPrivileges;
+    }
+
+    public void setStreamPrivileges(List<Integer> streamPrivileges) {
+        this.streamPrivileges = streamPrivileges;
+    }
+
+    public List<Integer> getDownloadPrivileges() {
+        return downloadPrivileges;
+    }
+
+    public void setDownloadPrivileges(List<Integer> downloadPrivileges) {
+        this.downloadPrivileges = downloadPrivileges;
     }
 
     public boolean isAllowAudioAds() {
@@ -225,37 +220,5 @@ public class Items implements Serializable {
 
     public void setHasLyric(boolean hasLyric) {
         this.hasLyric = hasLyric;
-    }
-
-    public int getRakingStatus() {
-        return rakingStatus;
-    }
-
-    public void setRakingStatus(int rakingStatus) {
-        this.rakingStatus = rakingStatus;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public int getTotalTopZing() {
-        return totalTopZing;
-    }
-
-    public void setTotalTopZing(int totalTopZing) {
-        this.totalTopZing = totalTopZing;
-    }
-
-    public Artist getArtist() {
-        return artist;
-    }
-
-    public void setArtist(Artist artist) {
-        this.artist = artist;
     }
 }

@@ -1,8 +1,8 @@
 package com.example.musichub.model.playlist;
 
-import com.example.musichub.model.chart_home.Data;
+import java.io.Serializable;
 
-public class Playlist {
+public class Playlist implements Serializable {
     private int err;
     private String msg;
     private DataPlaylist data;

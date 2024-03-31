@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,18 +12,15 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.activity.PlayNowActivity;
-import com.example.musichub.model.Song;
-import com.example.musichub.model.chart_home.Items;
+import com.example.musichub.model.chart.chart_home.Items;
 import com.makeramen.roundedimageview.RoundedImageView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class TopSongAdapter extends RecyclerView.Adapter<TopSongAdapter.ViewHolder> {

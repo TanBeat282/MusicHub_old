@@ -16,8 +16,7 @@ import com.example.musichub.adapter.SearchAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SearchCategories;
-import com.example.musichub.model.Song;
-import com.example.musichub.model.chart_home.Items;
+import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.search.Search;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 

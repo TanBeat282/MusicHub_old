@@ -1,8 +1,8 @@
 package com.example.musichub.model.song;
 
-import com.example.musichub.model.chart_home.Album;
-import com.example.musichub.model.chart_home.Artists;
-import com.example.musichub.model.chart_home.PreviewInfo;
+import com.example.musichub.model.chart.chart_home.Album;
+import com.example.musichub.model.chart.chart_home.Artists;
+import com.example.musichub.model.chart.chart_home.PreviewInfo;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,12 @@
-package com.example.musichub.model.chart_home.Top100;
+package com.example.musichub.model.chart.top100;
 
-import com.example.musichub.model.chart_home.Artists;
+import com.example.musichub.model.chart.chart_home.Artists;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemsTop100 {
+public class ItemsTop100 implements Serializable {
     private String encodeId;
     private String title;
     private String thumbnail;

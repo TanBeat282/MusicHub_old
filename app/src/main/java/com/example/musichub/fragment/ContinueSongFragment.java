@@ -17,11 +17,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.musichub.MainActivity;
 import com.example.musichub.R;
 import com.example.musichub.adapter.TopSongAdapter;
-import com.example.musichub.model.Song;
-import com.example.musichub.model.chart_home.Items;
+import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 
 import java.util.ArrayList;

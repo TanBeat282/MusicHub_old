@@ -1,4 +1,4 @@
-package com.example.musichub.model.chart_home;
+package com.example.musichub.model.chart.chart_home;
 
 import java.io.Serializable;
 

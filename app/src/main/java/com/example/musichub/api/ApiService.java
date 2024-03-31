@@ -1,10 +1,10 @@
 package com.example.musichub.api;
 
 import com.example.musichub.model.artist.ArtistDetail;
-import com.example.musichub.model.chart_home.ChartHome;
-import com.example.musichub.model.chart_home.Home.Home;
-import com.example.musichub.model.chart_home.NewRelease.NewRelease;
-import com.example.musichub.model.chart_home.Top100.Top100;
+import com.example.musichub.model.chart.chart_home.ChartHome;
+import com.example.musichub.model.chart.home.Home;
+import com.example.musichub.model.chart.new_release.NewRelease;
+import com.example.musichub.model.chart.top100.Top100;
 import com.example.musichub.model.playlist.Playlist;
 import com.example.musichub.model.search.Search;
 import com.example.musichub.model.song.Lyric;

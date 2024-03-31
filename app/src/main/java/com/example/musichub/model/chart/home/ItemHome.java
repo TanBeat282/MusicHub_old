@@ -1,4 +1,4 @@
-package com.example.musichub.model.chart_home.Home;
+package com.example.musichub.model.chart.home;
 
 import com.google.gson.annotations.SerializedName;
 

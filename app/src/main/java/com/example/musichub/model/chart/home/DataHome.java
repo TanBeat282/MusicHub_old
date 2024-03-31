@@ -1,6 +1,4 @@
-package com.example.musichub.model.chart_home.Home;
-
-import com.example.musichub.model.chart_home.Items;
+package com.example.musichub.model.chart.home;
 
 import java.util.ArrayList;
 

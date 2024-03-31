@@ -1,4 +1,4 @@
-package com.example.musichub.model.chart_home.Home;
+package com.example.musichub.model.chart.home;
 
 public class ItemSilder {
     private int type;
