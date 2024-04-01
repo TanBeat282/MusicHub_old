@@ -71,7 +71,7 @@ public class LichSuBaiHatAdapter extends RecyclerView.Adapter<LichSuBaiHatAdapte
             bundle.putSerializable("song", items);
             bundle.putInt("position_song", position);
             bundle.putSerializable("song_list", songList);
-            bundle.putInt("title_now_playing", 0);
+            bundle.putInt("title_now_playing", 3);
             intent.putExtras(bundle);
 
             context.startActivity(intent);
@@ -96,6 +96,8 @@ public class LichSuBaiHatAdapter extends RecyclerView.Adapter<LichSuBaiHatAdapte
             artistTextView = itemView.findViewById(R.id.artistTextView);
             nameTextView = itemView.findViewById(R.id.nameTextView);
             aniPlay = itemView.findViewById(R.id.aniPlay);
+            artistTextView.setSelected(true);
+            nameTextView.setSelected(true);
         }
     }
     @SuppressLint("NotifyDataSetChanged")

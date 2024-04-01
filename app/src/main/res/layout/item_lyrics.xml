@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
     android:layout_marginBottom="15dp"
+    android:gravity="center"
     android:orientation="vertical">
 
     <TextView
@@ -11,8 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
+        android:text="Anhaaaa"
+        android:fontFamily="@font/roboto_bold"
         android:textColor="@color/white"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:textSize="22sp"/>
 
 </LinearLayout>

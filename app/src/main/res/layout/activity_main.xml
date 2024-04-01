@@ -34,11 +34,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="@font/roboto_bold"
             android:padding="10dp"
             android:text="Music Hub"
             android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textSize="20sp" />
 
         <ImageView
             android:id="@+id/img_history"
@@ -96,6 +96,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto"
                         android:text="BẮT ĐẦU PHÁT BÀI HÁT"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="14sp" />
@@ -104,10 +105,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="Bài hát mới phát hành"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textSize="20sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -125,6 +126,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/background_phat_tat_ca"
+                        android:fontFamily="@font/roboto"
                         android:padding="6dp"
                         android:text="Xem tất cả"
                         android:textColor="@color/white"
@@ -156,6 +158,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto"
                         android:text="DÀNH CHO BẠN"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="14sp" />
@@ -164,10 +167,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="Các bài hát thịnh hành"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textSize="20sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -185,6 +188,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/background_phat_tat_ca"
+                        android:fontFamily="@font/roboto"
                         android:padding="6dp"
                         android:text="Xem tất cả"
                         android:textColor="@color/white"
@@ -216,6 +220,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto"
                         android:text="ĐỀ XUẤT"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="14sp" />
@@ -224,6 +229,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="Nổi bật"
                         android:textColor="@color/white"
                         android:textSize="20sp"
@@ -245,6 +251,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/background_phat_tat_ca"
+                        android:fontFamily="@font/roboto"
                         android:padding="6dp"
                         android:text="Xem tất cả"
                         android:textColor="@color/white"
@@ -276,6 +283,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto"
                         android:text="ĐỀ XUẤT"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="14sp" />
@@ -284,6 +292,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="Nhạc Việt Nam"
                         android:textColor="@color/white"
                         android:textSize="20sp"
@@ -305,6 +314,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/background_phat_tat_ca"
+                        android:fontFamily="@font/roboto"
                         android:padding="6dp"
                         android:text="Xem tất cả"
                         android:textColor="@color/white"
@@ -336,6 +346,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto"
                         android:text="ĐỀ XUẤT"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="14sp" />
@@ -344,6 +355,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="Nhạc Châu Á"
                         android:textColor="@color/white"
                         android:textSize="20sp"
@@ -365,6 +377,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/background_phat_tat_ca"
+                        android:fontFamily="@font/roboto"
                         android:padding="6dp"
                         android:text="Xem tất cả"
                         android:textColor="@color/white"
@@ -396,6 +409,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto"
                         android:text="ĐỀ XUẤT"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="14sp" />
@@ -404,6 +418,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="Nhạc Âu Mỹ"
                         android:textColor="@color/white"
                         android:textSize="20sp"
@@ -425,6 +440,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/background_phat_tat_ca"
+                        android:fontFamily="@font/roboto"
                         android:padding="6dp"
                         android:text="Xem tất cả"
                         android:textColor="@color/white"
@@ -468,6 +484,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto"
                         android:text="TÂN BEAT"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="14sp" />
@@ -476,6 +493,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="Nghe lại"
                         android:textColor="@color/white"
                         android:textSize="20sp"
@@ -497,6 +515,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/background_phat_tat_ca"
+                        android:fontFamily="@font/roboto"
                         android:padding="6dp"
                         android:text="Xem tất cả"
                         android:textColor="@color/white"
@@ -507,7 +526,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_nghe_lai"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="10dp"
                 android:visibility="gone" />
@@ -523,6 +542,7 @@
                     android:id="@+id/txtNoMusic"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
                     android:gravity="center_horizontal"
                     android:text="Không có bài hát nào đã nghe"
                     android:textColor="@color/white"
@@ -546,6 +566,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto"
                         android:text="TRÊN YOUTUBE"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="14sp" />
@@ -554,6 +575,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto_bold"
                         android:text="Các video bài hát liên quan"
                         android:textColor="@color/white"
                         android:textSize="20sp"
@@ -575,6 +597,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/background_phat_tat_ca"
+                        android:fontFamily="@font/roboto"
                         android:padding="6dp"
                         android:text="Phát tất cả"
                         android:textColor="@color/white"

@@ -95,6 +95,8 @@ public class TopSongAdapter extends RecyclerView.Adapter<TopSongAdapter.ViewHold
             artistTextView = itemView.findViewById(R.id.artistTextView);
             nameTextView = itemView.findViewById(R.id.nameTextView);
             aniPlay = itemView.findViewById(R.id.aniPlay);
+            artistTextView.setSelected(true);
+            nameTextView.setSelected(true);
         }
     }
     @SuppressLint("NotifyDataSetChanged")

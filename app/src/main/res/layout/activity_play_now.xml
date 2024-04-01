@@ -47,6 +47,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:fontFamily="@font/roboto_bold"
                 android:text="Now Playing"
                 android:textColor="@color/white"
                 android:textSize="14sp"
@@ -65,27 +66,26 @@
 
         <LinearLayout
             android:id="@+id/linear_image"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
             android:layout_below="@id/container"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="40dp"
             android:gravity="center">
 
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/imageAlbumArt"
-                android:layout_width="300dp"
-                android:layout_height="300dp"
+                android:layout_width="350dp"
+                android:layout_height="350dp"
                 android:scaleType="centerCrop"
                 android:visibility="gone"
                 app:riv_corner_radius="10dp" />
 
             <ProgressBar
                 android:id="@+id/progress_image"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_centerInParent="true"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:visibility="visible" />
         </LinearLayout>
 
@@ -94,7 +94,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/linear_image"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="30dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -117,6 +117,7 @@
                     android:scrollHorizontally="true"
                     android:singleLine="true"
                     android:text=""
+                    android:fontFamily="@font/roboto_bold"
                     android:textColor="@android:color/white"
                     android:textSize="22sp"
                     android:textStyle="bold"
@@ -134,6 +135,7 @@
                     android:scrollHorizontally="true"
                     android:singleLine="true"
                     android:text=""
+                    android:fontFamily="@font/roboto"
                     android:textColor="@color/colorSecondaryText"
                     android:textSize="14sp"
                     android:textStyle="normal"
@@ -183,6 +185,7 @@
                 <TextView
                     android:id="@+id/txt_view_audio"
                     android:layout_width="wrap_content"
+                    android:fontFamily="@font/roboto"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white" />
             </LinearLayout>
@@ -204,6 +207,7 @@
 
                 <TextView
                     android:id="@+id/txt_like"
+                    android:fontFamily="@font/roboto"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white" />
@@ -229,6 +233,7 @@
                 <TextView
                     android:id="@+id/txt_comment"
                     android:layout_width="wrap_content"
+                    android:fontFamily="@font/roboto"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white" />
 
@@ -281,6 +286,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tải xuống"
+                    android:fontFamily="@font/roboto"
                     android:textColor="@color/white" />
             </LinearLayout>
 
@@ -327,7 +333,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-
+                    android:fontFamily="@font/roboto"
                     android:gravity="start"
                     android:text=""
                     android:textColor="@color/white"
@@ -341,6 +347,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:gravity="end"
+                    android:fontFamily="@font/roboto"
                     android:text=""
                     android:textColor="@color/white"
                     android:textSize="15sp"
@@ -383,7 +390,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="20sp"
+                    android:layout_marginStart="30dp"
                     android:layout_toEndOf="@+id/btNext"
                     android:background="@null"
                     android:scaleType="fitCenter"
@@ -409,7 +416,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="20sp"
+                    android:layout_marginEnd="30dp"
                     android:layout_toStartOf="@+id/btPrevious"
                     android:background="@null"
                     android:scaleType="fitCenter"

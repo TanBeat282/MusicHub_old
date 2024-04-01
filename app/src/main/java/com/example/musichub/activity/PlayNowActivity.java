@@ -446,6 +446,7 @@ public class PlayNowActivity extends AppCompatActivity {
                         downloadAudio.downloadAudio(songAudio.getData().getLow(), items.getTitle() + " - " + items.getArtistsNames());
                         downloadID = downloadAudio.getDownloadID();
                     }
+
                     @Override
                     public void onFailure(Throwable throwable) {
 
@@ -472,6 +473,7 @@ public class PlayNowActivity extends AppCompatActivity {
                     downloadAudio.downloadAudio(songAudio.getData().getLow(), items.getTitle() + " - " + items.getArtistsNames());
                     downloadID = downloadAudio.getDownloadID();
                 }
+
                 @Override
                 public void onFailure(Throwable throwable) {
 
@@ -556,21 +558,28 @@ public class PlayNowActivity extends AppCompatActivity {
         });
     }
 
-
     private void getBundleSong() {
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
+            items = sharedPreferencesManager.restoreSongState();
+            int position_song = sharedPreferencesManager.restoreSongPosition();
+            songArrayList = sharedPreferencesManager.restoreSongArrayList();
             getSongDetail(items.getEncodeId(), new SongdetailCallback() {
                 @Override
                 public void onSuccess(SongDetail songDetail1) {
+
+
                     songDetail = songDetail1;
                     setDataSong();
                 }
+
                 @Override
                 public void onFailure(Throwable throwable) {
 
                 }
+
             });
+            clickStartService(items, position_song, songArrayList);
         } else {
             items = (Items) bundle.getSerializable("song");
             int position_song = bundle.getInt("position_song");
@@ -638,15 +647,20 @@ public class PlayNowActivity extends AppCompatActivity {
             txtPlayform.setText("ĐANG PHÁT" + "\n" + "Tìm kiếm");
         } else if (title_now_playing == 2) {
             txtPlayform.setText("ĐANG PHÁT" + "\n" + "Bài hát liên quan");
+        }else if (title_now_playing == 3) {
+            txtPlayform.setText("ĐANG PHÁT" + "\n" + "Đã nghe");
         } else {
             txtPlayform.setText("Now Playing");
         }
+    }
+    private String changeImageUrl(String originalUrl) {
+        return originalUrl.replace("w240", "w720");
     }
 
     @SuppressLint("SetTextI18n")
     private void setDataSong() {
         Glide.with(this)
-                .load(items.getThumbnailM())
+                .load(changeImageUrl(items.getThumbnailM()))
                 .into(imageAlbumArt);
 
         txtTitle.setText(items.getTitle());

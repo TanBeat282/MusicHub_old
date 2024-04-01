@@ -24,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:fontFamily="@font/roboto"
             android:text="Không có lời bài hát"
             android:textColor="@color/white"
             android:textSize="18sp" />

@@ -151,6 +151,11 @@ public class ViewPlaylistActivity extends AppCompatActivity {
         topSongAdapter = new TopSongAdapter(itemsArrayList, ViewPlaylistActivity.this);
         rv_playlist.setAdapter(topSongAdapter);
 
+        layoutPlayer.setOnClickListener(v -> {
+            Intent intent = new Intent(ViewPlaylistActivity.this, PlayNowActivity.class);
+            startActivity(intent);
+        });
+
         getDataBundle();
         getSongCurrent();
     }

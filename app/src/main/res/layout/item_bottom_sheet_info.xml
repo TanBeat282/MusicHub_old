@@ -29,6 +29,7 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="20dp"
             android:text="Nghệ sĩ"
+            android:fontFamily="@font/roboto"
             android:textColor="@color/colorSecondaryText1"
             android:textSize="14dp"
             android:textStyle="bold" />
@@ -49,6 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:fontFamily="@font/roboto"
             android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="20dp"
             android:text="Trần Ngọc Tân"

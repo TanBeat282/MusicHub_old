@@ -18,7 +18,9 @@ import androidx.core.view.ViewCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import com.bumptech.glide.Glide;
 
@@ -32,6 +34,7 @@ import com.example.musichub.adapter.VideoAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
+import com.example.musichub.helper.ui.CustomSnapHelper;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.model.chart.chart_home.ChartHome;
 import com.example.musichub.model.chart.chart_home.Items;
@@ -152,15 +155,21 @@ public class MainActivity extends AppCompatActivity {
         itemsTop100sAuMy = new ArrayList<>();
 
         // Khoi tạo RecyclerView và Adapter
-
+        CustomSnapHelper customSnapHelperChonNhanh = new CustomSnapHelper();
+        customSnapHelperChonNhanh.attachToRecyclerView(rv_chon_nhanh);
         GridLayoutManager layoutManagerChonNhanh = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
         rv_chon_nhanh.setLayoutManager(layoutManagerChonNhanh);
 
+        CustomSnapHelper customSnapHelper = new CustomSnapHelper();
+        customSnapHelper.attachToRecyclerView(rv_bang_xep_hang);
         GridLayoutManager layoutManagerBangXepHang = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
         rv_bang_xep_hang.setLayoutManager(layoutManagerBangXepHang);
 
+        CustomSnapHelper customSnapHelperLichSuBaiHat = new CustomSnapHelper();
+        customSnapHelperLichSuBaiHat.attachToRecyclerView(rv_nghe_lai);
         GridLayoutManager layoutManagerLichSuBaiHat = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
         rv_nghe_lai.setLayoutManager(layoutManagerLichSuBaiHat);
+
 
         GridLayoutManager layoutManagerVideoBaiHat = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
         rv_video_bai_hat_lien_quan.setLayoutManager(layoutManagerVideoBaiHat);

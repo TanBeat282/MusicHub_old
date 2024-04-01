@@ -67,6 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TIẾP THEO"
+                    android:fontFamily="@font/roboto"
                     android:textColor="@color/colorStroke"
                     android:textSize="14sp" />
 
@@ -82,6 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="LỜI NHẠC"
+                    android:fontFamily="@font/roboto"
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
@@ -97,6 +99,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="LIÊN QUAN"
+                    android:fontFamily="@font/roboto"
                     android:textColor="@color/colorStroke"
                     android:textSize="14sp" />
 

@@ -96,6 +96,8 @@ public class BaiHatNhanhAdapter extends RecyclerView.Adapter<BaiHatNhanhAdapter.
             artistTextView = itemView.findViewById(R.id.artistTextView);
             nameTextView = itemView.findViewById(R.id.nameTextView);
             aniPlay = itemView.findViewById(R.id.aniPlay);
+            artistTextView.setSelected(true);
+            nameTextView.setSelected(true);
         }
     }
 
