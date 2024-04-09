@@ -25,8 +25,13 @@ public interface ApiService {
     String pathAudioSong = "/api/v2/song/get/streaming?";
     String pathArtist = "/api/v2/page/get/artist?";
     String pathPlaylist = "/api/v2/page/get/playlist?";
-    String pathSearch = "/api/v2/search/multi?";
+
     String pathLyric = "/api/v2/lyric/get/lyric?";
+
+    //search
+    String pathSearch = "/api/v2/search/multi?";
+    String pathSearchType = "/api/v2/search?";
+    String pathSearchRecommend = "/api/v2/app/get/recommend-keyword?";
 
 
     //HOME
@@ -83,12 +88,13 @@ public interface ApiService {
                                     @Query("ctime") String ctime,
                                     @Query("version") String version,
                                     @Query("apiKey") String apiKey);
+
     @GET(pathPlaylist)
     Call<Playlist> PLAYLIST_CALL(@Query("id") String id,
-                                @Query("sig") String sig,
-                                @Query("ctime") String ctime,
-                                @Query("version") String version,
-                                @Query("apiKey") String apiKey);
+                                 @Query("sig") String sig,
+                                 @Query("ctime") String ctime,
+                                 @Query("version") String version,
+                                 @Query("apiKey") String apiKey);
 
 
     @GET(pathSearch)
@@ -97,6 +103,13 @@ public interface ApiService {
                              @Query("ctime") String ctime,
                              @Query("version") String version,
                              @Query("apiKey") String apiKey);
+
+    @GET(pathSearchRecommend)
+    Call<Search> SEARCH_RECOMMEND_CALL(@Query("sig") String sig,
+                                       @Query("ctime") String ctime,
+                                       @Query("version") String version,
+                                       @Query("apiKey") String apiKey);
+
 
     // Method để thiết lập cookie
     void setCookie(String cookie);

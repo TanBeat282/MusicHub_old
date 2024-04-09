@@ -22,7 +22,7 @@ public class DataArtist implements Serializable {
     private int follow;
     private String oalink;
     private int oaid;
-    private ArrayList<Section> sections;
+    private ArrayList<SectionArtist> sectionArtists;
 
     public String getId() {
         return id;
@@ -168,11 +168,11 @@ public class DataArtist implements Serializable {
         this.oaid = oaid;
     }
 
-    public ArrayList<Section> getSections() {
-        return sections;
+    public ArrayList<SectionArtist> getSections() {
+        return sectionArtists;
     }
 
-    public void setSections(ArrayList<Section> sections) {
-        this.sections = sections;
+    public void setSections(ArrayList<SectionArtist> sectionArtists) {
+        this.sectionArtists = sectionArtists;
     }
 }

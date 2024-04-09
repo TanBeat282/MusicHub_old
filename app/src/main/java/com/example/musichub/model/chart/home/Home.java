@@ -5,7 +5,9 @@ import java.io.Serializable;
 public class Home implements Serializable {
     private int err;
     private String msg;
-    private DataHome data;
+    private SectionHome hSlider;
+    private SectionHome hRecent;
+    private SectionHome newRelease;
     private long timestamp;
 
     public int getErr() {
@@ -15,7 +17,7 @@ public class Home implements Serializable {
     public void setErr(int err) {
         this.err = err;
     }
-//
+
     public String getMsg() {
         return msg;
     }
@@ -24,12 +26,28 @@ public class Home implements Serializable {
         this.msg = msg;
     }
 
-    public DataHome getData() {
-        return data;
+    public SectionHome gethSlider() {
+        return hSlider;
     }
 
-    public void setData(DataHome data) {
-        this.data = data;
+    public void sethSlider(SectionHome hSlider) {
+        this.hSlider = hSlider;
+    }
+
+    public SectionHome gethRecent() {
+        return hRecent;
+    }
+
+    public void sethRecent(SectionHome hRecent) {
+        this.hRecent = hRecent;
+    }
+
+    public SectionHome getNewRelease() {
+        return newRelease;
+    }
+
+    public void setNewRelease(SectionHome newRelease) {
+        this.newRelease = newRelease;
     }
 
     public long getTimestamp() {

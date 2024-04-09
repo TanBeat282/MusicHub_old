@@ -34,13 +34,17 @@ import com.example.musichub.adapter.VideoAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
+import com.example.musichub.api.categories.SearchCategories;
 import com.example.musichub.helper.ui.CustomSnapHelper;
 import com.example.musichub.helper.ui.Helper;
+import com.example.musichub.model.artist.SectionArtist;
 import com.example.musichub.model.chart.chart_home.ChartHome;
 import com.example.musichub.model.chart.chart_home.Items;
+import com.example.musichub.model.chart.home.Home;
 import com.example.musichub.model.chart.new_release.NewRelease;
 import com.example.musichub.model.chart.top100.ItemsTop100;
 import com.example.musichub.model.chart.top100.Top100;
+import com.example.musichub.model.search.Search;
 import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.github.kiulian.downloader.YoutubeDownloader;
@@ -220,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
         getTop100();
         getNewRelese();
         getSongHistory();
+        getHome();
 
 //        Window w = getWindow();
 //        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -380,6 +385,39 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<Top100> call, Throwable throwable) {
+
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("TAG", "Error: " + e.getMessage(), e);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+    private void getHome() {
+        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
+            @Override
+            public void onServiceCreated(ApiService service) {
+                try {
+                    SearchCategories chartCategories = new SearchCategories(null, null);
+                    Map<String, String> map = chartCategories.getRecommendKeyword();
+
+                    retrofit2.Call<Search> call = service.SEARCH_RECOMMEND_CALL(map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                    call.enqueue(new Callback<Search>() {
+                        @Override
+                        public void onResponse(Call<Search> call, Response<Search> response) {
+                            String requestUrl = call.request().url().toString();
+                            Log.d(">>>>>>>>>>>>>>>>>>>", requestUrl);
+                        }
+
+                        @Override
+                        public void onFailure(Call<Search> call, Throwable throwable) {
 
                         }
                     });

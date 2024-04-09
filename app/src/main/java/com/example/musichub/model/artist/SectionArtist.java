@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Section implements Serializable {
+public class SectionArtist implements Serializable {
     private String sectionType;
     private String viewType;
     private String title;
