@@ -18,4 +18,5 @@
     <color name="red">#FF0000</color>
     <color name="default_color">#FF0000</color>
     <color name="gray">#1D1D1D</color>
+    <color name="yellow">#ffff00</color>
 </resources>

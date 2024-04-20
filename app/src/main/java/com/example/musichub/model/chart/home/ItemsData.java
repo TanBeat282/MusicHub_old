@@ -2,9 +2,10 @@ package com.example.musichub.model.chart.home;
 
 import com.example.musichub.model.chart.chart_home.Items;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ItemsData {
+public class ItemsData implements Serializable {
     ArrayList<Items> all;
     ArrayList<Items> vPop;
     ArrayList<Items> others;

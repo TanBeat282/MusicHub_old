@@ -1,6 +1,8 @@
 package com.example.musichub.model.chart.chart_home;
 
 import com.example.musichub.model.Artist;
+import com.example.musichub.model.chart.home.ItemSilder;
+import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ public class Items implements Serializable {
     private int score;
     private int totalTopZing;
     private Artist artist;
+    private int historyCount;
 
     public String getEncodeId() {
         return encodeId;
@@ -258,5 +261,17 @@ public class Items implements Serializable {
 
     public void setArtist(Artist artist) {
         this.artist = artist;
+    }
+
+    public int getHistoryCount() {
+        return historyCount;
+    }
+
+    public void setHistoryCount(int historyCount) {
+        this.historyCount = historyCount;
+    }
+
+    public static Items fromJson(String json) {
+        return new Gson().fromJson(json, Items.class);
     }
 }

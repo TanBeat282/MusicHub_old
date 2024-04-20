@@ -47,7 +47,7 @@
             app:tabGravity="fill"
             app:tabIndicatorFullWidth="true"
             app:tabMode="fixed"
-            app:tabTextColor="@color/colorSecondaryText" />
+            app:tabTextColor="@color/colorSecondaryText1" />
 
         <LinearLayout
             android:id="@+id/linear_tablayout"

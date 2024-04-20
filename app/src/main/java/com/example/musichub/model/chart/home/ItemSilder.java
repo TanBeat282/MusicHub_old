@@ -1,5 +1,7 @@
 package com.example.musichub.model.chart.home;
 
+import com.google.gson.Gson;
+
 public class ItemSilder {
     private int type;
     private String link;
@@ -82,4 +84,8 @@ public class ItemSilder {
     public void setEncodeId(String encodeId) {
         this.encodeId = encodeId;
     }
+    public static ItemSilder fromJson(String json) {
+        return new Gson().fromJson(json, ItemSilder.class);
+    }
+
 }

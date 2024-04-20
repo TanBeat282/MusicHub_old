@@ -2,6 +2,7 @@ package com.example.musichub.sharedpreferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import com.example.musichub.model.chart.chart_home.Items;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -27,6 +28,7 @@ public class SharedPreferencesManager {
             editor.apply();
         }
     }
+
     public Items restoreSongState() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("music_prefs", Context.MODE_PRIVATE);
         String jsonSong = sharedPreferences.getString("song", null);
@@ -82,7 +84,12 @@ public class SharedPreferencesManager {
 
         for (int i = 0; i < songArrayList.size(); i++) {
             if (songArrayList.get(i).getEncodeId().equals(song.getEncodeId())) { // Kiểm tra xem ID của bài hát có trùng không
+                song.setHistoryCount(songArrayList.get(i).getHistoryCount() + 1);
                 songArrayList.remove(i); // Xóa bài hát nếu trùng
+
+            }
+            else {
+                song.setHistoryCount(1);
             }
         }
         songArrayList.add(0, song); // Thêm bài hát vào đầu danh sách
@@ -154,6 +161,7 @@ public class SharedPreferencesManager {
         SharedPreferences sharedPreferences = context.getSharedPreferences("music_is_repeat", Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean("is_repeat", false);
     }
+
     public void saveIsRepeatOneState(boolean is_repeat_one) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("music_is_repeat_one", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

@@ -33,6 +33,7 @@ public class TopSongAdapter extends RecyclerView.Adapter<TopSongAdapter.ViewHold
         this.songList = fillterList;
         notifyDataSetChanged();
     }
+
     public TopSongAdapter(ArrayList<Items> songList, Context context) {
         this.songList = songList;
         this.context = context;
@@ -49,6 +50,7 @@ public class TopSongAdapter extends RecyclerView.Adapter<TopSongAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Items song = songList.get(position);
 
+
         holder.nameTextView.setText(song.getTitle());
         holder.artistTextView.setText(song.getArtistsNames());
         Glide.with(context)
@@ -63,17 +65,28 @@ public class TopSongAdapter extends RecyclerView.Adapter<TopSongAdapter.ViewHold
             holder.nameTextView.setTextColor(Color.WHITE);
             holder.aniPlay.setVisibility(View.GONE);
         }
+        int premiumColor;
+        if (song.getStreamingStatus() == 2) {
+            premiumColor = ContextCompat.getColor(context, R.color.yellow);
+        } else {
+            premiumColor = ContextCompat.getColor(context, R.color.white);
+        }
+        holder.nameTextView.setTextColor(premiumColor);
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, PlayNowActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("song", song);
-            bundle.putInt("position_song", position);
-            bundle.putSerializable("song_list", songList);
-            bundle.putInt("title_now_playing", 0);
-            intent.putExtras(bundle);
+            if (song.getStreamingStatus() == 2) {
 
-            context.startActivity(intent);
+            } else {
+                Intent intent = new Intent(context, PlayNowActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("song", song);
+                bundle.putInt("position_song", position);
+                bundle.putSerializable("song_list", songList);
+                bundle.putInt("title_now_playing", 0);
+                intent.putExtras(bundle);
+
+                context.startActivity(intent);
+            }
         });
     }
 
@@ -99,6 +112,7 @@ public class TopSongAdapter extends RecyclerView.Adapter<TopSongAdapter.ViewHold
             nameTextView.setSelected(true);
         }
     }
+
     @SuppressLint("NotifyDataSetChanged")
     public void updatePlayingStatus(String currentPlayingEncodeId) {
         if (songList != null) {

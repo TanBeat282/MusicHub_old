@@ -1,10 +1,13 @@
 package com.example.musichub;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,18 +15,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
 
 import com.bumptech.glide.Glide;
 
+import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.models.SlideModel;
+import com.example.musichub.activity.HistoryActivity;
 import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.activity.SearchActivity;
 import com.example.musichub.adapter.BaiHatNhanhAdapter;
@@ -34,44 +41,52 @@ import com.example.musichub.adapter.VideoAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
-import com.example.musichub.api.categories.SearchCategories;
-import com.example.musichub.helper.ui.CustomSnapHelper;
 import com.example.musichub.helper.ui.Helper;
-import com.example.musichub.model.artist.SectionArtist;
 import com.example.musichub.model.chart.chart_home.ChartHome;
 import com.example.musichub.model.chart.chart_home.Items;
-import com.example.musichub.model.chart.home.Home;
+import com.example.musichub.model.chart.home.DataHomeAll;
+import com.example.musichub.model.chart.home.DataHomeSlider;
+import com.example.musichub.model.chart.home.ItemSilder;
+import com.example.musichub.model.chart.home.ItemsData;
 import com.example.musichub.model.chart.new_release.NewRelease;
 import com.example.musichub.model.chart.top100.ItemsTop100;
 import com.example.musichub.model.chart.top100.Top100;
-import com.example.musichub.model.search.Search;
 import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.github.kiulian.downloader.YoutubeDownloader;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.makeramen.roundedimageview.RoundedImageView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-    private ImageView img_play_pause;
+    private ImageView img_play_pause, img_history;
+    private ImageSlider image_slider;
     private RoundedImageView img_album_song;
-    private LinearLayout layoutPlayer, linear_play_pause, linear_next, txtNoData;
+    private LinearLayout layoutPlayer, linear_play_pause, linear_next;
+    private LinearLayout btn_tat_ca, btn_viet_nam, btn_quoc_te;
+    private RecyclerView rv_nhac_moi;
+    private DataHomeAll dataHomeAll = new DataHomeAll();
     private TextView tvTitleSong, tvSingleSong;
-    private RecyclerView rv_nghe_lai;
     private LinearProgressIndicator progressIndicator;
     private Items mSong;
     private boolean isPlaying;
     private int action;
     private int currentTime, total_time;
     private TopSongAdapter topSongAdapter;
+    private TopSongAdapter nhacMoiAdapter;
     private BaiHatNhanhAdapter baiHatNhanhAdapter;
-    private LichSuBaiHatAdapter lichSuBaiHatAdapter;
     private VideoAdapter videoAdapter;
     private Top100Adapter top100AdapterNoiBat;
     private Top100Adapter top100AdapterVietNam;
@@ -81,8 +96,8 @@ public class MainActivity extends AppCompatActivity {
     private View layoutPlayerBottom;
     private ArrayList<Items> songListVideoBaiHat;
     private ArrayList<Items> songListChonNhanh;
-    private ArrayList<Items> songListLichSuBaiHat;
     private ArrayList<Items> songListBangXepHang;
+    private ArrayList<Items> itemsArrayListNhacMoi;
     private ArrayList<ItemsTop100> itemsTop100sNoiBat, itemsTop100sVietNam, itemsTop100sChauA, itemsTop100sAuMy;
 
     private final YoutubeDownloader downloader = new YoutubeDownloader();
@@ -98,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
             isPlaying = bundle.getBoolean("status_player");
             action = bundle.getInt("action_music");
             handleLayoutMusic(action);
-            checkIsPlayingHistory(mSong, songListLichSuBaiHat);
             checkIsPlayingTop(mSong, songListBangXepHang);
         }
     };
@@ -121,19 +135,20 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
 
+        rv_nhac_moi = findViewById(R.id.rv_nhac_moi);
         RecyclerView rv_chon_nhanh = findViewById(R.id.rv_chon_nhanh);
         RecyclerView rv_bang_xep_hang = findViewById(R.id.rv_bang_xep_hang);
         RecyclerView rv_noibat = findViewById(R.id.rv_noibat);
         RecyclerView rv_nhac_vietNam = findViewById(R.id.rv_nhac_vietNam);
         RecyclerView rv_nhac_chauA = findViewById(R.id.rv_nhac_chauA);
         RecyclerView rv_nhac_auMy = findViewById(R.id.rv_nhac_auMy);
-        rv_nghe_lai = findViewById(R.id.rv_nghe_lai);
         RecyclerView rv_video_bai_hat_lien_quan = findViewById(R.id.rv_video_bai_hat_lien_quan);
 
+        img_history = findViewById(R.id.img_history);
+        image_slider = findViewById(R.id.image_slider);
 
         ImageView img_search = findViewById(R.id.img_search);
         layoutPlayerBottom = findViewById(R.id.layoutPlayerBottom);
-        txtNoData = findViewById(R.id.txtNoData);
 
         layoutPlayer = layoutPlayerBottom.findViewById(R.id.layoutPlayer);
         linear_play_pause = layoutPlayerBottom.findViewById(R.id.linear_play_pause);
@@ -148,9 +163,15 @@ public class MainActivity extends AppCompatActivity {
         tvSingleSong.setSelected(true);
         progressIndicator = layoutPlayerBottom.findViewById(R.id.progressIndicator);
 
+
+        //btn nhac moi phat hanh
+        btn_tat_ca = findViewById(R.id.btn_tat_ca);
+        btn_viet_nam = findViewById(R.id.btn_viet_nam);
+        btn_quoc_te = findViewById(R.id.btn_quoc_te);
+
+        itemsArrayListNhacMoi = new ArrayList<>();
         songListChonNhanh = new ArrayList<>();
         songListBangXepHang = new ArrayList<>();
-        songListLichSuBaiHat = new ArrayList<>();
         songListVideoBaiHat = new ArrayList<>();
 
         itemsTop100sNoiBat = new ArrayList<>();
@@ -159,21 +180,14 @@ public class MainActivity extends AppCompatActivity {
         itemsTop100sAuMy = new ArrayList<>();
 
         // Khoi tạo RecyclerView và Adapter
-        CustomSnapHelper customSnapHelperChonNhanh = new CustomSnapHelper();
-        customSnapHelperChonNhanh.attachToRecyclerView(rv_chon_nhanh);
+        GridLayoutManager layoutManagerNhacMoi = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
+        rv_nhac_moi.setLayoutManager(layoutManagerNhacMoi);
+
         GridLayoutManager layoutManagerChonNhanh = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
         rv_chon_nhanh.setLayoutManager(layoutManagerChonNhanh);
 
-        CustomSnapHelper customSnapHelper = new CustomSnapHelper();
-        customSnapHelper.attachToRecyclerView(rv_bang_xep_hang);
         GridLayoutManager layoutManagerBangXepHang = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
         rv_bang_xep_hang.setLayoutManager(layoutManagerBangXepHang);
-
-        CustomSnapHelper customSnapHelperLichSuBaiHat = new CustomSnapHelper();
-        customSnapHelperLichSuBaiHat.attachToRecyclerView(rv_nghe_lai);
-        GridLayoutManager layoutManagerLichSuBaiHat = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
-        rv_nghe_lai.setLayoutManager(layoutManagerLichSuBaiHat);
-
 
         GridLayoutManager layoutManagerVideoBaiHat = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
         rv_video_bai_hat_lien_quan.setLayoutManager(layoutManagerVideoBaiHat);
@@ -190,6 +204,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Khoi tạo Adapter
+
+        nhacMoiAdapter = new TopSongAdapter(itemsArrayListNhacMoi, MainActivity.this);
+        rv_nhac_moi.setAdapter(nhacMoiAdapter);
+
+
         baiHatNhanhAdapter = new BaiHatNhanhAdapter(songListChonNhanh, MainActivity.this);
         rv_chon_nhanh.setAdapter(baiHatNhanhAdapter);
 
@@ -197,13 +216,8 @@ public class MainActivity extends AppCompatActivity {
         topSongAdapter = new TopSongAdapter(songListBangXepHang, MainActivity.this);
         rv_bang_xep_hang.setAdapter(topSongAdapter);
 
-
 //        videoAdapter = new VideoAdapter(songListVideoBaiHat, MainActivity.this);
 //        rv_video_bai_hat_lien_quan.setAdapter(videoAdapter);
-
-
-        lichSuBaiHatAdapter = new LichSuBaiHatAdapter(songListLichSuBaiHat, MainActivity.this);
-        rv_nghe_lai.setAdapter(lichSuBaiHatAdapter);
 
 
         top100AdapterNoiBat = new Top100Adapter(itemsTop100sNoiBat, MainActivity.this);
@@ -215,15 +229,10 @@ public class MainActivity extends AppCompatActivity {
         top100AdapterAuMy = new Top100Adapter(itemsTop100sAuMy, MainActivity.this);
         rv_nhac_auMy.setAdapter(top100AdapterAuMy);
 
-
-        rv_nghe_lai.setVisibility(View.GONE);
-        txtNoData.setVisibility(View.VISIBLE);
-
         getSongCurrent();
         getBXH();
         getTop100();
         getNewRelese();
-        getSongHistory();
         getHome();
 
 //        Window w = getWindow();
@@ -234,6 +243,28 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
         img_search.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SearchActivity.class)));
+        img_history.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, HistoryActivity.class)));
+
+
+        //btn nhac moi phat hanh
+        btn_viet_nam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkCategoriesNhacMoi(1);
+            }
+        });
+        btn_quoc_te.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkCategoriesNhacMoi(2);
+            }
+        });
+        btn_tat_ca.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkCategoriesNhacMoi(0);
+            }
+        });
     }
 
     private void getNewRelese() {
@@ -249,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<NewRelease> call, Response<NewRelease> response) {
                             if (response.isSuccessful()) {
+                                Log.d("getNewRelese", call.request().url().toString());
                                 NewRelease newRelease = response.body();
                                 if (newRelease != null && newRelease.getErr() == 0) {
                                     ArrayList<Items> itemsArrayList = newRelease.getData().getItems();
@@ -273,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<NewRelease> call, Throwable throwable) {
+                        public void onFailure(@NonNull Call<NewRelease> call, @NonNull Throwable throwable) {
 
                         }
                     });
@@ -302,6 +334,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<ChartHome> call, Response<ChartHome> response) {
                             if (response.isSuccessful()) {
+                                Log.d("getBXH", call.request().url().toString());
                                 ChartHome chartHome = response.body();
                                 if (chartHome != null && chartHome.getErr() == 0) {
                                     ArrayList<Items> itemsArrayList = chartHome.getData().getRTChart().getItems();
@@ -356,6 +389,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Top100> call, Response<Top100> response) {
                             if (response.isSuccessful()) {
+                                Log.d("getTop100", call.request().url().toString());
                                 Top100 top100 = response.body();
                                 if (top100 != null && top100.getErr() == 0) {
                                     ArrayList<ItemsTop100> itemsTop100sNoiBat = top100.getDataTop100().get(0).getItems();
@@ -400,24 +434,138 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     private void getHome() {
         ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
             @Override
             public void onServiceCreated(ApiService service) {
                 try {
-                    SearchCategories chartCategories = new SearchCategories(null, null);
-                    Map<String, String> map = chartCategories.getRecommendKeyword();
+                    ChartCategories chartCategories = new ChartCategories(null, null);
+                    Map<String, String> map = chartCategories.getHome(1);
 
-                    retrofit2.Call<Search> call = service.SEARCH_RECOMMEND_CALL(map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
-                    call.enqueue(new Callback<Search>() {
+                    retrofit2.Call<ResponseBody> call = service.HOME_CALL(map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                    call.enqueue(new Callback<ResponseBody>() {
                         @Override
-                        public void onResponse(Call<Search> call, Response<Search> response) {
-                            String requestUrl = call.request().url().toString();
-                            Log.d(">>>>>>>>>>>>>>>>>>>", requestUrl);
+                        public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                            if (response.isSuccessful()) {
+                                try {
+                                    String jsonData = response.body().string();
+                                    JSONObject jsonObject = new JSONObject(jsonData);
+                                    int err = jsonObject.getInt("err");
+                                    String msg = jsonObject.getString("msg");
+                                    JSONObject dataObject = jsonObject.getJSONObject("data");
+                                    JSONArray itemsArray = dataObject.getJSONArray("items");
+
+                                    // Kiểm tra xem mảng items có ít nhất một phần tử không
+                                    if (itemsArray.length() > 0) {
+                                        // Lấy phần tử đầu tiên từ mảng items
+                                        JSONObject firstItemObject = itemsArray.getJSONObject(0);
+
+                                        // Tạo một đối tượng DataHome
+                                        DataHomeSlider dataHomeSlider = new DataHomeSlider();
+                                        dataHomeSlider.setSectionType(firstItemObject.getString("sectionType"));
+                                        dataHomeSlider.setViewType(firstItemObject.getString("viewType"));
+                                        dataHomeSlider.setTitle(firstItemObject.getString("title"));
+                                        dataHomeSlider.setLink(firstItemObject.getString("link"));
+                                        dataHomeSlider.setSectionId(firstItemObject.getString("sectionId"));
+
+                                        // Tạo một mảng mới để chứa các đối tượng ItemSilder từ mảng "items" bên trong item đầu tiên
+                                        JSONArray innerItemsArray = firstItemObject.getJSONArray("items");
+                                        ArrayList<ItemSilder> innerItemSliders = new ArrayList<>();
+                                        for (int i = 0; i < innerItemsArray.length(); i++) {
+                                            JSONObject innerItemObject = innerItemsArray.getJSONObject(i);
+                                            ItemSilder itemSilder = ItemSilder.fromJson(innerItemObject.toString());
+                                            innerItemSliders.add(itemSilder);
+                                        }
+
+                                        // Đặt mảng innerItemSliders là mảng items của DataHome
+                                        dataHomeSlider.setItems(innerItemSliders);
+
+
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                ArrayList<SlideModel> slideModelArrayList = new ArrayList<>();
+                                                // Lặp qua các phần tử trong dataHome.getItems() và thêm chúng vào slideModelArrayList
+                                                for (int i = 0; i < dataHomeSlider.getItems().size(); i++) {
+                                                    // Kiểm tra xem vòng lặp đã đủ số lượng phần tử cần thiết chưa
+                                                    slideModelArrayList.add(new SlideModel(dataHomeSlider.getItems().get(i).getBanner(), ScaleTypes.FIT));
+                                                }
+                                                image_slider.setImageList(slideModelArrayList);
+                                            }
+                                        });
+
+
+                                        ////
+
+
+                                        JSONObject firstItemObject2 = itemsArray.getJSONObject(2);
+
+                                        // Tạo một đối tượng DataHome
+                                        dataHomeAll.setSectionType(firstItemObject2.getString("sectionType"));
+                                        dataHomeAll.setTitle(firstItemObject2.getString("title"));
+                                        dataHomeAll.setLink(firstItemObject2.getString("link"));
+
+                                        // Tạo một mảng mới để chứa các đối tượng ItemSilder từ mảng "items" bên trong item đầu tiên
+                                        JSONObject dataObject2 = firstItemObject2.getJSONObject("items");
+
+                                        // Lấy mảng JSON tương ứng với từng loại items
+                                        JSONArray allArray = dataObject2.getJSONArray("all");
+                                        JSONArray vPopArray = dataObject2.getJSONArray("vPop");
+                                        JSONArray otherArray = dataObject2.getJSONArray("others");
+
+                                        ArrayList<Items> allItems = new ArrayList<>();
+                                        ArrayList<Items> vPopItems = new ArrayList<>();
+                                        ArrayList<Items> otherItems = new ArrayList<>();
+
+                                        for (int i = 0; i < allArray.length(); i++) {
+                                            JSONObject innerItemObject = allArray.getJSONObject(i);
+                                            Items item = Items.fromJson(innerItemObject.toString());
+                                            allItems.add(item);
+                                        }
+                                        for (int i = 0; i < vPopArray.length(); i++) {
+                                            JSONObject innerItemObject = vPopArray.getJSONObject(i);
+                                            Items item = Items.fromJson(innerItemObject.toString());
+                                            vPopItems.add(item);
+                                        }
+                                        for (int i = 0; i < otherArray.length(); i++) {
+                                            JSONObject innerItemObject = otherArray.getJSONObject(i);
+                                            Items item = Items.fromJson(innerItemObject.toString());
+                                            otherItems.add(item);
+                                        }
+
+
+                                        ItemsData itemsData = new ItemsData();
+                                        itemsData.setAll(allItems);
+                                        itemsData.setvPop(vPopItems);
+                                        itemsData.setOthers(otherItems);
+
+                                        // Đặt mảng innerItemSliders là mảng items của DataHome
+                                        dataHomeAll.setItems(itemsData);
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                itemsArrayListNhacMoi = dataHomeAll.getItems().getAll();
+                                                nhacMoiAdapter.setFilterList(itemsArrayListNhacMoi);
+                                                checkIsPlayingTop(mSong, itemsArrayListNhacMoi);
+                                            }
+                                        });
+
+                                    } else {
+                                        // Xử lý khi mảng items không có phần tử nào
+                                    }
+                                } catch (JSONException | IOException e) {
+                                    e.printStackTrace();
+                                }
+
+
+                            } else {
+                                Log.d("TAG", "Failed to retrieve data: " + response.code());
+                            }
                         }
 
                         @Override
-                        public void onFailure(Call<Search> call, Throwable throwable) {
+                        public void onFailure(Call<ResponseBody> call, Throwable throwable) {
 
                         }
                     });
@@ -431,6 +579,39 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void checkCategoriesNhacMoi(int categories_nhac_moi) {
+        itemsArrayListNhacMoi.clear();
+        switch (categories_nhac_moi) {
+            case 1:
+                btn_tat_ca.setBackgroundResource(R.drawable.background_button_categories);
+                btn_viet_nam.setBackgroundResource(R.drawable.background_button_categories_check);
+                btn_quoc_te.setBackgroundResource(R.drawable.background_button_categories);
+
+                itemsArrayListNhacMoi.addAll(dataHomeAll.getItems().getvPop());
+
+                break;
+            case 2:
+                btn_tat_ca.setBackgroundResource(R.drawable.background_button_categories);
+                btn_viet_nam.setBackgroundResource(R.drawable.background_button_categories);
+                btn_quoc_te.setBackgroundResource(R.drawable.background_button_categories_check);
+
+                itemsArrayListNhacMoi.addAll(dataHomeAll.getItems().getOthers());
+                break;
+            default:
+                btn_tat_ca.setBackgroundResource(R.drawable.background_button_categories_check);
+                btn_viet_nam.setBackgroundResource(R.drawable.background_button_categories);
+                btn_quoc_te.setBackgroundResource(R.drawable.background_button_categories);
+
+                itemsArrayListNhacMoi.addAll(dataHomeAll.getItems().getAll());
+                break;
+        }
+        nhacMoiAdapter.setFilterList(itemsArrayListNhacMoi);
+        nhacMoiAdapter.notifyDataSetChanged();
+        rv_nhac_moi.scrollToPosition(0);
+        checkIsPlayingTop(mSong, itemsArrayListNhacMoi);
     }
 
 
@@ -526,21 +707,6 @@ public class MainActivity extends AppCompatActivity {
         handleLayoutMusic(action);
     }
 
-    private void getSongHistory() {
-        songListLichSuBaiHat = sharedPreferencesManager.restoreSongArrayListHistory();
-        if (songListLichSuBaiHat.isEmpty()) {
-            rv_nghe_lai.setVisibility(View.GONE);
-            txtNoData.setVisibility(View.VISIBLE);
-        } else {
-            rv_nghe_lai.setVisibility(View.VISIBLE);
-            txtNoData.setVisibility(View.GONE);
-
-            lichSuBaiHatAdapter.setFilterList(songListLichSuBaiHat);
-            checkIsPlayingHistory(mSong, songListLichSuBaiHat);
-        }
-
-    }
-
 //    @SuppressLint("StaticFieldLeak")
 //    private class SearchTask extends AsyncTask<Void, Void, SearchResult> {
 //        @Override
@@ -609,28 +775,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void checkIsPlayingHistory(Items items, ArrayList<Items> songList) {
-        if (items == null || songList == null) {
-            return;
-        }
-
-        String currentEncodeId = items.getEncodeId();
-        if (currentEncodeId != null && !currentEncodeId.isEmpty()) {
-            for (Items song : songList) {
-                if (currentEncodeId.equals(song.getEncodeId())) {
-                    lichSuBaiHatAdapter.updatePlayingStatus(currentEncodeId);
-                    break;
-                }
-            }
-        }
-    }
-
-
     @Override
     protected void onResume() {
         super.onResume();
-        songListLichSuBaiHat.clear();
-        getSongHistory();
 //        new SearchTask().execute();
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("send_data_to_activity"));
         LocalBroadcastManager.getInstance(this).registerReceiver(seekBarUpdateReceiver, new IntentFilter("send_seekbar_update"));

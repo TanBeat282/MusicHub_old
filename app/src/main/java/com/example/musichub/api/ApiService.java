@@ -2,7 +2,6 @@ package com.example.musichub.api;
 
 import com.example.musichub.model.artist.ArtistDetail;
 import com.example.musichub.model.chart.chart_home.ChartHome;
-import com.example.musichub.model.chart.home.Home;
 import com.example.musichub.model.chart.new_release.NewRelease;
 import com.example.musichub.model.chart.top100.Top100;
 import com.example.musichub.model.playlist.Playlist;
@@ -11,6 +10,7 @@ import com.example.musichub.model.song.Lyric;
 import com.example.musichub.model.song.SongAudio;
 import com.example.musichub.model.song.SongDetail;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -42,10 +42,10 @@ public interface ApiService {
                                     @Query("apiKey") String apiKey);
 
     @GET(pathHome)
-    Call<Home> HOME_CALL(@Query("sig") String sig,
-                         @Query("ctime") String ctime,
-                         @Query("version") String version,
-                         @Query("apiKey") String apiKey);
+    Call<ResponseBody> HOME_CALL(@Query("sig") String sig,
+                                 @Query("ctime") String ctime,
+                                 @Query("version") String version,
+                                 @Query("apiKey") String apiKey);
 
     @GET(pathNewRelease)
     Call<NewRelease> NEW_RELEASE_CALL(@Query("sig") String sig,

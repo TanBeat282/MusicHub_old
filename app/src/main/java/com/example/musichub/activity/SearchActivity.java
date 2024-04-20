@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -34,6 +35,10 @@ public class SearchActivity extends AppCompatActivity {
     private ArrayList<Items> songList;
     private Items items;
     private SharedPreferencesManager sharedPreferencesManager;
+    private Handler handler = new Handler();
+    private static final int DELAY = 1500;
+    private Runnable searchRunnable;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +68,16 @@ public class SearchActivity extends AppCompatActivity {
 
         fetchDataMusic(null);
 
+        // Trong phương thức onCreate hoặc tương tự
+        searchRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // Thực hiện công việc tìm kiếm ở đây
+                fetchDataMusic(searchView.getQuery().toString());
+            }
+        };
+
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -72,7 +87,8 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                fetchDataMusic(newText);
+                handler.removeCallbacks(searchRunnable);
+                handler.postDelayed(searchRunnable, DELAY);
                 return true;
             }
         });
