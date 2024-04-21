@@ -41,6 +41,7 @@ import com.example.musichub.adapter.VideoAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
+import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.model.chart.chart_home.ChartHome;
 import com.example.musichub.model.chart.chart_home.Items;
@@ -51,6 +52,7 @@ import com.example.musichub.model.chart.home.ItemsData;
 import com.example.musichub.model.chart.new_release.NewRelease;
 import com.example.musichub.model.chart.top100.ItemsTop100;
 import com.example.musichub.model.chart.top100.Top100;
+import com.example.musichub.model.playlist.Playlist;
 import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.github.kiulian.downloader.YoutubeDownloader;
@@ -234,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
         getTop100();
         getNewRelese();
         getHome();
+        getAlbum();
 
 //        Window w = getWindow();
 //        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -447,6 +450,8 @@ public class MainActivity extends AppCompatActivity {
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                            String requestUrl = call.request().url().toString();
+                            Log.d(">>>>>>>>>>>>>>>>>>>", "HOme - " + requestUrl);
                             if (response.isSuccessful()) {
                                 try {
                                     String jsonData = response.body().string();
@@ -580,6 +585,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void getAlbum() {
+        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
+            @Override
+            public void onServiceCreated(ApiService service) {
+                try {
+                    SongCategories songCategories = new SongCategories(null, null);
+                    Map<String, String> map = songCategories.getPlaylist("SC0708EF");
+
+                    retrofit2.Call<Playlist> call = service.PLAYLIST_CALL("SC0708EF", map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                    call.enqueue(new Callback<Playlist>() {
+                        @Override
+                        public void onResponse(Call<Playlist> call, Response<Playlist> response) {
+                            String requestUrl = call.request().url().toString();
+                            Log.d(">>>>>>>>>>>>>>>>>>>", " - " + requestUrl);
+                        }
+
+                        @Override
+                        public void onFailure(Call<Playlist> call, Throwable throwable) {
+
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("TAG", "Error: " + e.getMessage(), e);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
 
     @SuppressLint("NotifyDataSetChanged")
     private void checkCategoriesNhacMoi(int categories_nhac_moi) {

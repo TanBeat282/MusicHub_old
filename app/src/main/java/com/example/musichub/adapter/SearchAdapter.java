@@ -56,6 +56,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         Glide.with(context)
                 .load(items.getThumbnail())
                 .into(holder.thumbImageView);
+
         if (selectedPosition == position) {
             int colorSpotify = ContextCompat.getColor(context, R.color.colorSpotify);
             holder.nameTextView.setTextColor(colorSpotify);
@@ -64,18 +65,28 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             holder.nameTextView.setTextColor(Color.WHITE);
             holder.aniPlay.setVisibility(View.GONE);
         }
+        int premiumColor;
+        if (items.getStreamingStatus() == 2) {
+            premiumColor = ContextCompat.getColor(context, R.color.yellow);
+        } else {
+            premiumColor = ContextCompat.getColor(context, R.color.white);
+        }
+        holder.nameTextView.setTextColor(premiumColor);
 
         holder.itemView.setOnClickListener(v -> {
+            if (items.getStreamingStatus() == 2) {
 
-            Intent intent = new Intent(context, PlayNowActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("song", items);
-            bundle.putInt("position_song", position);
-            bundle.putSerializable("song_list", songList);
-            bundle.putInt("title_now_playing", 1);
-            intent.putExtras(bundle);
+            } else {
+                Intent intent = new Intent(context, PlayNowActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("song", items);
+                bundle.putInt("position_song", position);
+                bundle.putSerializable("song_list", songList);
+                bundle.putInt("title_now_playing", 0);
+                intent.putExtras(bundle);
 
-            context.startActivity(intent);
+                context.startActivity(intent);
+            }
         });
     }
 

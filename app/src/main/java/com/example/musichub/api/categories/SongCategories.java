@@ -70,5 +70,16 @@ public class SongCategories extends Base {
             throw error;
         }
     }
+    public Map<String, String> getAlbum(String artistId) throws Exception {
+        try {
+            String sig = createIdSig("/api/v2/page/get/album", artistId);
+            Map<String, String> params = createRequest();
+            params.put("id", artistId);
+            params.put("sig", sig);
+            return params;
+        } catch (Exception error) {
+            throw error;
+        }
+    }
 
 }

@@ -25,7 +25,6 @@ public interface ApiService {
     String pathAudioSong = "/api/v2/song/get/streaming?";
     String pathArtist = "/api/v2/page/get/artist?";
     String pathPlaylist = "/api/v2/page/get/playlist?";
-
     String pathLyric = "/api/v2/lyric/get/lyric?";
 
     //search
@@ -95,7 +94,6 @@ public interface ApiService {
                                  @Query("ctime") String ctime,
                                  @Query("version") String version,
                                  @Query("apiKey") String apiKey);
-
 
     @GET(pathSearch)
     Call<Search> SEARCH_CALL(@Query("q") String q,
