@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +77,14 @@ public class LichSuBaiHatAdapter extends RecyclerView.Adapter<LichSuBaiHatAdapte
 
             context.startActivity(intent);
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Log.d(">>>>>>>>>>", "onLongClick: " + items.getHistoryCount());
+                return false;
+            }
+        });
+
     }
 
 

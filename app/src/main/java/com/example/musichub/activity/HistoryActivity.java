@@ -53,7 +53,6 @@ public class HistoryActivity extends AppCompatActivity {
         Helper.changeNavigationColor(this, R.color.gray, true);
 
         sharedPreferencesManager = new SharedPreferencesManager(this);
-        mSong = sharedPreferencesManager.restoreSongState();
         songListLichSuBaiHat = new ArrayList<>();
         songListLichSuBaiHatNgheNhieu = new ArrayList<>();
 
@@ -108,6 +107,7 @@ public class HistoryActivity extends AppCompatActivity {
     @SuppressLint("NotifyDataSetChanged")
     private void getSongHistory() {
         // Khởi tạo danh sách bài hát lịch sử
+        mSong = sharedPreferencesManager.restoreSongState();
         songListLichSuBaiHat = sharedPreferencesManager.restoreSongArrayListHistory();
 
         if (songListLichSuBaiHat.isEmpty()) {
@@ -124,7 +124,7 @@ public class HistoryActivity extends AppCompatActivity {
             });
 
             // Lấy 3 mục có historyCount lớn nhất và thêm vào songListLichSuBaiHatNgheNhieu
-            for (int i = 0; i < Math.min(songListLichSuBaiHat.size(), 3); i++) {
+            for (int i = 0; i < Math.min(songListLichSuBaiHat.size(), 4); i++) {
                 songListLichSuBaiHatNgheNhieu.add(songListLichSuBaiHat.get(i));
             }
 
@@ -148,4 +148,11 @@ public class HistoryActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        songListLichSuBaiHat.clear();
+        songListLichSuBaiHatNgheNhieu.clear();
+        getSongHistory();
+    }
 }

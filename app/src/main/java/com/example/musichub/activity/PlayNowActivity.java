@@ -659,9 +659,11 @@ public class PlayNowActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void setDataSong() {
-        Glide.with(this)
-                .load(changeImageUrl(items.getThumbnailM()))
-                .into(imageAlbumArt);
+        if (!isDestroyed() && !isFinishing()) {
+            Glide.with(this)
+                    .load(changeImageUrl(items.getThumbnailM() != null ? items.getThumbnailM() : items.getThumbnail()))
+                    .into(imageAlbumArt);
+        }
 
         txtTitle.setText(items.getTitle());
         txtArtist.setText(items.getArtistsNames());

@@ -82,18 +82,24 @@ public class SharedPreferencesManager {
             songArrayList = new ArrayList<>();
         }
 
-        for (int i = 0; i < songArrayList.size(); i++) {
-            if (songArrayList.get(i).getEncodeId().equals(song.getEncodeId())) { // Kiểm tra xem ID của bài hát có trùng không
-                song.setHistoryCount(songArrayList.get(i).getHistoryCount() + 1);
-                songArrayList.remove(i); // Xóa bài hát nếu trùng
-
-            }
-            else {
-                song.setHistoryCount(1);
+        // Tìm xem bài hát đã có trong danh sách lịch sử chưa
+        boolean found = false;
+        for (Items item : songArrayList) {
+            if (item.getEncodeId().equals(song.getEncodeId())) {
+                // Nếu tìm thấy, tăng historyCount lên 1
+                item.setHistoryCount(item.getHistoryCount() + 1);
+                found = true;
+                break;
             }
         }
-        songArrayList.add(0, song); // Thêm bài hát vào đầu danh sách
 
+        // Nếu không tìm thấy, thêm bài hát mới vào danh sách lịch sử
+        if (!found) {
+            song.setHistoryCount(1); // Khởi tạo historyCount với giá trị 1 cho bài hát mới
+            songArrayList.add(0, song); // Thêm bài hát vào đầu danh sách
+        }
+
+        // Lưu danh sách lịch sử đã cập nhật vào SharedPreferences
         Gson gson = new Gson();
         String songListJson = gson.toJson(songArrayList);
 
@@ -102,6 +108,9 @@ public class SharedPreferencesManager {
         editor.putString("song_list_history", songListJson);
         editor.apply();
     }
+
+    // save data search
+
 
 
     //positon song
