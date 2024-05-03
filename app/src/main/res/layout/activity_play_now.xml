@@ -66,8 +66,8 @@
 
         <LinearLayout
             android:id="@+id/linear_image"
-            android:layout_width="350dp"
-            android:layout_height="350dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             android:layout_below="@id/container"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
@@ -76,8 +76,8 @@
 
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/imageAlbumArt"
-                android:layout_width="350dp"
-                android:layout_height="350dp"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
                 android:scaleType="centerCrop"
                 android:visibility="gone"
                 app:riv_corner_radius="10dp" />

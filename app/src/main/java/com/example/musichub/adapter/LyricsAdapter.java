@@ -56,14 +56,14 @@ public class LyricsAdapter extends RecyclerView.Adapter<LyricsAdapter.LyricsView
         LyricLine lyricLine = lyricLines.get(position);
         holder.textViewContent.setText(lyricLine.getContent());
 
-        // Đổi màu cho item nếu đúng thời gian bài hát đang hát
-        int colorSpotify;// Thay đổi màu sắc thành màu colorAccent
-        if (currentPlaybackTime >= lyricLine.getStartTime() - 700) {
-            colorSpotify = ContextCompat.getColor(context, R.color.white);
+        // Kiểm tra xem thời gian phát hiện tại có nằm trong khoảng thời gian của dòng lyric không
+        if (isCurrentLyric(position)) {
+            // Nếu có, thay đổi màu sắc của item thành màu colorAccent
+            holder.textViewContent.setTextColor(ContextCompat.getColor(context, R.color.white));
         } else {
-            colorSpotify = ContextCompat.getColor(context, R.color.colorSecondaryText2);
+            // Nếu không, sử dụng màu sắc mặc định cho item
+            holder.textViewContent.setTextColor(ContextCompat.getColor(context, R.color.colorSecondaryText2));
         }
-        holder.textViewContent.setTextColor(colorSpotify); // Thay đổi màu sắc thành màu colorAccent
 
         holder.textViewContent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +86,18 @@ public class LyricsAdapter extends RecyclerView.Adapter<LyricsAdapter.LyricsView
         public LyricsViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewContent = itemView.findViewById(R.id.textViewContent);
+        }
+    }
+
+    private boolean isCurrentLyric(int position) {
+        if (position < lyricLines.size() - 1) {
+            LyricLine currentLine = lyricLines.get(position);
+            LyricLine nextLine = lyricLines.get(position + 1);
+            return currentPlaybackTime >= currentLine.getStartTime() && currentPlaybackTime < nextLine.getStartTime();
+        } else {
+            // Trường hợp này xảy ra khi position là dòng lyric cuối cùng
+            LyricLine currentLine = lyricLines.get(position);
+            return currentPlaybackTime >= currentLine.getStartTime();
         }
     }
 }

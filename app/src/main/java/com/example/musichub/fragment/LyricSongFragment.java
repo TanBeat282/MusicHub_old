@@ -11,10 +11,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,9 +45,7 @@ public class LyricSongFragment extends Fragment {
     private LinearLayout txtNoData;
     private LyricsAdapter lyricsAdapter;
     private List<LyricLine> lyrics;
-    private Handler lyricHandler;
     private ExecutorService executor;
-    private Handler handler;
     private Items song;
     private int currentTime, total_time;
     private boolean isPlaying;
@@ -71,8 +72,25 @@ public class LyricSongFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             currentTime = intent.getIntExtra("current_time", 0);
             total_time = intent.getIntExtra("total_time", 0);
+            if (lyrics != null && !lyrics.isEmpty()) {
+                int currentLineIndex = -1;
+                for (int i = 0; i < lyrics.size(); i++) {
+                    LyricLine currentLine = lyrics.get(i);
+                    if (currentTime >= currentLine.getStartTime() - 1000) {
+                        currentLineIndex = i;
+                    } else {
+                        break;
+                    }
+                }
+                lyricsAdapter.setCurrentPlaybackTime(currentTime);
+                // Kiểm tra nếu có item trùng với currentTime
+                if (currentLineIndex != -1) {
+                    smoothScrollToPosition(currentLineIndex + 10); // Cuộn đến vị trí hiện tại cộng thêm 12 để tạo khoảng trống phía trên
+                }
+            }
         }
     };
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,7 +113,6 @@ public class LyricSongFragment extends Fragment {
         getUrlAudioHelper = new GetUrlAudioHelper();
 
         executor = Executors.newSingleThreadExecutor();
-        handler = new Handler(Looper.getMainLooper());
 
         lyrics = new ArrayList<>();
 
@@ -112,9 +129,9 @@ public class LyricSongFragment extends Fragment {
 
 
         lyrics = new ArrayList<>();
-        lyricHandler = new Handler();
 
         getDataSong(song);
+
     }
 
     private class GetLyricTask implements Runnable {
@@ -140,7 +157,7 @@ public class LyricSongFragment extends Fragment {
                 connection.disconnect();
                 final String lyricContent = result.toString();
 
-                handler.post(new Runnable() {
+                requireActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         lyrics = parseLyrics(lyricContent);
@@ -148,10 +165,10 @@ public class LyricSongFragment extends Fragment {
                             @Override
                             public void run() {
                                 updateLyricDisplay();
-                                lyricHandler.postDelayed(this, 500);
+
                             }
                         };
-                        lyricHandler.post(updateLyricRunnable);
+                        updateLyricRunnable.run();
                     }
                 });
             } catch (IOException e) {
@@ -171,7 +188,7 @@ public class LyricSongFragment extends Fragment {
             int currentLineIndex = -1;
             for (int i = 0; i < lyrics.size(); i++) {
                 LyricLine currentLine = lyrics.get(i);
-                if (currentTime >= currentLine.getStartTime() - 1000) {
+                if (currentTime >= currentLine.getStartTime() - 1500) {
                     currentLineIndex = i;
                 } else {
                     break;
@@ -183,11 +200,25 @@ public class LyricSongFragment extends Fragment {
 
             // Kiểm tra nếu có item trùng với currentTime
             if (currentLineIndex != -1) {
-                recyclerViewLyrics.smoothScrollToPosition(currentLineIndex + 8);
+                smoothScrollToPosition(currentLineIndex + 8); // Cuộn đến vị trí hiện tại cộng thêm 12 để tạo khoảng trống phía trên
             }
 
         }
     }
+
+    private void smoothScrollToPosition(int position) {
+        LinearSmoothScroller smoothScroller = new LinearSmoothScroller(requireContext()) {
+            private static final float MILLISECONDS_PER_INCH = 500f; // Điều chỉnh tốc độ cuộn ở đây
+
+            @Override
+            protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
+                return MILLISECONDS_PER_INCH / displayMetrics.densityDpi;
+            }
+        };
+        smoothScroller.setTargetPosition(position);
+        recyclerViewLyrics.getLayoutManager().startSmoothScroll(smoothScroller);
+    }
+
 
     private List<LyricLine> parseLyrics(String lyricContent) {
         List<LyricLine> lyricLines = new ArrayList<>();
