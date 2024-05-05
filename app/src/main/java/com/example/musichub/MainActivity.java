@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +16,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -34,7 +31,6 @@ import com.example.musichub.activity.HistoryActivity;
 import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.activity.SearchActivity;
 import com.example.musichub.adapter.BaiHatNhanhAdapter;
-import com.example.musichub.adapter.LichSuBaiHatAdapter;
 import com.example.musichub.adapter.Top100Adapter;
 import com.example.musichub.adapter.TopSongAdapter;
 import com.example.musichub.adapter.VideoAdapter;
@@ -47,7 +43,7 @@ import com.example.musichub.model.chart.chart_home.ChartHome;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.chart.home.DataHomeAll;
 import com.example.musichub.model.chart.home.DataHomeSlider;
-import com.example.musichub.model.chart.home.ItemSilder;
+import com.example.musichub.model.chart.home.ItemSlider;
 import com.example.musichub.model.chart.home.ItemsData;
 import com.example.musichub.model.chart.new_release.NewRelease;
 import com.example.musichub.model.chart.top100.ItemsTop100;
@@ -102,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Items> itemsArrayListNhacMoi;
     private ArrayList<ItemsTop100> itemsTop100sNoiBat, itemsTop100sVietNam, itemsTop100sChauA, itemsTop100sAuMy;
 
+
+    private RoundedImageView img_categories;
+
     private final YoutubeDownloader downloader = new YoutubeDownloader();
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -145,6 +144,15 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView rv_nhac_chauA = findViewById(R.id.rv_nhac_chauA);
         RecyclerView rv_nhac_auMy = findViewById(R.id.rv_nhac_auMy);
         RecyclerView rv_video_bai_hat_lien_quan = findViewById(R.id.rv_video_bai_hat_lien_quan);
+
+
+
+        img_categories = findViewById(R.id.img_categories);
+
+
+
+
+
 
         img_history = findViewById(R.id.img_history);
         image_slider = findViewById(R.id.image_slider);
@@ -348,6 +356,11 @@ public class MainActivity extends AppCompatActivity {
                                                 songListBangXepHang = itemsArrayList;
                                                 topSongAdapter.setFilterList(itemsArrayList);
                                                 checkIsPlayingTop(mSong, itemsArrayList);
+
+                                                Glide.with(MainActivity.this)
+                                                        .load(chartHome.getData().getWeekChart().getVn().getCover())
+                                                        .into(img_categories);
+
                                             }
                                         });
                                     } else {
@@ -476,11 +489,11 @@ public class MainActivity extends AppCompatActivity {
 
                                         // Tạo một mảng mới để chứa các đối tượng ItemSilder từ mảng "items" bên trong item đầu tiên
                                         JSONArray innerItemsArray = firstItemObject.getJSONArray("items");
-                                        ArrayList<ItemSilder> innerItemSliders = new ArrayList<>();
+                                        ArrayList<ItemSlider> innerItemSliders = new ArrayList<>();
                                         for (int i = 0; i < innerItemsArray.length(); i++) {
                                             JSONObject innerItemObject = innerItemsArray.getJSONObject(i);
-                                            ItemSilder itemSilder = ItemSilder.fromJson(innerItemObject.toString());
-                                            innerItemSliders.add(itemSilder);
+                                            ItemSlider itemSlider = ItemSlider.fromJson(innerItemObject.toString());
+                                            innerItemSliders.add(itemSlider);
                                         }
 
                                         // Đặt mảng innerItemSliders là mảng items của DataHome

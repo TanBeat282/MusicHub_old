@@ -93,7 +93,7 @@ public class LyricsAdapter extends RecyclerView.Adapter<LyricsAdapter.LyricsView
         if (position < lyricLines.size() - 1) {
             LyricLine currentLine = lyricLines.get(position);
             LyricLine nextLine = lyricLines.get(position + 1);
-            return currentPlaybackTime >= currentLine.getStartTime() && currentPlaybackTime < nextLine.getStartTime();
+            return currentPlaybackTime >= currentLine.getStartTime() - 1000 && currentPlaybackTime < nextLine.getStartTime()-800;
         } else {
             // Trường hợp này xảy ra khi position là dòng lyric cuối cùng
             LyricLine currentLine = lyricLines.get(position);

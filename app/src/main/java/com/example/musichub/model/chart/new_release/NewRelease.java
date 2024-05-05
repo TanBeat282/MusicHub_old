@@ -1,7 +1,10 @@
 package com.example.musichub.model.chart.new_release;
+
+import java.io.Serializable;
+
 ;
 
-public class NewRelease {
+public class NewRelease implements Serializable {
     private int err;
     private String msg;
     private DataNewRelease data;

@@ -2,9 +2,10 @@ package com.example.musichub.model.chart.new_release;
 
 import com.example.musichub.model.chart.chart_home.Items;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class DataNewRelease {
+public class DataNewRelease implements Serializable {
     private String banner;
     private String type;
     private String link;

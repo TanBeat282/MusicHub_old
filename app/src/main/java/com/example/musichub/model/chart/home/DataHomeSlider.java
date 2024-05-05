@@ -8,7 +8,7 @@ public class DataHomeSlider {
     private String title;
     private String link;
     private String sectionId;
-    private ArrayList<ItemSilder> items;
+    private ArrayList<ItemSlider> items;
 
     public String getSectionType() {
         return sectionType;
@@ -50,11 +50,11 @@ public class DataHomeSlider {
         this.sectionId = sectionId;
     }
 
-    public ArrayList<ItemSilder> getItems() {
+    public ArrayList<ItemSlider> getItems() {
         return items;
     }
 
-    public void setItems(ArrayList<ItemSilder> items) {
+    public void setItems(ArrayList<ItemSlider> items) {
         this.items = items;
     }
 }

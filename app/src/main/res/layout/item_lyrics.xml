@@ -4,18 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="15dp"
-    android:gravity="center"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/textViewContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="left"
-        android:text="Anhaaaa"
         android:fontFamily="@font/roboto_bold"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="26sp"
         tools:ignore="RtlHardcoded" />
 
 </LinearLayout>

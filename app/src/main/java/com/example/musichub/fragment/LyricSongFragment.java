@@ -72,22 +72,7 @@ public class LyricSongFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             currentTime = intent.getIntExtra("current_time", 0);
             total_time = intent.getIntExtra("total_time", 0);
-            if (lyrics != null && !lyrics.isEmpty()) {
-                int currentLineIndex = -1;
-                for (int i = 0; i < lyrics.size(); i++) {
-                    LyricLine currentLine = lyrics.get(i);
-                    if (currentTime >= currentLine.getStartTime() - 1000) {
-                        currentLineIndex = i;
-                    } else {
-                        break;
-                    }
-                }
-                lyricsAdapter.setCurrentPlaybackTime(currentTime);
-                // Kiểm tra nếu có item trùng với currentTime
-                if (currentLineIndex != -1) {
-                    smoothScrollToPosition(currentLineIndex + 10); // Cuộn đến vị trí hiện tại cộng thêm 12 để tạo khoảng trống phía trên
-                }
-            }
+            updateLyricDisplay();
         }
     };
 
@@ -161,14 +146,7 @@ public class LyricSongFragment extends Fragment {
                     @Override
                     public void run() {
                         lyrics = parseLyrics(lyricContent);
-                        Runnable updateLyricRunnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                updateLyricDisplay();
-
-                            }
-                        };
-                        updateLyricRunnable.run();
+                        updateLyricDisplay();
                     }
                 });
             } catch (IOException e) {
@@ -188,27 +166,26 @@ public class LyricSongFragment extends Fragment {
             int currentLineIndex = -1;
             for (int i = 0; i < lyrics.size(); i++) {
                 LyricLine currentLine = lyrics.get(i);
-                if (currentTime >= currentLine.getStartTime() - 1500) {
+                if (currentTime >= currentLine.getStartTime()) {
                     currentLineIndex = i;
                 } else {
                     break;
                 }
             }
+            // Kiểm tra nếu có item trùng với currentTime
+            if (currentLineIndex != -1) {
+                smoothScrollToPosition(currentLineIndex + 10); // Cuộn đến vị trí hiện tại cộng thêm 12 để tạo khoảng trống phía trên
+            }
 
             lyricsAdapter.updateLyricLines(lyrics);
             lyricsAdapter.setCurrentPlaybackTime(currentTime);
-
-            // Kiểm tra nếu có item trùng với currentTime
-            if (currentLineIndex != -1) {
-                smoothScrollToPosition(currentLineIndex + 8); // Cuộn đến vị trí hiện tại cộng thêm 12 để tạo khoảng trống phía trên
-            }
 
         }
     }
 
     private void smoothScrollToPosition(int position) {
         LinearSmoothScroller smoothScroller = new LinearSmoothScroller(requireContext()) {
-            private static final float MILLISECONDS_PER_INCH = 500f; // Điều chỉnh tốc độ cuộn ở đây
+            private static final float MILLISECONDS_PER_INCH = 1000f; // Điều chỉnh tốc độ cuộn ở đây
 
             @Override
             protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {

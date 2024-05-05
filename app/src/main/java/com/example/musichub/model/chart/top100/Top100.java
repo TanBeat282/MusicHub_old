@@ -1,9 +1,10 @@
 package com.example.musichub.model.chart.top100;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Top100 {
+public class Top100 implements Serializable {
     private int err;
     private String msg;
     private ArrayList<DataTop100> data;

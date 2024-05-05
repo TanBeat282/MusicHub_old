@@ -6,9 +6,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ItemsData implements Serializable {
-    ArrayList<Items> all;
-    ArrayList<Items> vPop;
-    ArrayList<Items> others;
+    private ArrayList<Items> all;
+    private ArrayList<Items> vPop;
+    private ArrayList<Items> others;
 
     public ArrayList<Items> getAll() {
         return all;

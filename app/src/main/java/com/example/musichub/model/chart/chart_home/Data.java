@@ -1,9 +1,12 @@
 package com.example.musichub.model.chart.chart_home;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Data implements Serializable {
     private RTCharts RTChart;
+    private ArrayList<Items> newRelease;
+    private WeekChart weekChart;
 
     public RTCharts getRTChart() {
         return RTChart;
@@ -11,6 +14,22 @@ public class Data implements Serializable {
 
     public void setRTChart(RTCharts RTChart) {
         this.RTChart = RTChart;
+    }
+
+    public ArrayList<Items> getNewRelease() {
+        return newRelease;
+    }
+
+    public void setNewRelease(ArrayList<Items> newRelease) {
+        this.newRelease = newRelease;
+    }
+
+    public WeekChart getWeekChart() {
+        return weekChart;
+    }
+
+    public void setWeekChart(WeekChart weekChart) {
+        this.weekChart = weekChart;
     }
 }
 
