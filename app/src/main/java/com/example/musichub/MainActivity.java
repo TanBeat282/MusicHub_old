@@ -39,6 +39,8 @@ import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
 import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.helper.ui.Helper;
+import com.example.musichub.model.Artist;
+import com.example.musichub.model.artist.ArtistDetail;
 import com.example.musichub.model.chart.chart_home.ChartHome;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.chart.home.DataHomeAll;
@@ -146,12 +148,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView rv_video_bai_hat_lien_quan = findViewById(R.id.rv_video_bai_hat_lien_quan);
 
 
-
         img_categories = findViewById(R.id.img_categories);
-
-
-
-
 
 
         img_history = findViewById(R.id.img_history);
@@ -215,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Khoi tạo Adapter
 
-        nhacMoiAdapter = new TopSongAdapter(itemsArrayListNhacMoi, MainActivity.this);
+        nhacMoiAdapter = new TopSongAdapter(itemsArrayListNhacMoi, MainActivity.this, MainActivity.this);
         rv_nhac_moi.setAdapter(nhacMoiAdapter);
 
 
@@ -223,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
         rv_chon_nhanh.setAdapter(baiHatNhanhAdapter);
 
 
-        topSongAdapter = new TopSongAdapter(songListBangXepHang, MainActivity.this);
+        topSongAdapter = new TopSongAdapter(songListBangXepHang, MainActivity.this, MainActivity.this);
         rv_bang_xep_hang.setAdapter(topSongAdapter);
 
 //        videoAdapter = new VideoAdapter(songListVideoBaiHat, MainActivity.this);
@@ -631,7 +628,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     @SuppressLint("NotifyDataSetChanged")
     private void checkCategoriesNhacMoi(int categories_nhac_moi) {

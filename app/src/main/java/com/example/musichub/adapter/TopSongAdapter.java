@@ -1,6 +1,7 @@
 package com.example.musichub.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,9 +9,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +22,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.activity.PlayNowActivity;
+import com.example.musichub.bottomsheet.BottomSheetInfoSong;
+import com.example.musichub.bottomsheet.BottomSheetOptionSong;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -26,6 +32,7 @@ import java.util.ArrayList;
 public class TopSongAdapter extends RecyclerView.Adapter<TopSongAdapter.ViewHolder> {
     private ArrayList<Items> songList;
     private final Context context;
+    private final Activity activity;
     private int selectedPosition = -1;
 
     @SuppressLint("NotifyDataSetChanged")
@@ -34,8 +41,9 @@ public class TopSongAdapter extends RecyclerView.Adapter<TopSongAdapter.ViewHold
         notifyDataSetChanged();
     }
 
-    public TopSongAdapter(ArrayList<Items> songList, Context context) {
+    public TopSongAdapter(ArrayList<Items> songList,Activity activity, Context context) {
         this.songList = songList;
+        this.activity = activity;
         this.context = context;
     }
 
@@ -73,9 +81,23 @@ public class TopSongAdapter extends RecyclerView.Adapter<TopSongAdapter.ViewHold
         }
         holder.nameTextView.setTextColor(premiumColor);
 
+        holder.btn_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showBottomSheetInfo(song);
+            }
+        });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                showBottomSheetInfo(song);
+                return false;
+            }
+        });
+
         holder.itemView.setOnClickListener(v -> {
             if (song.getStreamingStatus() == 2) {
-
+                Toast.makeText(context, "Không thể phát bài hát Premium!", Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(context, PlayNowActivity.class);
                 Bundle bundle = new Bundle();
@@ -88,6 +110,7 @@ public class TopSongAdapter extends RecyclerView.Adapter<TopSongAdapter.ViewHold
                 context.startActivity(intent);
             }
         });
+
     }
 
 
@@ -101,6 +124,7 @@ public class TopSongAdapter extends RecyclerView.Adapter<TopSongAdapter.ViewHold
         public TextView artistTextView;
         public TextView nameTextView;
         public LottieAnimationView aniPlay;
+        public ImageView btn_more;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -108,6 +132,7 @@ public class TopSongAdapter extends RecyclerView.Adapter<TopSongAdapter.ViewHold
             artistTextView = itemView.findViewById(R.id.artistTextView);
             nameTextView = itemView.findViewById(R.id.nameTextView);
             aniPlay = itemView.findViewById(R.id.aniPlay);
+            btn_more = itemView.findViewById(R.id.btn_more);
             artistTextView.setSelected(true);
             nameTextView.setSelected(true);
         }
@@ -127,6 +152,11 @@ public class TopSongAdapter extends RecyclerView.Adapter<TopSongAdapter.ViewHold
         }
         selectedPosition = -1; // Nếu không tìm thấy, không bài hát nào được chọn
         notifyDataSetChanged();
+    }
+
+    private void showBottomSheetInfo(Items items) {
+        BottomSheetOptionSong bottomSheetOptionSong = new BottomSheetOptionSong(context, activity, items);
+        bottomSheetOptionSong.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheetOptionSong.getTag());
     }
 
 

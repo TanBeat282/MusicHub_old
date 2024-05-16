@@ -76,48 +76,19 @@ public class ContinueSongFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.recyclerView);
 
-//        sharedPreferencesManager = new SharedPreferencesManager(requireContext());
-//        songArrayList = sharedPreferencesManager.restoreSongArrayList();
-//        items = sharedPreferencesManager.restoreSongState();
-//        positionSong = sharedPreferencesManager.restoreSongPosition();
-//        // Khoi tạo RecyclerView và Adapter
-//        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-//
-////         Khoi tạo Adapter
-//        adapter = new TopSongAdapter(songArrayList, requireContext());
-//        recyclerView.setAdapter(adapter);
-//        checkisPlaying(items);
-//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-//        itemTouchHelper.attachToRecyclerView(recyclerView);
+        sharedPreferencesManager = new SharedPreferencesManager(requireContext());
+        songArrayList = sharedPreferencesManager.restoreSongArrayList();
+        items = sharedPreferencesManager.restoreSongState();
+        positionSong = sharedPreferencesManager.restoreSongPosition();
+        // Khoi tạo RecyclerView và Adapter
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+//         Khoi tạo Adapter
+        adapter = new TopSongAdapter(songArrayList, requireActivity(), requireContext());
+        recyclerView.setAdapter(adapter);
+        checkisPlaying(items);
 
     }
-
-//    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
-//        @Override
-//        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-//            int fromPosition = viewHolder.getAdapterPosition();
-//            int toPosition = target.getAdapterPosition();
-//            Collections.swap(songArrayList, fromPosition, toPosition);
-//            recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
-//
-//            sharedPreferencesManager.saveSongArrayList(songArrayList);
-//            sharedPreferencesManager.saveSongPosition(toPosition);
-//            sendBroadcast(songArrayList,toPosition);
-//            return false;
-//        }
-//
-//        @Override
-//        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-//
-//        }
-//    };
-
-//    private void sendBroadcast(ArrayList<Items> itemsArrayList,int position) {
-//        Intent intent = new Intent(requireContext(), MyService.class);
-//        intent.putExtra("song_list", itemsArrayList);
-//        intent.putExtra("position_song", position);
-//        requireContext().startService(intent);
-//    }
 
     private void checkisPlaying(Items items) {
         if (items == null || songArrayList == null) {
@@ -140,16 +111,16 @@ public class ContinueSongFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        // Xóa dữ liệu cũ và lấy dữ liệu mới từ SharedPreferences
-//        songArrayList.clear(); // Xóa dữ liệu cũ
-//        songArrayList.addAll(sharedPreferencesManager.restoreSongArrayList()); // Lấy dữ liệu mới
-//        items = sharedPreferencesManager.restoreSongState();
-//        positionSong = sharedPreferencesManager.restoreSongPosition();
-//        // Đăng ký BroadcastReceiver để nhận dữ liệu từ Activity
-//        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(broadcastReceiver, new IntentFilter("send_data_to_activity"));
-//        // Cập nhật RecyclerView
-//        adapter.notifyDataSetChanged();
-//        checkisPlaying(items);
+        // Xóa dữ liệu cũ và lấy dữ liệu mới từ SharedPreferences
+        songArrayList.clear(); // Xóa dữ liệu cũ
+        songArrayList.addAll(sharedPreferencesManager.restoreSongArrayList()); // Lấy dữ liệu mới
+        items = sharedPreferencesManager.restoreSongState();
+        positionSong = sharedPreferencesManager.restoreSongPosition();
+        // Đăng ký BroadcastReceiver để nhận dữ liệu từ Activity
+        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(broadcastReceiver, new IntentFilter("send_data_to_activity"));
+        // Cập nhật RecyclerView
+        adapter.notifyDataSetChanged();
+        checkisPlaying(items);
     }
 
 

@@ -148,7 +148,7 @@ public class ViewPlaylistActivity extends AppCompatActivity {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rv_playlist.setLayoutManager(layoutManager);
-        topSongAdapter = new TopSongAdapter(itemsArrayList, ViewPlaylistActivity.this);
+        topSongAdapter = new TopSongAdapter(itemsArrayList, ViewPlaylistActivity.this,ViewPlaylistActivity.this);
         rv_playlist.setAdapter(topSongAdapter);
 
         layoutPlayer.setOnClickListener(v -> {

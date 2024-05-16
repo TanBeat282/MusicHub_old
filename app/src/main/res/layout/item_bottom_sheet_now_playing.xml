@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:text="TIẾP THEO"
                     android:fontFamily="@font/roboto"
-                    android:textColor="@color/colorStroke"
+                    android:textColor="@color/colorSecondaryText1"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -99,8 +99,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="LIÊN QUAN"
+                    android:textColor="@color/colorSecondaryText1"
                     android:fontFamily="@font/roboto"
-                    android:textColor="@color/colorStroke"
                     android:textSize="14sp" />
 
             </LinearLayout>

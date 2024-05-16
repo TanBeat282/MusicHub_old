@@ -82,7 +82,7 @@ public interface ApiService {
                            @Query("apiKey") String apiKey);
 
     @GET(pathArtist)
-    Call<ArtistDetail> ARTISTS_CALL(@Query("alias") String alias,
+    Call<ResponseBody> ARTISTS_CALL(@Query("alias") String alias,
                                     @Query("sig") String sig,
                                     @Query("ctime") String ctime,
                                     @Query("version") String version,

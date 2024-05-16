@@ -34,6 +34,7 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.musichub.MainActivity;
 
+import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.helper.uliti.GetUrlAudioHelper;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.song.SongAudio;
@@ -360,7 +361,7 @@ public class MyService extends Service {
                                         .setShowActionsInCompactView(0, 1, 2)
                                         .setMediaSession(mediaSessionCompat.getSessionToken()));
 
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), PlayNowActivity.class);
                         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
 

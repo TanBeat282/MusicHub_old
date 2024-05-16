@@ -284,7 +284,7 @@ public class PlayNowActivity extends AppCompatActivity {
         });
 
         int selectedColor = ContextCompat.getColor(this, R.color.white);
-        int unselectedColor = ContextCompat.getColor(this, R.color.colorSecondaryText);
+        int unselectedColor = ContextCompat.getColor(this, R.color.colorSecondaryText1);
         tabLayout.setTabTextColors(unselectedColor, selectedColor);
         tabLayout.setSelectedTabIndicatorColor(selectedColor);
 
@@ -439,19 +439,23 @@ public class PlayNowActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
             if (PermissionUtils.arePermissionsGranted(grantResults)) {
-                getUrlAudioHelper.getSongAudio(items.getEncodeId(), new GetUrlAudioHelper.SongAudioCallback() {
-                    @Override
-                    public void onSuccess(SongAudio songAudio) {
-                        Toast.makeText(PlayNowActivity.this, "Đang tải bài hát!", Toast.LENGTH_SHORT).show();
-                        downloadAudio.downloadAudio(songAudio.getData().getLow(), items.getTitle() + " - " + items.getArtistsNames());
-                        downloadID = downloadAudio.getDownloadID();
-                    }
+                if (items.getStreamingStatus() == 2) {
+                    Toast.makeText(PlayNowActivity.this, "Không thể tải bài hát Premium!", Toast.LENGTH_SHORT).show();
+                } else {
+                    getUrlAudioHelper.getSongAudio(items.getEncodeId(), new GetUrlAudioHelper.SongAudioCallback() {
+                        @Override
+                        public void onSuccess(SongAudio songAudio) {
+                            Toast.makeText(PlayNowActivity.this, "Đang tải bài hát!", Toast.LENGTH_SHORT).show();
+                            downloadAudio.downloadAudio(songAudio.getData().getLow(), items.getTitle() + " - " + items.getArtistsNames());
+                            downloadID = downloadAudio.getDownloadID();
+                        }
 
-                    @Override
-                    public void onFailure(Throwable throwable) {
+                        @Override
+                        public void onFailure(Throwable throwable) {
 
-                    }
-                });
+                        }
+                    });
+                }
             } else {
                 Toast.makeText(this, "Cần cấp quyền để ứng dụng hoạt động!", Toast.LENGTH_SHORT).show();
             }
@@ -466,19 +470,23 @@ public class PlayNowActivity extends AppCompatActivity {
             // Quyền chưa được cấp, đang yêu cầu...
         } else {
             // Tất cả quyền đã được cấp
-            getUrlAudioHelper.getSongAudio(items.getEncodeId(), new GetUrlAudioHelper.SongAudioCallback() {
-                @Override
-                public void onSuccess(SongAudio songAudio) {
-                    Toast.makeText(PlayNowActivity.this, "Đang tải bài hát!", Toast.LENGTH_SHORT).show();
-                    downloadAudio.downloadAudio(songAudio.getData().getLow(), items.getTitle() + " - " + items.getArtistsNames());
-                    downloadID = downloadAudio.getDownloadID();
-                }
+            if (items.getStreamingStatus() == 2) {
+                Toast.makeText(PlayNowActivity.this, "Không thể tải bài hát Premium!", Toast.LENGTH_SHORT).show();
+            } else {
+                getUrlAudioHelper.getSongAudio(items.getEncodeId(), new GetUrlAudioHelper.SongAudioCallback() {
+                    @Override
+                    public void onSuccess(SongAudio songAudio) {
+                        Toast.makeText(PlayNowActivity.this, "Đang tải bài hát!", Toast.LENGTH_SHORT).show();
+                        downloadAudio.downloadAudio(songAudio.getData().getLow(), items.getTitle() + " - " + items.getArtistsNames());
+                        downloadID = downloadAudio.getDownloadID();
+                    }
 
-                @Override
-                public void onFailure(Throwable throwable) {
+                    @Override
+                    public void onFailure(Throwable throwable) {
 
-                }
-            });
+                    }
+                });
+            }
         }
     }
 
@@ -647,12 +655,13 @@ public class PlayNowActivity extends AppCompatActivity {
             txtPlayform.setText("ĐANG PHÁT" + "\n" + "Tìm kiếm");
         } else if (title_now_playing == 2) {
             txtPlayform.setText("ĐANG PHÁT" + "\n" + "Bài hát liên quan");
-        }else if (title_now_playing == 3) {
+        } else if (title_now_playing == 3) {
             txtPlayform.setText("ĐANG PHÁT" + "\n" + "Đã nghe");
         } else {
             txtPlayform.setText("Now Playing");
         }
     }
+
     private String changeImageUrl(String originalUrl) {
         return originalUrl.replace("w240", "w720");
     }

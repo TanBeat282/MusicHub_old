@@ -64,7 +64,7 @@
                     android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
-                    android:textColor="#989898"
+                    android:textColor="@color/colorSecondaryText1"
                     android:textSize="12sp" />
             </LinearLayout>
 

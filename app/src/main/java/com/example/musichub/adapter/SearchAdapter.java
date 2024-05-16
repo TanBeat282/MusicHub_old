@@ -8,9 +8,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +21,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.activity.PlayNowActivity;
+import com.example.musichub.bottomsheet.BottomSheetOptionSong;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -75,7 +79,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
         holder.itemView.setOnClickListener(v -> {
             if (items.getStreamingStatus() == 2) {
-
+                Toast.makeText(context, "Không thể phát bài hát Premium!", Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(context, PlayNowActivity.class);
                 Bundle bundle = new Bundle();
@@ -101,6 +105,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         public TextView artistTextView;
         public TextView nameTextView;
         public LottieAnimationView aniPlay;
+        public ImageView btn_more;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -108,6 +113,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             artistTextView = itemView.findViewById(R.id.artistTextView);
             nameTextView = itemView.findViewById(R.id.nameTextView);
             aniPlay = itemView.findViewById(R.id.aniPlay);
+            btn_more = itemView.findViewById(R.id.btn_more);
             artistTextView.setSelected(true);
             nameTextView.setSelected(true);
         }
