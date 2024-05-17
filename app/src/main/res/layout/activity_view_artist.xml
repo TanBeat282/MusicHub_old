@@ -10,6 +10,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll"
+        android:layout_above="@+id/layoutPlayerBottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -64,7 +65,6 @@
                         android:layout_gravity="center"
                         android:layout_marginStart="10dp"
                         android:fontFamily="@font/roboto_bold"
-                        android:text="Trần Ngọc Tân"
                         android:textColor="@color/white"
                         android:textSize="30sp" />
 
@@ -74,7 +74,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginStart="10dp"
-                        android:text="1111 quan tâm"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -144,7 +143,7 @@
                     android:visibility="visible">
 
                     <com.makeramen.roundedimageview.RoundedImageView
-                        android:id="@+id/img_album_song"
+                        android:id="@+id/img_song"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:layout_gravity="center"
@@ -699,6 +698,16 @@
                 android:layout_marginEnd="20dp"
                 android:src="@drawable/baseline_more_vert_24" />
         </LinearLayout>
+
     </RelativeLayout>
+
+    <include
+        android:id="@+id/layoutPlayerBottom"
+        layout="@layout/bottom_player_music_home_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
+        android:visibility="gone" />
 
 </RelativeLayout>

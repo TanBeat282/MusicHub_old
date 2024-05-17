@@ -56,7 +56,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class BottomSheetSelectArtist extends BottomSheetDialogFragment {
+public class BottomSheetSelectArtist extends BottomSheetDialogFragment implements SelectArtistAdapter.ArtistItemClickListener {
     private final Context context;
     private final Activity activity;
     private ArrayList<Artists> artistsArrayList;
@@ -69,7 +69,6 @@ public class BottomSheetSelectArtist extends BottomSheetDialogFragment {
         this.activity = activity;
         this.artistsArrayList = artistsArrayList;
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @SuppressLint("SetTextI18n")
@@ -89,6 +88,21 @@ public class BottomSheetSelectArtist extends BottomSheetDialogFragment {
 
         selectArtistAdapter.setFilterList(artistsArrayList);
 
+        selectArtistAdapter.setListener(new SelectArtistAdapter.ArtistItemClickListener() {
+            @Override
+            public void onArtistItemClick(boolean isDismiss) {
+                if (isDismiss){
+                    bottomSheetDialog.dismiss();
+                }
+            }
+        });
+
+
         return bottomSheetDialog;
+    }
+
+    @Override
+    public void onArtistItemClick(boolean isDismiss) {
+
     }
 }

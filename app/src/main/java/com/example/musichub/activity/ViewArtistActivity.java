@@ -1,19 +1,27 @@
 package com.example.musichub.activity;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 import androidx.core.widget.NestedScrollView;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +41,9 @@ import com.example.musichub.model.artist.SectionArtistSong;
 import com.example.musichub.model.chart.chart_home.Artists;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.playlist.DataPlaylist;
+import com.example.musichub.service.MyService;
+import com.example.musichub.sharedpreferences.SharedPreferencesManager;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.json.JSONArray;
@@ -50,7 +61,6 @@ public class ViewArtistActivity extends AppCompatActivity {
     private Artists artists;
     private DataPlaylist dataPlaylistNewSong;
     boolean isFirstPlaylist = true;
-
     private RelativeLayout relative_header;
     private NestedScrollView nested_scroll;
     private TextView txt_name_artist;
@@ -61,7 +71,7 @@ public class ViewArtistActivity extends AppCompatActivity {
     private ProgressBar progress_image;
     private TextView txt_artist;
     private TextView txt_follow;
-    private RoundedImageView img_album_song;
+    private RoundedImageView img_song;
     private TextView txtTile;
     private TextView txtArtist;
 
@@ -127,6 +137,47 @@ public class ViewArtistActivity extends AppCompatActivity {
     private SectionArtistArtist sectionArtistArtist;
 
 
+    //player bottom
+
+    private Items items, mSong;
+    private boolean isPlaying;
+    private int action;
+
+    private SharedPreferencesManager sharedPreferencesManager;
+
+    private View layoutPlayerBottom;
+    private LinearLayout layoutPlayer, linear_play_pause, linear_next;
+    private ImageView img_play_pause;
+    private RoundedImageView img_album_song;
+    private TextView tvTitleSong, tvSingleSong;
+    private LinearProgressIndicator progressIndicator;
+    private int currentTime, total_time;
+
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            if (bundle == null) {
+                return;
+            }
+            mSong = (Items) bundle.get("object_song");
+            isPlaying = bundle.getBoolean("status_player");
+            action = bundle.getInt("action_music");
+            handleLayoutMusic(action);
+            checkIsPlayingPlaylist(mSong, itemsArrayListNoiBat);
+        }
+    };
+
+    private final BroadcastReceiver seekBarUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            currentTime = intent.getIntExtra("current_time", 0);
+            total_time = intent.getIntExtra("total_time", 0);
+            updateIndicator(currentTime, total_time);
+        }
+    };
+
+
     @SuppressLint("ObsoleteSdkInt")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +189,10 @@ public class ViewArtistActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_artist);
 
         Helper.changeNavigationColor(this, R.color.gray, true);
+
+
+        sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
+        items = sharedPreferencesManager.restoreSongState();
 
 
         img_back = findViewById(R.id.img_back);
@@ -153,7 +208,7 @@ public class ViewArtistActivity extends AppCompatActivity {
         txt_artist = findViewById(R.id.txt_artist);
         txt_follow = findViewById(R.id.txt_follow);
 
-        img_album_song = findViewById(R.id.img_album_song);
+        img_song = findViewById(R.id.img_song);
         txtTile = findViewById(R.id.txtTile);
         txtArtist = findViewById(R.id.txtArtist);
 
@@ -188,6 +243,22 @@ public class ViewArtistActivity extends AppCompatActivity {
         txt_date_birth = findViewById(R.id.txt_date_birth);
         txt_country = findViewById(R.id.txt_country);
         txt_genre = findViewById(R.id.txt_genre);
+
+
+        //player bottom
+        layoutPlayerBottom = findViewById(R.id.layoutPlayerBottom);
+        layoutPlayer = layoutPlayerBottom.findViewById(R.id.layoutPlayer);
+        linear_play_pause = layoutPlayerBottom.findViewById(R.id.linear_play_pause);
+        img_play_pause = layoutPlayerBottom.findViewById(R.id.img_play_pause);
+
+        linear_next = layoutPlayerBottom.findViewById(R.id.linear_next);
+
+        img_album_song = layoutPlayerBottom.findViewById(R.id.img_album_song);
+        tvTitleSong = layoutPlayerBottom.findViewById(R.id.txtTile);
+        tvTitleSong.setSelected(true);
+        tvSingleSong = layoutPlayerBottom.findViewById(R.id.txtArtist);
+        tvSingleSong.setSelected(true);
+        progressIndicator = layoutPlayerBottom.findViewById(R.id.progressIndicator);
 
 
         //noibat
@@ -270,20 +341,17 @@ public class ViewArtistActivity extends AppCompatActivity {
         });
 
 
-//        relative_new_song.setOnClickListener(view -> {
-//            Intent intent = new Intent(ViewArtistActivity.this, PlayNowActivity.class);
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable("song", items);
-//            bundle.putInt("position_song", findItemPosition(sectionArtistSong.getItems(),items.getEncodeId()));
-//            bundle.putSerializable("song_list", sectionArtistSong.getItems());
-//            bundle.putInt("title_now_playing", 0);
-//            intent.putExtras(bundle);
-//
-//            startActivity(intent);
-//        });
+        relative_new_song.setOnClickListener(view -> {
+            Intent intent = new Intent(this, ViewPlaylistActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("playlist", dataPlaylistNewSong);
+            intent.putExtras(bundle);
+
+            startActivity(intent);
+        });
 
         getBundleSong();
-
+        getSongCurrent();
     }
 
     private void getBundleSong() {
@@ -300,6 +368,7 @@ public class ViewArtistActivity extends AppCompatActivity {
 
     }
 
+
     public int findItemPosition(ArrayList<Items> itemsArrayList, String targetEndcodeID) {
         for (int i = 0; i < itemsArrayList.size(); i++) {
             Items item = itemsArrayList.get(i);
@@ -312,6 +381,110 @@ public class ViewArtistActivity extends AppCompatActivity {
         return -1; // Trả về -1 nếu không tìm thấy phần tử
     }
 
+    private void getSongCurrent() {
+        mSong = sharedPreferencesManager.restoreSongState();
+        isPlaying = sharedPreferencesManager.restoreIsPlayState();
+        action = sharedPreferencesManager.restoreActionState();
+        handleLayoutMusic(action);
+    }
+
+    private void handleLayoutMusic(int action) {
+        switch (action) {
+            case MyService.ACTION_START:
+                layoutPlayerBottom.setVisibility(View.VISIBLE);
+                showInfoSong();
+                setStatusButtonPlayOrPause();
+                break;
+            case MyService.ACTION_PAUSE:
+                layoutPlayerBottom.setVisibility(View.VISIBLE);
+                showInfoSong();
+                setStatusButtonPlayOrPause();
+                break;
+            case MyService.ACTION_RESUME:
+                layoutPlayerBottom.setVisibility(View.VISIBLE);
+                showInfoSong();
+                setStatusButtonPlayOrPause();
+                break;
+            case MyService.ACTION_CLEAR:
+                layoutPlayerBottom.setVisibility(View.GONE);
+                break;
+        }
+    }
+
+    private void showInfoSong() {
+        if (mSong == null) {
+            return;
+        }
+
+        Glide.with(this)
+                .load(mSong.getThumbnail())
+                .into(img_album_song);
+        tvTitleSong.setText(mSong.getTitle());
+        tvSingleSong.setText(mSong.getArtistsNames());
+
+        linear_play_pause.setOnClickListener(v -> {
+            if (!Helper.isMyServiceRunning(ViewArtistActivity.this, MyService.class)) {
+                startService(new Intent(this, MyService.class));
+            }
+            if (isPlaying) {
+                sendActionToService(MyService.ACTION_PAUSE);
+            } else {
+                sendActionToService(MyService.ACTION_RESUME);
+            }
+        });
+        linear_next.setOnClickListener(v -> {
+            if (!Helper.isMyServiceRunning(ViewArtistActivity.this, MyService.class)) {
+                startService(new Intent(ViewArtistActivity.this, MyService.class));
+            }
+            sendActionToService(MyService.ACTION_NEXT);
+        });
+        int color = getResources().getColor(R.color.gray);
+        ColorStateList colorStateList = ColorStateList.valueOf(color);
+        ViewCompat.setBackgroundTintList(layoutPlayer, colorStateList);
+
+    }
+
+    private void sendActionToService(int action) {
+        Intent intent = new Intent(this, MyService.class);
+        intent.putExtra("action_music_service", action);
+        startService(intent);
+    }
+
+    private void setStatusButtonPlayOrPause() {
+        if (!Helper.isMyServiceRunning(ViewArtistActivity.this, MyService.class)) {
+            isPlaying = false;
+        }
+        if (isPlaying) {
+            img_play_pause.setImageResource(R.drawable.baseline_pause_24);
+        } else {
+            img_play_pause.setImageResource(R.drawable.baseline_play_arrow_24);
+
+        }
+    }
+
+    private void updateIndicator(int currentTime, int totalTime) {
+        if (totalTime > 0) {
+            float progress = (float) currentTime / totalTime;
+            int progressInt = (int) (progress * 100);
+            progressIndicator.setProgressCompat(progressInt, true);
+        }
+    }
+
+    private void checkIsPlayingPlaylist(Items items, ArrayList<Items> songList) {
+        if (items == null || songList == null) {
+            return;
+        }
+
+        String currentEncodeId = items.getEncodeId();
+        if (currentEncodeId != null && !currentEncodeId.isEmpty()) {
+            for (Items song : songList) {
+                if (currentEncodeId.equals(song.getEncodeId())) {
+                    noibatAdapter.updatePlayingStatus(currentEncodeId);
+                    break;
+                }
+            }
+        }
+    }
 
     private void getArtist(String artistId) {
         ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
@@ -471,7 +644,7 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                         relative_new_song.setVisibility(View.VISIBLE);
                                                         txtTile.setText(dataPlaylistNewSong.getTitle());
                                                         txtArtist.setText(dataPlaylistNewSong.getArtistsNames());
-                                                        Glide.with(ViewArtistActivity.this).load(dataPlaylistNewSong.getThumbnail()).into(img_album_song);
+                                                        Glide.with(ViewArtistActivity.this).load(dataPlaylistNewSong.getThumbnail()).into(img_song);
                                                     } else {
                                                         relative_new_song.setVisibility(View.GONE);
                                                     }
@@ -482,6 +655,7 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                 //noi_bat
                                                 if (sectionArtistSong != null) {
                                                     relative_noibat.setVisibility(View.VISIBLE);
+                                                    itemsArrayListNoiBat = sectionArtistSong.getItems();
                                                     noibatAdapter.setFilterList(sectionArtistSong.getItems());
                                                 } else {
                                                     relative_new_song.setVisibility(View.GONE);
@@ -556,6 +730,20 @@ public class ViewArtistActivity extends AppCompatActivity {
                 Log.e("TAG", "Service creation error: " + e.getMessage(), e);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("send_data_to_activity"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(seekBarUpdateReceiver, new IntentFilter("send_seekbar_update"));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(seekBarUpdateReceiver);
     }
 
 }

@@ -39,8 +39,6 @@ import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
 import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.helper.ui.Helper;
-import com.example.musichub.model.Artist;
-import com.example.musichub.model.artist.ArtistDetail;
 import com.example.musichub.model.chart.chart_home.ChartHome;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.chart.home.DataHomeAll;
@@ -48,8 +46,8 @@ import com.example.musichub.model.chart.home.DataHomeSlider;
 import com.example.musichub.model.chart.home.ItemSlider;
 import com.example.musichub.model.chart.home.ItemsData;
 import com.example.musichub.model.chart.new_release.NewRelease;
-import com.example.musichub.model.chart.top100.ItemsTop100;
 import com.example.musichub.model.chart.top100.Top100;
+import com.example.musichub.model.playlist.DataPlaylist;
 import com.example.musichub.model.playlist.Playlist;
 import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
@@ -98,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Items> songListChonNhanh;
     private ArrayList<Items> songListBangXepHang;
     private ArrayList<Items> itemsArrayListNhacMoi;
-    private ArrayList<ItemsTop100> itemsTop100sNoiBat, itemsTop100sVietNam, itemsTop100sChauA, itemsTop100sAuMy;
+    private ArrayList<DataPlaylist> itemsTop100sNoiBat, itemsTop100sVietNam, itemsTop100sChauA, itemsTop100sAuMy;
 
 
     private RoundedImageView img_categories;
@@ -405,10 +403,10 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d("getTop100", call.request().url().toString());
                                 Top100 top100 = response.body();
                                 if (top100 != null && top100.getErr() == 0) {
-                                    ArrayList<ItemsTop100> itemsTop100sNoiBat = top100.getDataTop100().get(0).getItems();
-                                    ArrayList<ItemsTop100> itemsTop100sVietNam = top100.getDataTop100().get(1).getItems();
-                                    ArrayList<ItemsTop100> itemsTop100sChauA = top100.getDataTop100().get(2).getItems();
-                                    ArrayList<ItemsTop100> itemsTop100sAuMy = top100.getDataTop100().get(3).getItems();
+                                    ArrayList<DataPlaylist> itemsTop100sNoiBat = top100.getDataTop100().get(0).getItems();
+                                    ArrayList<DataPlaylist> itemsTop100sVietNam = top100.getDataTop100().get(1).getItems();
+                                    ArrayList<DataPlaylist> itemsTop100sChauA = top100.getDataTop100().get(2).getItems();
+                                    ArrayList<DataPlaylist> itemsTop100sAuMy = top100.getDataTop100().get(3).getItems();
                                     if (!itemsTop100sNoiBat.isEmpty() && !itemsTop100sVietNam.isEmpty() && !itemsTop100sChauA.isEmpty() && !itemsTop100sAuMy.isEmpty()) {
                                         runOnUiThread(new Runnable() {
                                             @Override

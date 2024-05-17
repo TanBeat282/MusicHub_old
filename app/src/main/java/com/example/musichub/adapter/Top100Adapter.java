@@ -15,22 +15,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.activity.ViewPlaylistActivity;
-import com.example.musichub.model.chart.top100.ItemsTop100;
+import com.example.musichub.model.playlist.DataPlaylist;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 
 public class Top100Adapter extends RecyclerView.Adapter<Top100Adapter.ViewHolder> {
-    private ArrayList<ItemsTop100> itemsTop100s;
+    private ArrayList<DataPlaylist> itemsTop100s;
     private final Context context;
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setFilterList(ArrayList<ItemsTop100> fillterList) {
+    public void setFilterList(ArrayList<DataPlaylist> fillterList) {
         this.itemsTop100s = fillterList;
         notifyDataSetChanged();
     }
 
-    public Top100Adapter(ArrayList<ItemsTop100> itemsTop100s, Context context) {
+    public Top100Adapter(ArrayList<DataPlaylist> itemsTop100s, Context context) {
         this.itemsTop100s = itemsTop100s;
         this.context = context;
     }
@@ -44,7 +44,7 @@ public class Top100Adapter extends RecyclerView.Adapter<Top100Adapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        ItemsTop100 itemsTop100 = itemsTop100s.get(position);
+        DataPlaylist itemsTop100 = itemsTop100s.get(position);
 
         holder.nameTextView.setText(itemsTop100.getTitle());
         Glide.with(context)
@@ -56,7 +56,7 @@ public class Top100Adapter extends RecyclerView.Adapter<Top100Adapter.ViewHolder
                 holder.itemView.setOnClickListener(v -> {
                     Intent intent = new Intent(context, ViewPlaylistActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("song", itemsTop100);
+                    bundle.putSerializable("playlist", itemsTop100);
                     intent.putExtras(bundle);
 
                     context.startActivity(intent);

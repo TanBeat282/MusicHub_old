@@ -3,6 +3,8 @@ package com.example.musichub.adapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
+import com.example.musichub.activity.ViewPlaylistActivity;
 import com.example.musichub.model.playlist.DataPlaylist;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -51,7 +54,19 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         Glide.with(context)
                 .load(dataPlaylist.getThumbnail())
                 .into(holder.img_avatar);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.itemView.setOnClickListener(v -> {
+                    Intent intent = new Intent(context, ViewPlaylistActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("playlist", dataPlaylist);
+                    intent.putExtras(bundle);
 
+                    context.startActivity(intent);
+                });
+            }
+        });
     }
 
 

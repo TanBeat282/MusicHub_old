@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,24 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
-import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.activity.ViewArtistActivity;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
-import com.example.musichub.bottomsheet.BottomSheetOptionSong;
 import com.example.musichub.model.chart.chart_home.Artists;
-import com.example.musichub.model.chart.chart_home.Items;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.json.JSONObject;
@@ -47,12 +39,21 @@ public class SelectArtistAdapter extends RecyclerView.Adapter<SelectArtistAdapte
     private final Context context;
     private final Activity activity;
     private int selectedPosition = -1;
+    private ArtistItemClickListener listener;
 
     public SelectArtistAdapter(ArrayList<Artists> artistsList, Activity activity, Context context) {
         this.artistsList = artistsList;
         this.activity = activity;
         this.context = context;
     }
+    public void setListener(ArtistItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public interface ArtistItemClickListener {
+        void onArtistItemClick(boolean isDismiss);
+    }
+
 
     public interface ArtistFollowersCallback {
         void onFollowersFetched(int totalFollow);
@@ -100,6 +101,10 @@ public class SelectArtistAdapter extends RecyclerView.Adapter<SelectArtistAdapte
         holder.btn_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (listener != null) {
+                    listener.onArtistItemClick(true);
+                }
+
                 Intent intent = new Intent(context, ViewArtistActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("artist", artists);
@@ -110,6 +115,9 @@ public class SelectArtistAdapter extends RecyclerView.Adapter<SelectArtistAdapte
         });
 
         holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onArtistItemClick(true);
+            }
             Intent intent = new Intent(context, ViewArtistActivity.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable("artist", artists);

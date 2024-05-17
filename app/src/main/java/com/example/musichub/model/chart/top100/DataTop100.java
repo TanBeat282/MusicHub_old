@@ -1,5 +1,7 @@
 package com.example.musichub.model.chart.top100;
 
+import com.example.musichub.model.playlist.DataPlaylist;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -9,7 +11,7 @@ public class DataTop100 implements Serializable {
     private String title;
     private String link;
     private String sectionId;
-    private ArrayList<ItemsTop100> items;
+    private ArrayList<DataPlaylist> items;
 
 
     public String getSectionType() {
@@ -52,11 +54,11 @@ public class DataTop100 implements Serializable {
         this.sectionId = sectionId;
     }
 
-    public ArrayList<ItemsTop100> getItems() {
+    public ArrayList<DataPlaylist> getItems() {
         return items;
     }
 
-    public void setItems(ArrayList<ItemsTop100> items) {
+    public void setItems(ArrayList<DataPlaylist> items) {
         this.items = items;
     }
 }

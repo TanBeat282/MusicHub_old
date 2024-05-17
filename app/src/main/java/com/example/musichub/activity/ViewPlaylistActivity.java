@@ -14,10 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.palette.graphics.Palette;
@@ -28,19 +26,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.transition.Transition;
-import com.example.musichub.MainActivity;
 import com.example.musichub.R;
 import com.example.musichub.adapter.TopSongAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.helper.ui.Helper;
+import com.example.musichub.model.chart.chart_home.Album;
 import com.example.musichub.model.chart.chart_home.Items;
-import com.example.musichub.model.chart.top100.ItemsTop100;
+import com.example.musichub.model.playlist.DataPlaylist;
 import com.example.musichub.model.playlist.Playlist;
 import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
@@ -50,8 +45,6 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import java.util.ArrayList;
 import java.util.Map;
 
-import jp.wasabeef.glide.transformations.BlurTransformation;
-import jp.wasabeef.glide.transformations.ColorFilterTransformation;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -66,7 +59,8 @@ public class ViewPlaylistActivity extends AppCompatActivity {
     private LinearLayout btn_play_playlist;
     private TextView txt_content_playlist;
     private RecyclerView rv_playlist;
-    private ItemsTop100 itemsTop100;
+    private DataPlaylist dataPlaylist;
+    private Album album;
     private Items items, mSong;
     private boolean isPlaying;
     private int action;
@@ -111,6 +105,9 @@ public class ViewPlaylistActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_playlist);
 
+        Helper.changeStatusBarColor(this, R.color.black);
+        Helper.changeNavigationColor(this, R.color.gray, true);
+
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
         items = sharedPreferencesManager.restoreSongState();
 
@@ -118,6 +115,7 @@ public class ViewPlaylistActivity extends AppCompatActivity {
         btn_back = findViewById(R.id.btn_back);
         img_playlist = findViewById(R.id.img_playlist);
         txt_title_playlist = findViewById(R.id.txt_title_playlist);
+        txt_title_playlist.setSelected(true);
         txt_user_name = findViewById(R.id.txt_user_name);
         txt_song_and_time = findViewById(R.id.txt_song_and_time);
         btn_play_playlist = findViewById(R.id.btn_play_playlist);
@@ -145,6 +143,13 @@ public class ViewPlaylistActivity extends AppCompatActivity {
         topSongAdapter = new TopSongAdapter(itemsArrayList, ViewPlaylistActivity.this, ViewPlaylistActivity.this);
         rv_playlist.setAdapter(topSongAdapter);
 
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         layoutPlayer.setOnClickListener(v -> {
             Intent intent = new Intent(ViewPlaylistActivity.this, PlayNowActivity.class);
             startActivity(intent);
@@ -159,10 +164,16 @@ public class ViewPlaylistActivity extends AppCompatActivity {
         if (bundle == null) {
             return;
         } else {
-            itemsTop100 = (ItemsTop100) bundle.getSerializable("song");
-            getPlaylist(itemsTop100.getEncodeId());
+            if (bundle.getSerializable("playlist") instanceof DataPlaylist) {
+                dataPlaylist = (DataPlaylist) bundle.getSerializable("playlist");
+                getPlaylist(dataPlaylist.getEncodeId());
+            } else {
+                album = (Album) bundle.getSerializable("playlist");
+                getPlaylist(album.getEncodeId());
+            }
         }
     }
+
 
     private void sendActionToService(int action) {
         Intent intent = new Intent(this, MyService.class);
@@ -283,6 +294,8 @@ public class ViewPlaylistActivity extends AppCompatActivity {
                     call.enqueue(new Callback<Playlist>() {
                         @Override
                         public void onResponse(Call<Playlist> call, Response<Playlist> response) {
+                            String requestUrl = call.request().url().toString();
+                            Log.d(">>>>>>>>>>>>>>>>>>>", " - " + requestUrl);
                             if (response.isSuccessful()) {
                                 Playlist playlist = response.body();
                                 if (playlist != null && playlist.getErr() == 0) {

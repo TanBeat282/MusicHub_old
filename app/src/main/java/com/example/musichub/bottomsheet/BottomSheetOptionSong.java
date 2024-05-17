@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.activity.ViewArtistActivity;
+import com.example.musichub.activity.ViewPlaylistActivity;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.uliti.CheckIsFile;
 import com.example.musichub.helper.uliti.DownloadAudio;
@@ -92,6 +93,7 @@ public class BottomSheetOptionSong extends BottomSheetDialogFragment {
         LinearLayout linear_download = bottomSheetDialog.findViewById(R.id.linear_download);
         txtDownload = bottomSheetDialog.findViewById(R.id.txtDownload);
         img_Download = bottomSheetDialog.findViewById(R.id.img_Download);
+        LinearLayout linear_album = bottomSheetDialog.findViewById(R.id.linear_album);
         LinearLayout linear_artist = bottomSheetDialog.findViewById(R.id.linear_artist);
 
         linear_download.setOnClickListener(v -> {
@@ -121,6 +123,18 @@ public class BottomSheetOptionSong extends BottomSheetDialogFragment {
 
                     context.startActivity(intent);
                 }
+                bottomSheetDialog.dismiss();
+            }
+        });
+        linear_album.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ViewPlaylistActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("playlist", items.getAlbum());
+                intent.putExtras(bundle);
+
+                context.startActivity(intent);
                 bottomSheetDialog.dismiss();
             }
         });
