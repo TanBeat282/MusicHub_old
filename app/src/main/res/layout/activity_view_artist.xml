@@ -98,10 +98,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="QUAN TÂM"
-                            android:textSize="14sp"
                             android:fontFamily="@font/roboto_bold"
-                            android:textColor="@color/white" />
+                            android:text="QUAN TÂM"
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
@@ -115,10 +115,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="PHÁT NHẠC"
-                            android:textSize="14sp"
                             android:fontFamily="@font/roboto_bold"
-                            android:textColor="@color/white" />
+                            android:text="PHÁT NHẠC"
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
 
                     </LinearLayout>
                 </LinearLayout>
@@ -284,9 +284,9 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_single"
                     android:layout_width="match_parent"
-                    android:layout_marginHorizontal="10dp"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/linear_single"
+                    android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="10dp" />
 
             </RelativeLayout>
@@ -326,8 +326,8 @@
                     android:id="@+id/rv_album"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
                     android:layout_below="@+id/linear_album"
+                    android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="10dp" />
 
             </RelativeLayout>
@@ -367,9 +367,9 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_mv"
                     android:layout_width="match_parent"
-                    android:layout_marginHorizontal="10dp"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/linear_mv"
+                    android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="10dp" />
 
             </RelativeLayout>
@@ -409,8 +409,8 @@
                     android:id="@+id/rv_playlist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
                     android:layout_below="@+id/linear_playlist"
+                    android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="10dp" />
 
             </RelativeLayout>
@@ -452,6 +452,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/linear_xuathientrong"
+                    android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="10dp" />
 
             </RelativeLayout>

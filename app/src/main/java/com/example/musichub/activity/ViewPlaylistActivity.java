@@ -109,13 +109,7 @@ public class ViewPlaylistActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_view_playlist);
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
 
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
         items = sharedPreferencesManager.restoreSongState();
@@ -148,7 +142,7 @@ public class ViewPlaylistActivity extends AppCompatActivity {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rv_playlist.setLayoutManager(layoutManager);
-        topSongAdapter = new TopSongAdapter(itemsArrayList, ViewPlaylistActivity.this,ViewPlaylistActivity.this);
+        topSongAdapter = new TopSongAdapter(itemsArrayList, ViewPlaylistActivity.this, ViewPlaylistActivity.this);
         rv_playlist.setAdapter(topSongAdapter);
 
         layoutPlayer.setOnClickListener(v -> {
@@ -371,6 +365,7 @@ public class ViewPlaylistActivity extends AppCompatActivity {
 
         return brighterColor[0]; // Trả về giá trị mới
     }
+
     private void checkIsPlayingPlaylist(Items items, ArrayList<Items> songList) {
         if (items == null || songList == null) {
             return;

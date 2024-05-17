@@ -1,26 +1,18 @@
 package com.example.musichub.activity;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,22 +21,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.adapter.ArtistsAdapter;
-import com.example.musichub.adapter.SingleArtistAdapter;
+import com.example.musichub.adapter.PlaylistAdapter;
 import com.example.musichub.adapter.TopSongAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.helper.ui.Helper;
-import com.example.musichub.model.artist.DataArtist;
 import com.example.musichub.model.artist.SectionArtistArtist;
 import com.example.musichub.model.artist.SectionArtistPlaylist;
-import com.example.musichub.model.artist.SectionArtistPlaylistSingle;
 import com.example.musichub.model.artist.SectionArtistSong;
 import com.example.musichub.model.chart.chart_home.Artists;
 import com.example.musichub.model.chart.chart_home.Items;
-import com.example.musichub.model.chart.home.ItemSlider;
 import com.example.musichub.model.playlist.DataPlaylist;
-import com.example.musichub.model.song.SongDetail;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.json.JSONArray;
@@ -61,7 +49,7 @@ import retrofit2.Response;
 public class ViewArtistActivity extends AppCompatActivity {
     private Artists artists;
     private DataPlaylist dataPlaylistNewSong;
-
+    boolean isFirstPlaylist = true;
 
     private RelativeLayout relative_header;
     private NestedScrollView nested_scroll;
@@ -109,23 +97,34 @@ public class ViewArtistActivity extends AppCompatActivity {
     private TextView txt_country;
     private TextView txt_genre;
 
-
+    //noi bat
     private TopSongAdapter noibatAdapter;
     private ArrayList<Items> itemsArrayListNoiBat;
     private SectionArtistSong sectionArtistSong;
 
 
-
-    private SingleArtistAdapter singleArtistAdapter;
+    //single
+    private PlaylistAdapter singleAdapter;
     private ArrayList<DataPlaylist> dataSingleArrayList;
+    private SectionArtistPlaylist sectionArtistPlaylistSingle;
 
-    private SingleArtistAdapter playlistAdapter;
+
+    //playlist
+    private PlaylistAdapter playlistAdapter;
     private ArrayList<DataPlaylist> dataPlaylistArrayList;
+    private SectionArtistPlaylist sectionArtistPlaylist;
 
 
+    //xuat hien trong
+    private PlaylistAdapter xuatHienTrongAdapter;
+    private ArrayList<DataPlaylist> dataPlaylistXuatHienTrong;
+    private SectionArtistPlaylist sectionArtistPlaylistXuatHienTrong;
+
+
+    //other single
     private ArtistsAdapter otherSingleAdapter;
     private ArrayList<Artists> artistsArrayList;
-
+    private SectionArtistArtist sectionArtistArtist;
 
 
     @SuppressLint("ObsoleteSdkInt")
@@ -191,6 +190,7 @@ public class ViewArtistActivity extends AppCompatActivity {
         txt_genre = findViewById(R.id.txt_genre);
 
 
+        //noibat
         GridLayoutManager layoutManagerNhacMoi = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
         rv_noibat.setLayoutManager(layoutManagerNhacMoi);
 
@@ -200,28 +200,44 @@ public class ViewArtistActivity extends AppCompatActivity {
         rv_noibat.setAdapter(noibatAdapter);
 
 
+        //other single
         LinearLayoutManager layoutManagerOtherSingle = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rv_other_single.setLayoutManager(layoutManagerOtherSingle);
 
+        sectionArtistArtist = new SectionArtistArtist();
         artistsArrayList = new ArrayList<>();
         otherSingleAdapter = new ArtistsAdapter(artistsArrayList, ViewArtistActivity.this, ViewArtistActivity.this);
         rv_other_single.setAdapter(otherSingleAdapter);
 
 
+        //single
         LinearLayoutManager layoutManagerSingle = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rv_single.setLayoutManager(layoutManagerSingle);
 
+        sectionArtistPlaylistSingle = new SectionArtistPlaylist();
         dataSingleArrayList = new ArrayList<>();
-        singleArtistAdapter = new SingleArtistAdapter(dataSingleArrayList, ViewArtistActivity.this, ViewArtistActivity.this);
-        rv_single.setAdapter(singleArtistAdapter);
+        singleAdapter = new PlaylistAdapter(dataSingleArrayList, ViewArtistActivity.this, ViewArtistActivity.this);
+        rv_single.setAdapter(singleAdapter);
 
 
+        //playlist
         LinearLayoutManager layoutManagerPlaylist = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rv_playlist.setLayoutManager(layoutManagerPlaylist);
 
+        sectionArtistPlaylist = new SectionArtistPlaylist();
         dataPlaylistArrayList = new ArrayList<>();
-        playlistAdapter = new SingleArtistAdapter(dataPlaylistArrayList, ViewArtistActivity.this, ViewArtistActivity.this);
+        playlistAdapter = new PlaylistAdapter(dataPlaylistArrayList, ViewArtistActivity.this, ViewArtistActivity.this);
         rv_playlist.setAdapter(playlistAdapter);
+
+
+        //xuat hien trong
+        LinearLayoutManager layoutManagerPlaylistXuatHienTrong = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rv_xuathientrong.setLayoutManager(layoutManagerPlaylistXuatHienTrong);
+
+        sectionArtistPlaylistXuatHienTrong = new SectionArtistPlaylist();
+        dataPlaylistXuatHienTrong = new ArrayList<>();
+        xuatHienTrongAdapter = new PlaylistAdapter(dataPlaylistXuatHienTrong, ViewArtistActivity.this, ViewArtistActivity.this);
+        rv_xuathientrong.setAdapter(xuatHienTrongAdapter);
 
 
         img_back.setOnClickListener(view -> finish());
@@ -297,7 +313,6 @@ public class ViewArtistActivity extends AppCompatActivity {
     }
 
 
-
     private void getArtist(String artistId) {
         ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
             @Override
@@ -324,7 +339,7 @@ public class ViewArtistActivity extends AppCompatActivity {
                                         String totalFollow = data.getString("totalFollow");
                                         String thumbnailM = data.getString("thumbnailM");
 
-                                        String realname = data.getString("realname");
+                                        String real_name = data.getString("realname");
                                         String biography = data.getString("biography");
                                         String national = data.getString("national");
                                         String birthday = data.getString("birthday");
@@ -335,36 +350,6 @@ public class ViewArtistActivity extends AppCompatActivity {
 
                                         //song
                                         JSONArray jsonArray = data.optJSONArray("sections");
-
-//                                        //playlist
-//                                        JSONArray jsonArrayPlaylist = data.optJSONArray("sections");
-//
-//                                        SectionArtistPlaylist sectionArtistPlaylist = new SectionArtistPlaylist();
-//                                        if (jsonArrayPlaylist != null) {
-//
-//                                            JSONObject jsonObjectSong = jsonArrayPlaylist.getJSONObject(1);
-//                                            sectionArtistPlaylist.setSectionType(jsonObjectSong.getString("sectionType"));
-//                                            sectionArtistPlaylist.setViewType(jsonObjectSong.getString("viewType"));
-//                                            sectionArtistPlaylist.setTitle(jsonObjectSong.getString("title"));
-//                                            sectionArtistPlaylist.setLink(jsonObjectSong.getString("link"));
-//                                            sectionArtistPlaylist.setSectionId(jsonObjectSong.getString("sectionId"));
-//
-//                                            //playlist
-//                                            JSONArray innerItemsArray = jsonObjectSong.getJSONArray("items");
-//                                            ArrayList<DataPlaylist> dataPlaylistArrayList = new ArrayList<>();
-//                                            for (int i = 0; i < innerItemsArray.length(); i++) {
-//                                                JSONObject innerItemObject = innerItemsArray.getJSONObject(i);
-//                                                DataPlaylist dataPlaylist = DataPlaylist.fromJson(innerItemObject.toString());
-//                                                dataPlaylistArrayList.add(dataPlaylist);
-//                                            }
-//                                            sectionArtistPlaylist.setItems(dataPlaylistArrayList);
-//                                        }
-
-                                        //artist
-                                        //song
-                                        SectionArtistArtist sectionArtistArtist = new SectionArtistArtist();
-                                        SectionArtistPlaylistSingle sectionArtistPlaylistSingle = new SectionArtistPlaylistSingle();
-                                        SectionArtistPlaylist sectionArtistPlaylist = new SectionArtistPlaylist();
 
 
                                         for (int check = 0; check < jsonArray.length(); check++) {
@@ -380,7 +365,6 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                 sectionArtistSong.setLink(jsonObjectSong.getString("link"));
                                                 sectionArtistSong.setSectionId(jsonObjectSong.getString("sectionId"));
 
-                                                //items
                                                 JSONArray innerItemsArray = jsonObjectSong.getJSONArray("items");
                                                 ArrayList<Items> itemsArrayListSong = new ArrayList<>();
                                                 for (int i = 0; i < innerItemsArray.length(); i++) {
@@ -393,13 +377,12 @@ public class ViewArtistActivity extends AppCompatActivity {
 
                                             if (sectionId.equals("aSingle")) {
                                                 JSONObject jsonObjectSong = jsonArray.getJSONObject(check);
-                                                sectionArtistSong.setSectionType(jsonObjectSong.getString("sectionType"));
-                                                sectionArtistSong.setViewType(jsonObjectSong.getString("viewType"));
-                                                sectionArtistSong.setTitle(jsonObjectSong.getString("title"));
-                                                sectionArtistSong.setLink(jsonObjectSong.getString("link"));
-                                                sectionArtistSong.setSectionId(jsonObjectSong.getString("sectionId"));
+                                                sectionArtistPlaylistSingle.setSectionType(jsonObjectSong.getString("sectionType"));
+                                                sectionArtistPlaylistSingle.setViewType(jsonObjectSong.getString("viewType"));
+                                                sectionArtistPlaylistSingle.setTitle(jsonObjectSong.getString("title"));
+                                                sectionArtistPlaylistSingle.setLink(jsonObjectSong.getString("link"));
+                                                sectionArtistPlaylistSingle.setSectionId(jsonObjectSong.getString("sectionId"));
 
-                                                //items
                                                 JSONArray innerItemsArray = jsonObjectSong.getJSONArray("items");
                                                 ArrayList<DataPlaylist> dataPlaylistArrayList = new ArrayList<>();
                                                 for (int i = 0; i < innerItemsArray.length(); i++) {
@@ -412,24 +395,45 @@ public class ViewArtistActivity extends AppCompatActivity {
 
                                             if (sectionId.equals("aPlaylist")) {
                                                 JSONObject jsonObjectSong = jsonArray.getJSONObject(check);
-                                                sectionArtistSong.setSectionType(jsonObjectSong.getString("sectionType"));
-                                                sectionArtistSong.setViewType(jsonObjectSong.getString("viewType"));
-                                                sectionArtistSong.setTitle(jsonObjectSong.getString("title"));
-                                                sectionArtistSong.setLink(jsonObjectSong.getString("link"));
-                                                sectionArtistSong.setSectionId(jsonObjectSong.getString("sectionId"));
 
-                                                //items
-                                                JSONArray innerItemsArray = jsonObjectSong.getJSONArray("items");
-                                                ArrayList<DataPlaylist> dataPlaylistArrayList = new ArrayList<>();
-                                                for (int i = 0; i < innerItemsArray.length(); i++) {
-                                                    JSONObject innerItemObject = innerItemsArray.getJSONObject(i);
-                                                    DataPlaylist dataPlaylist = DataPlaylist.fromJson(innerItemObject.toString());
-                                                    dataPlaylistArrayList.add(dataPlaylist);
+                                                if (isFirstPlaylist) {
+                                                    sectionArtistPlaylist.setSectionType(jsonObjectSong.getString("sectionType"));
+                                                    sectionArtistPlaylist.setViewType(jsonObjectSong.getString("viewType"));
+                                                    sectionArtistPlaylist.setTitle(jsonObjectSong.getString("title"));
+                                                    sectionArtistPlaylist.setLink(jsonObjectSong.getString("link"));
+                                                    sectionArtistPlaylist.setSectionId(jsonObjectSong.getString("sectionId"));
+
+                                                    JSONArray innerItemsArray = jsonObjectSong.getJSONArray("items");
+                                                    ArrayList<DataPlaylist> dataPlaylistArrayList = new ArrayList<>();
+                                                    for (int i = 0; i < innerItemsArray.length(); i++) {
+                                                        JSONObject innerItemObject = innerItemsArray.getJSONObject(i);
+                                                        DataPlaylist dataPlaylist = DataPlaylist.fromJson(innerItemObject.toString());
+                                                        dataPlaylistArrayList.add(dataPlaylist);
+                                                    }
+                                                    sectionArtistPlaylist.setItems(dataPlaylistArrayList);
+
+                                                    isFirstPlaylist = false; // Đã gán cho đối tượng đầu tiên
+                                                } else {
+                                                    //xuat hien trong
+                                                    sectionArtistPlaylistXuatHienTrong.setSectionType(jsonObjectSong.getString("sectionType"));
+                                                    sectionArtistPlaylistXuatHienTrong.setViewType(jsonObjectSong.getString("viewType"));
+                                                    sectionArtistPlaylistXuatHienTrong.setTitle(jsonObjectSong.getString("title"));
+                                                    sectionArtistPlaylistXuatHienTrong.setLink(jsonObjectSong.getString("link"));
+                                                    sectionArtistPlaylistXuatHienTrong.setSectionId(jsonObjectSong.getString("sectionId"));
+
+                                                    JSONArray innerItemsArray = jsonObjectSong.getJSONArray("items");
+                                                    ArrayList<DataPlaylist> dataPlaylistArrayList = new ArrayList<>();
+                                                    for (int i = 0; i < innerItemsArray.length(); i++) {
+                                                        JSONObject innerItemObject = innerItemsArray.getJSONObject(i);
+                                                        DataPlaylist dataPlaylist = DataPlaylist.fromJson(innerItemObject.toString());
+                                                        dataPlaylistArrayList.add(dataPlaylist);
+                                                    }
+                                                    sectionArtistPlaylistXuatHienTrong.setItems(dataPlaylistArrayList);
                                                 }
-                                                sectionArtistPlaylist.setItems(dataPlaylistArrayList);
                                             }
 
 
+                                            //other single
                                             if (sectionId.equals("aReArtist")) {
                                                 JSONObject jsonObjectSong = jsonArray.getJSONObject(check);
                                                 sectionArtistArtist.setSectionType(jsonObjectSong.getString("sectionType"));
@@ -438,7 +442,6 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                 sectionArtistArtist.setLink(jsonObjectSong.getString("link"));
                                                 sectionArtistArtist.setSectionId(jsonObjectSong.getString("sectionId"));
 
-                                                //artist
                                                 JSONArray innerItemsArray = jsonObjectSong.getJSONArray("items");
                                                 ArrayList<Artists> artistsArrayList = new ArrayList<>();
                                                 for (int i = 0; i < innerItemsArray.length(); i++) {
@@ -449,6 +452,8 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                 sectionArtistArtist.setItems(artistsArrayList);
                                             }
                                         }
+
+
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
@@ -484,26 +489,31 @@ public class ViewArtistActivity extends AppCompatActivity {
 
                                                 //single
                                                 if (sectionArtistPlaylistSingle != null) {
-                                                    Log.d(">>>>>>>>>", "run: " + sectionArtistPlaylistSingle.getSectionType());
                                                     relative_single.setVisibility(View.VISIBLE);
-                                                    singleArtistAdapter.setFilterList(sectionArtistPlaylistSingle.getItems());
+                                                    singleAdapter.setFilterList(sectionArtistPlaylistSingle.getItems());
                                                 } else {
                                                     relative_single.setVisibility(View.GONE);
                                                 }
 
                                                 //playlist
                                                 if (sectionArtistPlaylist != null) {
-                                                    Log.d(">>>>>>>>>", "run: " + sectionArtistPlaylist.getSectionType());
                                                     relative_playlist.setVisibility(View.VISIBLE);
                                                     playlistAdapter.setFilterList(sectionArtistPlaylist.getItems());
                                                 } else {
                                                     relative_playlist.setVisibility(View.GONE);
                                                 }
 
+                                                //xuat hien trong
+                                                if (sectionArtistPlaylistXuatHienTrong != null) {
+                                                    relative_xuathientrong.setVisibility(View.VISIBLE);
+                                                    xuatHienTrongAdapter.setFilterList(sectionArtistPlaylistXuatHienTrong.getItems());
+                                                } else {
+                                                    relative_xuathientrong.setVisibility(View.GONE);
+                                                }
+
 
                                                 //other_artist
                                                 if (sectionArtistArtist != null) {
-                                                    Log.d(">>>>>>>>>", "run: " + sectionArtistArtist.getSectionType());
                                                     relative_other_single.setVisibility(View.VISIBLE);
                                                     otherSingleAdapter.setFilterList(sectionArtistArtist.getItems());
                                                 } else {
@@ -513,7 +523,7 @@ public class ViewArtistActivity extends AppCompatActivity {
 
                                                 CharSequence styledText = Html.fromHtml(biography);
                                                 txt_info.setText(styledText);
-                                                txt_name_real.setText(realname);
+                                                txt_name_real.setText(real_name);
                                                 txt_date_birth.setText(birthday);
                                                 txt_country.setText(national);
                                                 txt_genre.setText(national);
