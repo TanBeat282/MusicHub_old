@@ -43,4 +43,26 @@ public class Helper {
         }
         return false;
     }
+
+
+    public static String convertToIntString(int number) {
+        String numberString = String.valueOf(number);
+        int length = numberString.length();
+
+        if (length == 4) {
+            return numberString.charAt(0) + "." + numberString.charAt(1) + "K";
+        } else if (length == 5) {
+            return numberString.charAt(0) + numberString.charAt(1) + "K";
+        } else if (length == 6) {
+            return numberString.charAt(0) + numberString.charAt(1) + numberString.charAt(2) + "K";
+        } else if (length == 7) {
+            return numberString.charAt(0) + "." + numberString.charAt(1) + "M";
+        } else if (length == 8) {
+            return numberString.charAt(0) + numberString.charAt(1) + "M";
+        } else if (length == 9) {
+            return numberString.charAt(0) + numberString.charAt(1) + numberString.charAt(2) + "M";
+        } else {
+            return numberString;
+        }
+    }
 }

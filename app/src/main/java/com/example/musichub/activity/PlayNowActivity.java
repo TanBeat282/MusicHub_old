@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
@@ -536,6 +537,7 @@ public class PlayNowActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(@NonNull Call<SongDetail> call, @NonNull Response<SongDetail> response) {
                             if (response.isSuccessful()) {
+                                Log.d("getSongdeltal", call.request().url().toString());
                                 SongDetail songDetail1 = response.body();
                                 if (songDetail1 != null) {
                                     if (songDetail1.getErr() != -201) {

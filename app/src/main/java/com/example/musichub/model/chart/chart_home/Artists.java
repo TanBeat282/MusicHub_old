@@ -1,5 +1,8 @@
 package com.example.musichub.model.chart.chart_home;
 
+import com.example.musichub.model.playlist.DataPlaylist;
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 
 public class Artists implements Serializable {
@@ -101,5 +104,8 @@ public class Artists implements Serializable {
 
     public void setTotalFollow(int totalFollow) {
         this.totalFollow = totalFollow;
+    }
+    public static Artists fromJson(String json) {
+        return new Gson().fromJson(json, Artists.class);
     }
 }

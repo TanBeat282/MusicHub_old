@@ -1,7 +1,9 @@
 package com.example.musichub.model.playlist;
 
 import com.example.musichub.model.chart.chart_home.Artists;
+import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.song.Genres;
+import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -313,5 +315,8 @@ public class DataPlaylist implements Serializable {
 
     public void setLiked(boolean liked) {
         this.liked = liked;
+    }
+    public static DataPlaylist fromJson(String json) {
+        return new Gson().fromJson(json, DataPlaylist.class);
     }
 }

@@ -94,7 +94,7 @@ public class GetUrlAudioHelper {
                                 if (lyric != null) {
                                     if (lyric.getErr() != -201) {
 
-                                        callback.onSuccess(lyric.getData().getFile());
+//                                        callback.onSuccess(lyric.getData().getFile());
                                     } else {
                                         callback.onFailure(new RuntimeException("Error -201: Unable to get audio URL"));
                                     }

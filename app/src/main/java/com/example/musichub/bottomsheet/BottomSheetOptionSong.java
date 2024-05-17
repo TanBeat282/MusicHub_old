@@ -110,12 +110,17 @@ public class BottomSheetOptionSong extends BottomSheetDialogFragment {
         linear_artist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, ViewArtistActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("items", items);
-                intent.putExtras(bundle);
+                if (items.getArtists().size() >= 2) {
+                    BottomSheetSelectArtist bottomSheetSelectArtist = new BottomSheetSelectArtist(context, activity, items.getArtists());
+                    bottomSheetSelectArtist.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheetSelectArtist.getTag());
+                } else {
+                    Intent intent = new Intent(context, ViewArtistActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("artist", items.getArtists().get(0));
+                    intent.putExtras(bundle);
 
-                context.startActivity(intent);
+                    context.startActivity(intent);
+                }
                 bottomSheetDialog.dismiss();
             }
         });

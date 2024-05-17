@@ -24,7 +24,6 @@ public class Items implements Serializable {
     private boolean zingChoice;
     private boolean isPrivate;
     private boolean preRelease;
-    private long releaseDate;
     private List<String> genreIds;
     private Album album;
     private String distributor;
@@ -164,14 +163,6 @@ public class Items implements Serializable {
 
     public void setPreRelease(boolean preRelease) {
         this.preRelease = preRelease;
-    }
-
-    public long getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(long releaseDate) {
-        this.releaseDate = releaseDate;
     }
 
     public List<String> getGenreIds() {
