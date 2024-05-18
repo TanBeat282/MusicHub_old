@@ -30,7 +30,7 @@ import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.adapter.ArtistsAdapter;
 import com.example.musichub.adapter.PlaylistAdapter;
-import com.example.musichub.adapter.TopSongAdapter;
+import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
@@ -108,7 +108,7 @@ public class ViewArtistActivity extends AppCompatActivity {
     private TextView txt_genre;
 
     //noi bat
-    private TopSongAdapter noibatAdapter;
+    private SongAllAdapter noibatAdapter;
     private ArrayList<Items> itemsArrayListNoiBat;
     private SectionArtistSong sectionArtistSong;
 
@@ -267,7 +267,7 @@ public class ViewArtistActivity extends AppCompatActivity {
 
         sectionArtistSong = new SectionArtistSong();
         itemsArrayListNoiBat = new ArrayList<>();
-        noibatAdapter = new TopSongAdapter(itemsArrayListNoiBat, ViewArtistActivity.this, ViewArtistActivity.this);
+        noibatAdapter = new SongAllAdapter(itemsArrayListNoiBat, ViewArtistActivity.this, ViewArtistActivity.this);
         rv_noibat.setAdapter(noibatAdapter);
 
 

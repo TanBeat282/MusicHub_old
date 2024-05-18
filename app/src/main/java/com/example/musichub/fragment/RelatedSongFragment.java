@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.musichub.R;
-import com.example.musichub.adapter.TopSongAdapter;
+import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
 import com.example.musichub.model.Song;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class RelatedSongFragment extends Fragment {
     private RecyclerView recyclerView;
-    private TopSongAdapter adapter;
+    private SongAllAdapter adapter;
     private SharedPreferencesManager sharedPreferencesManager;
     private ArrayList<Song> songArrayList;
     private int positionSong = -1;

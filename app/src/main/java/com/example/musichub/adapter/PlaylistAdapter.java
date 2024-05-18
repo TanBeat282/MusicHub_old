@@ -54,18 +54,14 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         Glide.with(context)
                 .load(dataPlaylist.getThumbnail())
                 .into(holder.img_avatar);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.itemView.setOnClickListener(v -> {
-                    Intent intent = new Intent(context, ViewPlaylistActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("playlist", dataPlaylist);
-                    intent.putExtras(bundle);
 
-                    context.startActivity(intent);
-                });
-            }
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ViewPlaylistActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("playlist", dataPlaylist);
+            intent.putExtras(bundle);
+
+            context.startActivity(intent);
         });
     }
 

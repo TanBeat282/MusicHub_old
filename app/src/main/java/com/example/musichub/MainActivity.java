@@ -30,10 +30,9 @@ import com.denzcoskun.imageslider.models.SlideModel;
 import com.example.musichub.activity.HistoryActivity;
 import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.activity.SearchActivity;
-import com.example.musichub.adapter.BaiHatNhanhAdapter;
-import com.example.musichub.adapter.Top100Adapter;
-import com.example.musichub.adapter.TopSongAdapter;
-import com.example.musichub.adapter.VideoAdapter;
+import com.example.musichub.adapter.SongAdapter.SongMoreAdapter;
+import com.example.musichub.adapter.Top100Adapter.Top100MoreAdapter;
+import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
@@ -51,7 +50,6 @@ import com.example.musichub.model.playlist.DataPlaylist;
 import com.example.musichub.model.playlist.Playlist;
 import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
-import com.github.kiulian.downloader.YoutubeDownloader;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -69,39 +67,31 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-    private ImageView img_play_pause, img_history;
+    private ImageView img_play_pause;
     private ImageSlider image_slider;
     private RoundedImageView img_album_song;
     private LinearLayout layoutPlayer, linear_play_pause, linear_next;
     private LinearLayout btn_tat_ca, btn_viet_nam, btn_quoc_te;
     private RecyclerView rv_nhac_moi;
-    private DataHomeAll dataHomeAll = new DataHomeAll();
+    private final DataHomeAll dataHomeAll = new DataHomeAll();
     private TextView tvTitleSong, tvSingleSong;
     private LinearProgressIndicator progressIndicator;
     private Items mSong;
     private boolean isPlaying;
     private int action;
-    private int currentTime, total_time;
-    private TopSongAdapter topSongAdapter;
-    private TopSongAdapter nhacMoiAdapter;
-    private BaiHatNhanhAdapter baiHatNhanhAdapter;
-    private VideoAdapter videoAdapter;
-    private Top100Adapter top100AdapterNoiBat;
-    private Top100Adapter top100AdapterVietNam;
-    private Top100Adapter top100AdapterChauA;
-    private Top100Adapter top100AdapterAuMy;
+    private SongAllAdapter nhacMoiAdapter;
+    private SongMoreAdapter songAllAdapter;
+    private SongMoreAdapter baiHatNhanhAdapter;
+    private Top100MoreAdapter top100MoreAdapter;
     private SharedPreferencesManager sharedPreferencesManager;
     private View layoutPlayerBottom;
-    private ArrayList<Items> songListVideoBaiHat;
     private ArrayList<Items> songListChonNhanh;
     private ArrayList<Items> songListBangXepHang;
     private ArrayList<Items> itemsArrayListNhacMoi;
-    private ArrayList<DataPlaylist> itemsTop100sNoiBat, itemsTop100sVietNam, itemsTop100sChauA, itemsTop100sAuMy;
+    private ArrayList<DataPlaylist> dataPlaylistArrayListTop100;
 
 
     private RoundedImageView img_categories;
-
-    private final YoutubeDownloader downloader = new YoutubeDownloader();
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -120,8 +110,8 @@ public class MainActivity extends AppCompatActivity {
     private final BroadcastReceiver seekBarUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            currentTime = intent.getIntExtra("current_time", 0);
-            total_time = intent.getIntExtra("total_time", 0);
+            int currentTime = intent.getIntExtra("current_time", 0);
+            int total_time = intent.getIntExtra("total_time", 0);
             updateIndicator(currentTime, total_time);
         }
     };
@@ -139,17 +129,13 @@ public class MainActivity extends AppCompatActivity {
         rv_nhac_moi = findViewById(R.id.rv_nhac_moi);
         RecyclerView rv_chon_nhanh = findViewById(R.id.rv_chon_nhanh);
         RecyclerView rv_bang_xep_hang = findViewById(R.id.rv_bang_xep_hang);
-        RecyclerView rv_noibat = findViewById(R.id.rv_noibat);
-        RecyclerView rv_nhac_vietNam = findViewById(R.id.rv_nhac_vietNam);
-        RecyclerView rv_nhac_chauA = findViewById(R.id.rv_nhac_chauA);
-        RecyclerView rv_nhac_auMy = findViewById(R.id.rv_nhac_auMy);
-        RecyclerView rv_video_bai_hat_lien_quan = findViewById(R.id.rv_video_bai_hat_lien_quan);
+        RecyclerView rv_top100 = findViewById(R.id.rv_top100);
 
 
         img_categories = findViewById(R.id.img_categories);
 
 
-        img_history = findViewById(R.id.img_history);
+        ImageView img_history = findViewById(R.id.img_history);
         image_slider = findViewById(R.id.image_slider);
 
         ImageView img_search = findViewById(R.id.img_search);
@@ -177,12 +163,9 @@ public class MainActivity extends AppCompatActivity {
         itemsArrayListNhacMoi = new ArrayList<>();
         songListChonNhanh = new ArrayList<>();
         songListBangXepHang = new ArrayList<>();
-        songListVideoBaiHat = new ArrayList<>();
 
-        itemsTop100sNoiBat = new ArrayList<>();
-        itemsTop100sVietNam = new ArrayList<>();
-        itemsTop100sChauA = new ArrayList<>();
-        itemsTop100sAuMy = new ArrayList<>();
+        dataPlaylistArrayListTop100 = new ArrayList<>();
+
 
         // Khoi tạo RecyclerView và Adapter
         GridLayoutManager layoutManagerNhacMoi = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
@@ -194,45 +177,27 @@ public class MainActivity extends AppCompatActivity {
         GridLayoutManager layoutManagerBangXepHang = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
         rv_bang_xep_hang.setLayoutManager(layoutManagerBangXepHang);
 
-        GridLayoutManager layoutManagerVideoBaiHat = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
-        rv_video_bai_hat_lien_quan.setLayoutManager(layoutManagerVideoBaiHat);
-
 
         LinearLayoutManager layoutManagerNoiBat = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        rv_noibat.setLayoutManager(layoutManagerNoiBat);
-        LinearLayoutManager layoutManagerVietNam = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        rv_nhac_vietNam.setLayoutManager(layoutManagerVietNam);
-        LinearLayoutManager layoutManagerChauA = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        rv_nhac_chauA.setLayoutManager(layoutManagerChauA);
-        LinearLayoutManager layoutManagerAuMy = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        rv_nhac_auMy.setLayoutManager(layoutManagerAuMy);
+        rv_top100.setLayoutManager(layoutManagerNoiBat);
 
 
         // Khoi tạo Adapter
 
-        nhacMoiAdapter = new TopSongAdapter(itemsArrayListNhacMoi, MainActivity.this, MainActivity.this);
+        nhacMoiAdapter = new SongAllAdapter(itemsArrayListNhacMoi, MainActivity.this, MainActivity.this);
         rv_nhac_moi.setAdapter(nhacMoiAdapter);
 
 
-        baiHatNhanhAdapter = new BaiHatNhanhAdapter(songListChonNhanh, MainActivity.this);
+        baiHatNhanhAdapter = new SongMoreAdapter(songListChonNhanh, MainActivity.this, MainActivity.this);
         rv_chon_nhanh.setAdapter(baiHatNhanhAdapter);
 
 
-        topSongAdapter = new TopSongAdapter(songListBangXepHang, MainActivity.this, MainActivity.this);
-        rv_bang_xep_hang.setAdapter(topSongAdapter);
-
-//        videoAdapter = new VideoAdapter(songListVideoBaiHat, MainActivity.this);
-//        rv_video_bai_hat_lien_quan.setAdapter(videoAdapter);
+        songAllAdapter = new SongMoreAdapter(songListBangXepHang, MainActivity.this, MainActivity.this);
+        rv_bang_xep_hang.setAdapter(songAllAdapter);
 
 
-        top100AdapterNoiBat = new Top100Adapter(itemsTop100sNoiBat, MainActivity.this);
-        rv_noibat.setAdapter(top100AdapterNoiBat);
-        top100AdapterVietNam = new Top100Adapter(itemsTop100sVietNam, MainActivity.this);
-        rv_nhac_vietNam.setAdapter(top100AdapterVietNam);
-        top100AdapterChauA = new Top100Adapter(itemsTop100sChauA, MainActivity.this);
-        rv_nhac_chauA.setAdapter(top100AdapterChauA);
-        top100AdapterAuMy = new Top100Adapter(itemsTop100sAuMy, MainActivity.this);
-        rv_nhac_auMy.setAdapter(top100AdapterAuMy);
+        top100MoreAdapter = new Top100MoreAdapter(dataPlaylistArrayListTop100, MainActivity.this);
+        rv_top100.setAdapter(top100MoreAdapter);
 
         getSongCurrent();
         getBXH();
@@ -240,9 +205,6 @@ public class MainActivity extends AppCompatActivity {
         getNewRelese();
         getHome();
         getAlbum();
-
-//        Window w = getWindow();
-//        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         layoutPlayer.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, PlayNowActivity.class);
@@ -253,24 +215,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         //btn nhac moi phat hanh
-        btn_viet_nam.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkCategoriesNhacMoi(1);
-            }
-        });
-        btn_quoc_te.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkCategoriesNhacMoi(2);
-            }
-        });
-        btn_tat_ca.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkCategoriesNhacMoi(0);
-            }
-        });
+        btn_viet_nam.setOnClickListener(view -> checkCategoriesNhacMoi(1));
+        btn_quoc_te.setOnClickListener(view -> checkCategoriesNhacMoi(2));
+        btn_tat_ca.setOnClickListener(view -> checkCategoriesNhacMoi(0));
     }
 
     private void getNewRelese() {
@@ -284,20 +231,17 @@ public class MainActivity extends AppCompatActivity {
                     retrofit2.Call<NewRelease> call = service.NEW_RELEASE_CALL(map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
                     call.enqueue(new Callback<NewRelease>() {
                         @Override
-                        public void onResponse(Call<NewRelease> call, Response<NewRelease> response) {
+                        public void onResponse(@NonNull Call<NewRelease> call, @NonNull Response<NewRelease> response) {
                             if (response.isSuccessful()) {
                                 Log.d("getNewRelese", call.request().url().toString());
                                 NewRelease newRelease = response.body();
                                 if (newRelease != null && newRelease.getErr() == 0) {
                                     ArrayList<Items> itemsArrayList = newRelease.getData().getItems();
                                     if (!itemsArrayList.isEmpty()) {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                songListChonNhanh = itemsArrayList;
-                                                baiHatNhanhAdapter.setFilterList(itemsArrayList);
-                                                checkIsPlayingTop(mSong, itemsArrayList);
-                                            }
+                                        runOnUiThread(() -> {
+                                            songListChonNhanh = itemsArrayList;
+                                            baiHatNhanhAdapter.setFilterList(itemsArrayList);
+                                            checkIsPlayingTop(mSong, itemsArrayList);
                                         });
                                     } else {
                                         Log.d("TAG", "Items list is empty");
@@ -338,25 +282,22 @@ public class MainActivity extends AppCompatActivity {
                     retrofit2.Call<ChartHome> call = service.CHART_HOME_CALL(map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
                     call.enqueue(new Callback<ChartHome>() {
                         @Override
-                        public void onResponse(Call<ChartHome> call, Response<ChartHome> response) {
+                        public void onResponse(@NonNull Call<ChartHome> call, @NonNull Response<ChartHome> response) {
                             if (response.isSuccessful()) {
                                 Log.d("getBXH", call.request().url().toString());
                                 ChartHome chartHome = response.body();
                                 if (chartHome != null && chartHome.getErr() == 0) {
                                     ArrayList<Items> itemsArrayList = chartHome.getData().getRTChart().getItems();
                                     if (!itemsArrayList.isEmpty()) {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                songListBangXepHang = itemsArrayList;
-                                                topSongAdapter.setFilterList(itemsArrayList);
-                                                checkIsPlayingTop(mSong, itemsArrayList);
+                                        runOnUiThread(() -> {
+                                            songListBangXepHang = itemsArrayList;
+                                            songAllAdapter.setFilterList(itemsArrayList);
+                                            checkIsPlayingTop(mSong, itemsArrayList);
 
-                                                Glide.with(MainActivity.this)
-                                                        .load(chartHome.getData().getWeekChart().getVn().getCover())
-                                                        .into(img_categories);
+                                            Glide.with(MainActivity.this)
+                                                    .load(chartHome.getData().getWeekChart().getVn().getCover())
+                                                    .into(img_categories);
 
-                                            }
                                         });
                                     } else {
                                         Log.d("TAG", "Items list is empty");
@@ -370,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<ChartHome> call, Throwable throwable) {
+                        public void onFailure(@NonNull Call<ChartHome> call, @NonNull Throwable throwable) {
 
                         }
                     });
@@ -398,24 +339,16 @@ public class MainActivity extends AppCompatActivity {
                     retrofit2.Call<Top100> call = service.TOP100_CALL(map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
                     call.enqueue(new Callback<Top100>() {
                         @Override
-                        public void onResponse(Call<Top100> call, Response<Top100> response) {
+                        public void onResponse(@NonNull Call<Top100> call, @NonNull Response<Top100> response) {
                             if (response.isSuccessful()) {
                                 Log.d("getTop100", call.request().url().toString());
                                 Top100 top100 = response.body();
                                 if (top100 != null && top100.getErr() == 0) {
                                     ArrayList<DataPlaylist> itemsTop100sNoiBat = top100.getDataTop100().get(0).getItems();
-                                    ArrayList<DataPlaylist> itemsTop100sVietNam = top100.getDataTop100().get(1).getItems();
-                                    ArrayList<DataPlaylist> itemsTop100sChauA = top100.getDataTop100().get(2).getItems();
-                                    ArrayList<DataPlaylist> itemsTop100sAuMy = top100.getDataTop100().get(3).getItems();
-                                    if (!itemsTop100sNoiBat.isEmpty() && !itemsTop100sVietNam.isEmpty() && !itemsTop100sChauA.isEmpty() && !itemsTop100sAuMy.isEmpty()) {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                top100AdapterNoiBat.setFilterList(itemsTop100sNoiBat);
-                                                top100AdapterVietNam.setFilterList(itemsTop100sVietNam);
-                                                top100AdapterChauA.setFilterList(itemsTop100sChauA);
-                                                top100AdapterAuMy.setFilterList(itemsTop100sAuMy);
-                                            }
+                                    if (!itemsTop100sNoiBat.isEmpty()) {
+                                        runOnUiThread(() -> {
+                                            dataPlaylistArrayListTop100 = itemsTop100sNoiBat;
+                                            top100MoreAdapter.setFilterList(itemsTop100sNoiBat);
                                         });
                                     } else {
                                         Log.d("TAG", "Items list is empty");
@@ -429,7 +362,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<Top100> call, Throwable throwable) {
+                        public void onFailure(@NonNull Call<Top100> call, @NonNull Throwable throwable) {
 
                         }
                     });
@@ -464,8 +397,6 @@ public class MainActivity extends AppCompatActivity {
                                 try {
                                     String jsonData = response.body().string();
                                     JSONObject jsonObject = new JSONObject(jsonData);
-                                    int err = jsonObject.getInt("err");
-                                    String msg = jsonObject.getString("msg");
                                     JSONObject dataObject = jsonObject.getJSONObject("data");
                                     JSONArray itemsArray = dataObject.getJSONArray("items");
 
@@ -495,17 +426,14 @@ public class MainActivity extends AppCompatActivity {
                                         dataHomeSlider.setItems(innerItemSliders);
 
 
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                ArrayList<SlideModel> slideModelArrayList = new ArrayList<>();
-                                                // Lặp qua các phần tử trong dataHome.getItems() và thêm chúng vào slideModelArrayList
-                                                for (int i = 0; i < dataHomeSlider.getItems().size(); i++) {
-                                                    // Kiểm tra xem vòng lặp đã đủ số lượng phần tử cần thiết chưa
-                                                    slideModelArrayList.add(new SlideModel(dataHomeSlider.getItems().get(i).getBanner(), ScaleTypes.FIT));
-                                                }
-                                                image_slider.setImageList(slideModelArrayList);
+                                        runOnUiThread(() -> {
+                                            ArrayList<SlideModel> slideModelArrayList = new ArrayList<>();
+                                            // Lặp qua các phần tử trong dataHome.getItems() và thêm chúng vào slideModelArrayList
+                                            for (int i = 0; i < dataHomeSlider.getItems().size(); i++) {
+                                                // Kiểm tra xem vòng lặp đã đủ số lượng phần tử cần thiết chưa
+                                                slideModelArrayList.add(new SlideModel(dataHomeSlider.getItems().get(i).getBanner(), ScaleTypes.FIT));
                                             }
+                                            image_slider.setImageList(slideModelArrayList);
                                         });
 
 
@@ -555,17 +483,12 @@ public class MainActivity extends AppCompatActivity {
 
                                         // Đặt mảng innerItemSliders là mảng items của DataHome
                                         dataHomeAll.setItems(itemsData);
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                itemsArrayListNhacMoi = dataHomeAll.getItems().getAll();
-                                                nhacMoiAdapter.setFilterList(itemsArrayListNhacMoi);
-                                                checkIsPlayingTop(mSong, itemsArrayListNhacMoi);
-                                            }
+                                        runOnUiThread(() -> {
+                                            itemsArrayListNhacMoi = dataHomeAll.getItems().getAll();
+                                            nhacMoiAdapter.setFilterList(itemsArrayListNhacMoi);
+                                            checkIsPlayingTop(mSong, itemsArrayListNhacMoi);
                                         });
 
-                                    } else {
-                                        // Xử lý khi mảng items không có phần tử nào
                                     }
                                 } catch (JSONException | IOException e) {
                                     e.printStackTrace();
@@ -578,7 +501,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+                        public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable throwable) {
 
                         }
                     });
@@ -605,13 +528,13 @@ public class MainActivity extends AppCompatActivity {
                     retrofit2.Call<Playlist> call = service.PLAYLIST_CALL("SC0708EF", map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
                     call.enqueue(new Callback<Playlist>() {
                         @Override
-                        public void onResponse(Call<Playlist> call, Response<Playlist> response) {
+                        public void onResponse(@NonNull Call<Playlist> call, @NonNull Response<Playlist> response) {
                             String requestUrl = call.request().url().toString();
                             Log.d(">>>>>>>>>>>>>>>>>>>", " - " + requestUrl);
                         }
 
                         @Override
-                        public void onFailure(Call<Playlist> call, Throwable throwable) {
+                        public void onFailure(@NonNull Call<Playlist> call, @NonNull Throwable throwable) {
 
                         }
                     });
@@ -664,15 +587,7 @@ public class MainActivity extends AppCompatActivity {
     private void handleLayoutMusic(int action) {
         switch (action) {
             case MyService.ACTION_START:
-                layoutPlayerBottom.setVisibility(View.VISIBLE);
-                showInfoSong();
-                setStatusButtonPlayOrPause();
-                break;
             case MyService.ACTION_PAUSE:
-                layoutPlayerBottom.setVisibility(View.VISIBLE);
-                showInfoSong();
-                setStatusButtonPlayOrPause();
-                break;
             case MyService.ACTION_RESUME:
                 layoutPlayerBottom.setVisibility(View.VISIBLE);
                 showInfoSong();
@@ -748,63 +663,9 @@ public class MainActivity extends AppCompatActivity {
         mSong = sharedPreferencesManager.restoreSongState();
         isPlaying = sharedPreferencesManager.restoreIsPlayState();
         action = sharedPreferencesManager.restoreActionState();
-//        getBaiHatNhanh(mSong);
-//        new SearchTask().execute();
         handleLayoutMusic(action);
     }
 
-//    @SuppressLint("StaticFieldLeak")
-//    private class SearchTask extends AsyncTask<Void, Void, SearchResult> {
-//        @Override
-//        protected SearchResult doInBackground(Void... voids) {
-//            RequestSearchResult request = new RequestSearchResult(mSong.getTitle())
-//                    .filter(
-//                            TypeField.VIDEO,
-//                            FormatField.HD);
-//
-//            return downloader.search(request).data();
-//        }
-//
-//        @Override
-//        protected void onPostExecute(SearchResult result) {
-//            List<SearchResultVideoDetails> videos = result.videos();
-//
-//            for (SearchResultVideoDetails searchResultVideoDetails : videos) {
-//                new GetVideoInfoTask().execute(searchResultVideoDetails.videoId());
-//            }
-//        }
-//    }
-
-    //    private class GetVideoInfoTask extends AsyncTask<String, Void, VideoInfo> {
-//        @Override
-//        protected VideoInfo doInBackground(String... videoIds) {
-//            RequestVideoInfo request = new RequestVideoInfo(videoIds[0]);
-//            com.github.kiulian.downloader.downloader.response.Response<VideoInfo> response = downloader.getVideoInfo(request);
-//            VideoInfo info = response.data();
-//            return info;
-//        }
-//
-//        @SuppressLint("NotifyDataSetChanged")
-//        @Override
-//        protected void onPostExecute(VideoInfo info) {
-//            VideoDetails details = info.details();
-//            List<VideoWithAudioFormat> videoWithAudioFormats = info.videoWithAudioFormats();
-//
-//            Items song = new Items();
-//            song.setId(details.videoId());
-//            song.setArtist(String.valueOf(details.viewCount()));
-//            song.setThumb_medium(details.thumbnails().get(0));
-//            song.setThumb(details.thumbnails().get(0));
-//            song.setName(details.title());
-//            song.setLyric(null);
-//            song.setLink_audio(videoWithAudioFormats.get(1).url());
-//
-//            songListVideoBaiHat.add(song);
-//            videoAdapter.notifyDataSetChanged();
-//
-//        }
-//
-//    }
     private void checkIsPlayingTop(Items items, ArrayList<Items> songList) {
         if (items == null || songList == null) {
             return;
@@ -814,7 +675,7 @@ public class MainActivity extends AppCompatActivity {
         if (currentEncodeId != null && !currentEncodeId.isEmpty()) {
             for (Items song : songList) {
                 if (currentEncodeId.equals(song.getEncodeId())) {
-                    topSongAdapter.updatePlayingStatus(currentEncodeId);
+                    songAllAdapter.updatePlayingStatus(currentEncodeId);
                     break;
                 }
             }
@@ -824,7 +685,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        new SearchTask().execute();
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("send_data_to_activity"));
         LocalBroadcastManager.getInstance(this).registerReceiver(seekBarUpdateReceiver, new IntentFilter("send_seekbar_update"));
     }

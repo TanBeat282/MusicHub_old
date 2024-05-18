@@ -1,6 +1,7 @@
 package com.example.musichub.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.musichub.R;
 import com.example.musichub.adapter.LichSuBaiHatAdapter;
-import com.example.musichub.adapter.TopSongAdapter;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
@@ -67,7 +67,7 @@ public class HistoryActivity extends AppCompatActivity {
         rv_history.setAdapter(lichSuBaiHatAdapter);
 
         img_back.setOnClickListener(view -> finish());
-
+        img_search.setOnClickListener(view -> startActivity(new Intent(HistoryActivity.this, SearchActivity.class)));
 
         getSongHistory();
     }

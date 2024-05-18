@@ -10,9 +10,9 @@
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll"
-        android:layout_above="@+id/layoutPlayerBottom"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layoutPlayerBottom">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -648,7 +648,6 @@
 
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
-
 
     <RelativeLayout
         android:id="@+id/relative_header"

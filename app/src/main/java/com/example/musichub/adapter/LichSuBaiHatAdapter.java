@@ -43,7 +43,7 @@ public class LichSuBaiHatAdapter extends RecyclerView.Adapter<LichSuBaiHatAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_top_song, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_song, parent, false);
         return new ViewHolder(view);
     }
 

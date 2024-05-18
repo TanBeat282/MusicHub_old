@@ -1,18 +1,10 @@
 package com.example.musichub.fragment;
 
-import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -20,18 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.musichub.R;
-import com.example.musichub.adapter.TopSongAdapter;
+import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
 import com.example.musichub.model.chart.chart_home.Items;
-import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 
 public class ContinueSongFragment extends Fragment {
     private RecyclerView recyclerView;
-    private TopSongAdapter adapter;
+    private SongAllAdapter adapter;
     private SharedPreferencesManager sharedPreferencesManager;
     private ArrayList<Items> songArrayList;
     private int positionSong = -1;
