@@ -262,6 +262,7 @@
                 android:padding="10dp">
 
                 <LinearLayout
+                    android:id="@+id/linear_bxh_new_release_song"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

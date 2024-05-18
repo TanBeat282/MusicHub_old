@@ -27,6 +27,7 @@ import com.bumptech.glide.Glide;
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.example.musichub.activity.BXHNewSongActivity;
 import com.example.musichub.activity.HistoryActivity;
 import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.activity.SearchActivity;
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private RoundedImageView img_album_song;
     private LinearLayout layoutPlayer, linear_play_pause, linear_next;
     private LinearLayout btn_tat_ca, btn_viet_nam, btn_quoc_te;
+    private LinearLayout linear_bxh_new_release_song;
     private RecyclerView rv_nhac_moi;
     private final DataHomeAll dataHomeAll = new DataHomeAll();
     private TextView tvTitleSong, tvSingleSong;
@@ -133,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         img_categories = findViewById(R.id.img_categories);
+        linear_bxh_new_release_song = findViewById(R.id.linear_bxh_new_release_song);
 
 
         ImageView img_history = findViewById(R.id.img_history);
@@ -213,6 +216,17 @@ public class MainActivity extends AppCompatActivity {
         img_search.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SearchActivity.class)));
         img_history.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, HistoryActivity.class)));
 
+        linear_bxh_new_release_song.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, BXHNewSongActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("new_release_song_list", songListChonNhanh);
+                intent.putExtras(bundle);
+
+                startActivity(intent);
+            }
+        });
 
         //btn nhac moi phat hanh
         btn_viet_nam.setOnClickListener(view -> checkCategoriesNhacMoi(1));
