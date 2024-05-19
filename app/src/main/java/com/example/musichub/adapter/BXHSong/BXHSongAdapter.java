@@ -24,21 +24,22 @@ import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.bottomsheet.BottomSheetOptionSong;
+import com.example.musichub.helper.ui.PlayingStatusUpdater;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 
-public class BXHSongAdapter extends RecyclerView.Adapter<BXHSongAdapter.ViewHolder> {
+public class BXHSongAdapter extends RecyclerView.Adapter<BXHSongAdapter.ViewHolder> implements PlayingStatusUpdater {
     private ArrayList<Items> songList;
     private final Context context;
     private final Activity activity;
     private int selectedPosition = -1;
-    private int positionRank = 0;
+    private int positionRank = 1;
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setFilterList(ArrayList<Items> fillterList) {
-        this.songList = fillterList;
+    public void setFilterList(ArrayList<Items> filterList) {
+        this.songList = filterList;
         notifyDataSetChanged();
     }
 
@@ -48,6 +49,23 @@ public class BXHSongAdapter extends RecyclerView.Adapter<BXHSongAdapter.ViewHold
         this.context = context;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void updatePlayingStatus(String currentEncodeId) {
+        if (songList != null) {
+            for (int i = 0; i < songList.size(); i++) {
+                Items item = songList.get(i);
+                if (item.getEncodeId().equals(currentEncodeId)) {
+                    selectedPosition = i;
+                    notifyDataSetChanged();
+                    return;
+                }
+            }
+        }
+        selectedPosition = -1;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -55,10 +73,10 @@ public class BXHSongAdapter extends RecyclerView.Adapter<BXHSongAdapter.ViewHold
         return new ViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Items song = songList.get(position);
-
 
         holder.nameTextView.setText(song.getTitle());
         holder.artistTextView.setText(song.getArtistsNames());
@@ -67,13 +85,12 @@ public class BXHSongAdapter extends RecyclerView.Adapter<BXHSongAdapter.ViewHold
                 .into(holder.thumbImageView);
 
         if (song.getRakingStatus() > 0) {
-            setImageAndTint(holder.img_bxh, holder.txt_number_top_song, holder.txt_rank_status, R.drawable.ic_trending_up, R.color.green, song.getRakingStatus());
+            setImageAndTint(holder.img_bxh, holder.txt_number_top_song, holder.txt_rank_status, R.drawable.ic_trending_up, R.color.green, song.getRakingStatus(), position);
         } else if (song.getRakingStatus() < 0) {
-            setImageAndTint(holder.img_bxh, holder.txt_number_top_song, holder.txt_rank_status, R.drawable.ic_trending_down, R.color.red, song.getRakingStatus());
+            setImageAndTint(holder.img_bxh, holder.txt_number_top_song, holder.txt_rank_status, R.drawable.ic_trending_down, R.color.red, song.getRakingStatus(), position);
         } else {
-            setImageAndTint(holder.img_bxh, holder.txt_number_top_song, holder.txt_rank_status, R.drawable.ic_trending_flat, R.color.colorSecondaryText, song.getRakingStatus());
+            setImageAndTint(holder.img_bxh, holder.txt_number_top_song, holder.txt_rank_status, R.drawable.ic_trending_flat, R.color.colorSecondaryText, song.getRakingStatus(), position);
         }
-
 
         if (selectedPosition == position) {
             int colorSpotify = ContextCompat.getColor(context, R.color.colorSpotify);
@@ -83,6 +100,7 @@ public class BXHSongAdapter extends RecyclerView.Adapter<BXHSongAdapter.ViewHold
             holder.nameTextView.setTextColor(Color.WHITE);
             holder.aniPlay.setVisibility(View.GONE);
         }
+
         int premiumColor;
         if (song.getStreamingStatus() == 2) {
             premiumColor = ContextCompat.getColor(context, R.color.yellow);
@@ -91,18 +109,10 @@ public class BXHSongAdapter extends RecyclerView.Adapter<BXHSongAdapter.ViewHold
         }
         holder.nameTextView.setTextColor(premiumColor);
 
-        holder.btn_more.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showBottomSheetInfo(song);
-            }
-        });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                showBottomSheetInfo(song);
-                return false;
-            }
+        holder.btn_more.setOnClickListener(view -> showBottomSheetInfo(song));
+        holder.itemView.setOnLongClickListener(view -> {
+            showBottomSheetInfo(song);
+            return false;
         });
 
         holder.itemView.setOnClickListener(v -> {
@@ -156,12 +166,12 @@ public class BXHSongAdapter extends RecyclerView.Adapter<BXHSongAdapter.ViewHold
         }
     }
 
-    private void setImageAndTint(ImageView imageView, TextView textView, TextView txt_rank_status, int resId, int colorId, int rankingStatus) {
+    private void setImageAndTint(ImageView imageView, TextView textView, TextView txt_rank_status, int resId, int colorId, int rankingStatus, int position) {
         imageView.setImageResource(resId);
         int color = ContextCompat.getColor(context, colorId);
         imageView.setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
-        textView.setText(String.valueOf(positionRank++));
+        textView.setText(String.valueOf(position + 1));
 
         txt_rank_status.setText(String.valueOf(rankingStatus));
         txt_rank_status.setTextColor(color);
@@ -172,26 +182,8 @@ public class BXHSongAdapter extends RecyclerView.Adapter<BXHSongAdapter.ViewHold
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void updatePlayingStatus(String currentPlayingEncodeId) {
-        if (songList != null) {
-            for (int i = 0; i < songList.size(); i++) {
-                Items item = songList.get(i);
-                if (item.getEncodeId().equals(currentPlayingEncodeId)) {
-                    selectedPosition = i;
-                    notifyDataSetChanged(); // Thông báo dữ liệu đã thay đổi để cập nhật giao diện
-                    return;
-                }
-            }
-        }
-        selectedPosition = -1; // Nếu không tìm thấy, không bài hát nào được chọn
-        notifyDataSetChanged();
-    }
-
     private void showBottomSheetInfo(Items items) {
         BottomSheetOptionSong bottomSheetOptionSong = new BottomSheetOptionSong(context, activity, items);
         bottomSheetOptionSong.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheetOptionSong.getTag());
     }
-
-
 }

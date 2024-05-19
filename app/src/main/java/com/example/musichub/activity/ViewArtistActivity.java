@@ -35,6 +35,7 @@ import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.helper.ui.Helper;
+import com.example.musichub.helper.ui.MusicHelper;
 import com.example.musichub.model.artist.SectionArtistArtist;
 import com.example.musichub.model.artist.SectionArtistPlaylist;
 import com.example.musichub.model.artist.SectionArtistSong;
@@ -138,44 +139,8 @@ public class ViewArtistActivity extends AppCompatActivity {
 
 
     //player bottom
-
-    private Items items, mSong;
-    private boolean isPlaying;
-    private int action;
-
     private SharedPreferencesManager sharedPreferencesManager;
-
-    private View layoutPlayerBottom;
-    private LinearLayout layoutPlayer, linear_play_pause, linear_next;
-    private ImageView img_play_pause;
-    private RoundedImageView img_album_song;
-    private TextView tvTitleSong, tvSingleSong;
-    private LinearProgressIndicator progressIndicator;
-    private int currentTime, total_time;
-
-    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle bundle = intent.getExtras();
-            if (bundle == null) {
-                return;
-            }
-            mSong = (Items) bundle.get("object_song");
-            isPlaying = bundle.getBoolean("status_player");
-            action = bundle.getInt("action_music");
-            handleLayoutMusic(action);
-            checkIsPlayingPlaylist(mSong, itemsArrayListNoiBat);
-        }
-    };
-
-    private final BroadcastReceiver seekBarUpdateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            currentTime = intent.getIntExtra("current_time", 0);
-            total_time = intent.getIntExtra("total_time", 0);
-            updateIndicator(currentTime, total_time);
-        }
-    };
+    private MusicHelper musicHelper;
 
 
     @SuppressLint("ObsoleteSdkInt")
@@ -192,8 +157,7 @@ public class ViewArtistActivity extends AppCompatActivity {
 
 
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
-        items = sharedPreferencesManager.restoreSongState();
-
+        musicHelper = new MusicHelper(this, sharedPreferencesManager);
 
         img_back = findViewById(R.id.img_back);
         img_more = findViewById(R.id.img_more);
@@ -243,23 +207,6 @@ public class ViewArtistActivity extends AppCompatActivity {
         txt_date_birth = findViewById(R.id.txt_date_birth);
         txt_country = findViewById(R.id.txt_country);
         txt_genre = findViewById(R.id.txt_genre);
-
-
-        //player bottom
-        layoutPlayerBottom = findViewById(R.id.layoutPlayerBottom);
-        layoutPlayer = layoutPlayerBottom.findViewById(R.id.layoutPlayer);
-        linear_play_pause = layoutPlayerBottom.findViewById(R.id.linear_play_pause);
-        img_play_pause = layoutPlayerBottom.findViewById(R.id.img_play_pause);
-
-        linear_next = layoutPlayerBottom.findViewById(R.id.linear_next);
-
-        img_album_song = layoutPlayerBottom.findViewById(R.id.img_album_song);
-        tvTitleSong = layoutPlayerBottom.findViewById(R.id.txtTile);
-        tvTitleSong.setSelected(true);
-        tvSingleSong = layoutPlayerBottom.findViewById(R.id.txtArtist);
-        tvSingleSong.setSelected(true);
-        progressIndicator = layoutPlayerBottom.findViewById(R.id.progressIndicator);
-
 
         //noibat
         GridLayoutManager layoutManagerNhacMoi = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
@@ -311,6 +258,27 @@ public class ViewArtistActivity extends AppCompatActivity {
         rv_xuathientrong.setAdapter(xuatHienTrongAdapter);
 
 
+        //player bottom
+        // Khởi tạo các view
+        View layoutPlayerBottom = findViewById(R.id.layoutPlayerBottom);
+        LinearLayout layoutPlayer = layoutPlayerBottom.findViewById(R.id.layoutPlayer);
+        LinearLayout linearPlayPause = layoutPlayerBottom.findViewById(R.id.linear_play_pause);
+        ImageView imgPlayPause = layoutPlayerBottom.findViewById(R.id.img_play_pause);
+        LinearLayout linearNext = layoutPlayerBottom.findViewById(R.id.linear_next);
+        ImageView imgAlbumSong = layoutPlayerBottom.findViewById(R.id.img_album_song);
+        TextView tvTitleSong = layoutPlayerBottom.findViewById(R.id.txtTile);
+        tvTitleSong.setSelected(true);
+        TextView tvSingleSong = layoutPlayerBottom.findViewById(R.id.txtArtist);
+        tvSingleSong.setSelected(true);
+        LinearProgressIndicator progressIndicator = layoutPlayerBottom.findViewById(R.id.progressIndicator);
+
+        musicHelper.initViews(layoutPlayerBottom, layoutPlayer, linearPlayPause, imgPlayPause, linearNext, imgAlbumSong, tvTitleSong, tvSingleSong, progressIndicator);
+
+        // Lấy thông tin bài hát hiện tại
+        musicHelper.getSongCurrent();
+        musicHelper.initAdapter(noibatAdapter);
+
+
         img_back.setOnClickListener(view -> finish());
 
         nested_scroll.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
@@ -351,7 +319,6 @@ public class ViewArtistActivity extends AppCompatActivity {
         });
 
         getBundleSong();
-        getSongCurrent();
     }
 
     private void getBundleSong() {
@@ -379,111 +346,6 @@ public class ViewArtistActivity extends AppCompatActivity {
             }
         }
         return -1; // Trả về -1 nếu không tìm thấy phần tử
-    }
-
-    private void getSongCurrent() {
-        mSong = sharedPreferencesManager.restoreSongState();
-        isPlaying = sharedPreferencesManager.restoreIsPlayState();
-        action = sharedPreferencesManager.restoreActionState();
-        handleLayoutMusic(action);
-    }
-
-    private void handleLayoutMusic(int action) {
-        switch (action) {
-            case MyService.ACTION_START:
-                layoutPlayerBottom.setVisibility(View.VISIBLE);
-                showInfoSong();
-                setStatusButtonPlayOrPause();
-                break;
-            case MyService.ACTION_PAUSE:
-                layoutPlayerBottom.setVisibility(View.VISIBLE);
-                showInfoSong();
-                setStatusButtonPlayOrPause();
-                break;
-            case MyService.ACTION_RESUME:
-                layoutPlayerBottom.setVisibility(View.VISIBLE);
-                showInfoSong();
-                setStatusButtonPlayOrPause();
-                break;
-            case MyService.ACTION_CLEAR:
-                layoutPlayerBottom.setVisibility(View.GONE);
-                break;
-        }
-    }
-
-    private void showInfoSong() {
-        if (mSong == null) {
-            return;
-        }
-
-        Glide.with(this)
-                .load(mSong.getThumbnail())
-                .into(img_album_song);
-        tvTitleSong.setText(mSong.getTitle());
-        tvSingleSong.setText(mSong.getArtistsNames());
-
-        linear_play_pause.setOnClickListener(v -> {
-            if (!Helper.isMyServiceRunning(ViewArtistActivity.this, MyService.class)) {
-                startService(new Intent(this, MyService.class));
-            }
-            if (isPlaying) {
-                sendActionToService(MyService.ACTION_PAUSE);
-            } else {
-                sendActionToService(MyService.ACTION_RESUME);
-            }
-        });
-        linear_next.setOnClickListener(v -> {
-            if (!Helper.isMyServiceRunning(ViewArtistActivity.this, MyService.class)) {
-                startService(new Intent(ViewArtistActivity.this, MyService.class));
-            }
-            sendActionToService(MyService.ACTION_NEXT);
-        });
-        int color = getResources().getColor(R.color.gray);
-        ColorStateList colorStateList = ColorStateList.valueOf(color);
-        ViewCompat.setBackgroundTintList(layoutPlayer, colorStateList);
-
-    }
-
-    private void sendActionToService(int action) {
-        Intent intent = new Intent(this, MyService.class);
-        intent.putExtra("action_music_service", action);
-        startService(intent);
-    }
-
-    private void setStatusButtonPlayOrPause() {
-        if (!Helper.isMyServiceRunning(ViewArtistActivity.this, MyService.class)) {
-            isPlaying = false;
-        }
-        if (isPlaying) {
-            img_play_pause.setImageResource(R.drawable.baseline_pause_24);
-        } else {
-            img_play_pause.setImageResource(R.drawable.baseline_play_arrow_24);
-
-        }
-    }
-
-    private void updateIndicator(int currentTime, int totalTime) {
-        if (totalTime > 0) {
-            float progress = (float) currentTime / totalTime;
-            int progressInt = (int) (progress * 100);
-            progressIndicator.setProgressCompat(progressInt, true);
-        }
-    }
-
-    private void checkIsPlayingPlaylist(Items items, ArrayList<Items> songList) {
-        if (items == null || songList == null) {
-            return;
-        }
-
-        String currentEncodeId = items.getEncodeId();
-        if (currentEncodeId != null && !currentEncodeId.isEmpty()) {
-            for (Items song : songList) {
-                if (currentEncodeId.equals(song.getEncodeId())) {
-                    noibatAdapter.updatePlayingStatus(currentEncodeId);
-                    break;
-                }
-            }
-        }
     }
 
     private void getArtist(String artistId) {
@@ -657,6 +519,7 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                     relative_noibat.setVisibility(View.VISIBLE);
                                                     itemsArrayListNoiBat = sectionArtistSong.getItems();
                                                     noibatAdapter.setFilterList(sectionArtistSong.getItems());
+                                                    musicHelper.checkIsPlayingPlaylist(sharedPreferencesManager.restoreSongState(), itemsArrayListNoiBat, noibatAdapter);
                                                 } else {
                                                     relative_new_song.setVisibility(View.GONE);
                                                 }
@@ -735,15 +598,14 @@ public class ViewArtistActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("send_data_to_activity"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(seekBarUpdateReceiver, new IntentFilter("send_seekbar_update"));
+        musicHelper.registerReceivers();
+        musicHelper.checkIsPlayingPlaylist(sharedPreferencesManager.restoreSongState(), itemsArrayListNoiBat, noibatAdapter);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(seekBarUpdateReceiver);
+        musicHelper.unregisterReceivers();
     }
 
 }

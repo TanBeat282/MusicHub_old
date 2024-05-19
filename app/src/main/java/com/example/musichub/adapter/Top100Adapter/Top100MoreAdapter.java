@@ -32,11 +32,13 @@ public class Top100MoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         this.itemsTop100s = itemsTop100s;
         this.context = context;
     }
+
     @SuppressLint("NotifyDataSetChanged")
     public void setFilterList(ArrayList<DataPlaylist> fillterList) {
         this.itemsTop100s = fillterList;
         notifyDataSetChanged();
     }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

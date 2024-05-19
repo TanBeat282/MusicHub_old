@@ -19,27 +19,43 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.activity.PlayNowActivity;
+import com.example.musichub.helper.ui.PlayingStatusUpdater;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 
-public class LichSuBaiHatAdapter extends RecyclerView.Adapter<LichSuBaiHatAdapter.ViewHolder> {
+public class LichSuBaiHatAdapter extends RecyclerView.Adapter<LichSuBaiHatAdapter.ViewHolder> implements PlayingStatusUpdater {
     private ArrayList<Items> songList;
     private final Context context;
     private int selectedPosition = -1;
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void setFilterList(ArrayList<Items> fillterList) {
-        this.songList = fillterList;
-        notifyDataSetChanged();
-    }
 
     public LichSuBaiHatAdapter(ArrayList<Items> songList, Context context) {
         this.songList = songList;
         this.context = context;
     }
-
+    @SuppressLint("NotifyDataSetChanged")
+    public void setFilterList(ArrayList<Items> fillterList) {
+        this.songList = fillterList;
+        notifyDataSetChanged();
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void updatePlayingStatus(String currentEncodeId) {
+        if (songList != null) {
+            for (int i = 0; i < songList.size(); i++) {
+                Items item = songList.get(i);
+                if (item.getEncodeId().equals(currentEncodeId)) {
+                    selectedPosition = i;
+                    notifyDataSetChanged();
+                    return;
+                }
+            }
+        }
+        selectedPosition = -1;
+        notifyDataSetChanged();
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -108,21 +124,6 @@ public class LichSuBaiHatAdapter extends RecyclerView.Adapter<LichSuBaiHatAdapte
             artistTextView.setSelected(true);
             nameTextView.setSelected(true);
         }
-    }
-    @SuppressLint("NotifyDataSetChanged")
-    public void updatePlayingStatus(String currentPlayingEncodeId) {
-        if (songList != null) {
-            for (int i = 0; i < songList.size(); i++) {
-                Items item = songList.get(i);
-                if (item.getEncodeId().equals(currentPlayingEncodeId)) {
-                    selectedPosition = i;
-                    notifyDataSetChanged(); // Thông báo dữ liệu đã thay đổi để cập nhật giao diện
-                    return;
-                }
-            }
-        }
-        selectedPosition = -1; // Nếu không tìm thấy, không bài hát nào được chọn
-        notifyDataSetChanged();
     }
 
 }

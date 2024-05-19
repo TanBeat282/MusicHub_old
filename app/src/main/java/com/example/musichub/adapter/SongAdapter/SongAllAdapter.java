@@ -23,12 +23,13 @@ import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.bottomsheet.BottomSheetOptionSong;
+import com.example.musichub.helper.ui.PlayingStatusUpdater;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 
-public class SongAllAdapter extends RecyclerView.Adapter<SongAllAdapter.ViewHolder> {
+public class SongAllAdapter extends RecyclerView.Adapter<SongAllAdapter.ViewHolder> implements PlayingStatusUpdater {
     private ArrayList<Items> songList;
     private final Context context;
     private final Activity activity;
@@ -39,7 +40,22 @@ public class SongAllAdapter extends RecyclerView.Adapter<SongAllAdapter.ViewHold
         this.songList = fillterList;
         notifyDataSetChanged();
     }
-
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void updatePlayingStatus(String currentEncodeId) {
+        if (songList != null) {
+            for (int i = 0; i < songList.size(); i++) {
+                Items item = songList.get(i);
+                if (item.getEncodeId().equals(currentEncodeId)) {
+                    selectedPosition = i;
+                    notifyDataSetChanged();
+                    return;
+                }
+            }
+        }
+        selectedPosition = -1;
+        notifyDataSetChanged();
+    }
     public SongAllAdapter(ArrayList<Items> songList, Activity activity, Context context) {
         this.songList = songList;
         this.activity = activity;
@@ -135,22 +151,6 @@ public class SongAllAdapter extends RecyclerView.Adapter<SongAllAdapter.ViewHold
             artistTextView.setSelected(true);
             nameTextView.setSelected(true);
         }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    public void updatePlayingStatus(String currentPlayingEncodeId) {
-        if (songList != null) {
-            for (int i = 0; i < songList.size(); i++) {
-                Items item = songList.get(i);
-                if (item.getEncodeId().equals(currentPlayingEncodeId)) {
-                    selectedPosition = i;
-                    notifyDataSetChanged(); // Thông báo dữ liệu đã thay đổi để cập nhật giao diện
-                    return;
-                }
-            }
-        }
-        selectedPosition = -1; // Nếu không tìm thấy, không bài hát nào được chọn
-        notifyDataSetChanged();
     }
 
     private void showBottomSheetInfo(Items items) {

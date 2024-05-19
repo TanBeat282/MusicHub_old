@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,9 +18,11 @@ import com.example.musichub.adapter.SearchAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SearchCategories;
+import com.example.musichub.helper.ui.MusicHelper;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.search.Search;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -29,15 +32,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SearchActivity extends AppCompatActivity {
-    private SearchAdapter adapter;
+    private SearchAdapter searchAdapter;
     private RecyclerView recyclerView;
     private LinearLayout txtNoData;
-    private ArrayList<Items> songList;
-    private Items items;
+    private ArrayList<Items> searchArrayList;
     private SharedPreferencesManager sharedPreferencesManager;
     private Handler handler = new Handler();
     private static final int DELAY = 1500;
     private Runnable searchRunnable;
+    private MusicHelper musicHelper;
 
 
     @Override
@@ -46,7 +49,7 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         sharedPreferencesManager = new SharedPreferencesManager(SearchActivity.this);
-        items = sharedPreferencesManager.restoreSongState();
+        musicHelper = new MusicHelper(this, sharedPreferencesManager);
 
         SearchView searchView = findViewById(R.id.searchView);
         recyclerView = findViewById(R.id.recyclerView);
@@ -57,9 +60,30 @@ public class SearchActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Khởi tạo Adapter
-        songList = new ArrayList<>();
-        adapter = new SearchAdapter(songList, this);
-        recyclerView.setAdapter(adapter);
+        searchArrayList = new ArrayList<>();
+        searchAdapter = new SearchAdapter(searchArrayList, this);
+        recyclerView.setAdapter(searchAdapter);
+
+
+        // Khởi tạo các view
+        View layoutPlayerBottom = findViewById(R.id.layoutPlayerBottom);
+        LinearLayout layoutPlayer = layoutPlayerBottom.findViewById(R.id.layoutPlayer);
+        LinearLayout linearPlayPause = layoutPlayerBottom.findViewById(R.id.linear_play_pause);
+        ImageView imgPlayPause = layoutPlayerBottom.findViewById(R.id.img_play_pause);
+        LinearLayout linearNext = layoutPlayerBottom.findViewById(R.id.linear_next);
+        ImageView imgAlbumSong = layoutPlayerBottom.findViewById(R.id.img_album_song);
+        TextView tvTitleSong = layoutPlayerBottom.findViewById(R.id.txtTile);
+        tvTitleSong.setSelected(true);
+        TextView tvSingleSong = layoutPlayerBottom.findViewById(R.id.txtArtist);
+        tvSingleSong.setSelected(true);
+        LinearProgressIndicator progressIndicator = layoutPlayerBottom.findViewById(R.id.progressIndicator);
+
+        musicHelper.initViews(layoutPlayerBottom, layoutPlayer, linearPlayPause, imgPlayPause, linearNext, imgAlbumSong, tvTitleSong, tvSingleSong, progressIndicator);
+
+        // Lấy thông tin bài hát hiện tại
+        musicHelper.getSongCurrent();
+        musicHelper.initAdapter(searchAdapter);
+
 
         txtNoData.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
@@ -119,8 +143,14 @@ public class SearchActivity extends AppCompatActivity {
                                         ArrayList<Items> itemsArrayList = search.getData().getSongs();
                                         if (!itemsArrayList.isEmpty()) {
                                             runOnUiThread(() -> {
-                                                runOnUiThread(() -> adapter.setFillterList(itemsArrayList));
-                                                checkIsPlaying(items, itemsArrayList);
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        searchArrayList = itemsArrayList;
+                                                        searchAdapter.setFillterList(itemsArrayList);
+                                                        musicHelper.checkIsPlayingPlaylist(sharedPreferencesManager.restoreSongState(), searchArrayList, searchAdapter);
+                                                    }
+                                                });
                                             });
 
                                         } else {
@@ -152,20 +182,18 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
-    private void checkIsPlaying(Items items, ArrayList<Items> songList) {
-        if (items == null || songList == null) {
-            return;
-        }
-
-        String currentEncodeId = items.getEncodeId();
-        if (currentEncodeId != null && !currentEncodeId.isEmpty()) {
-            for (Items song : songList) {
-                if (currentEncodeId.equals(song.getEncodeId())) {
-                    adapter.updatePlayingStatus(currentEncodeId);
-                    break;
-                }
-            }
-        }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        musicHelper.registerReceivers();
+        musicHelper.checkIsPlayingPlaylist(sharedPreferencesManager.restoreSongState(), searchArrayList, searchAdapter);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        musicHelper.unregisterReceivers();
+    }
+
 
 }

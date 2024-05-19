@@ -41,6 +41,7 @@ import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.helper.ui.BlurAndBlackOverlayTransformation;
 import com.example.musichub.helper.ui.Helper;
+import com.example.musichub.helper.ui.MusicHelper;
 import com.example.musichub.model.chart.chart_home.Album;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.playlist.DataPlaylist;
@@ -75,44 +76,11 @@ public class ViewPlaylistActivity extends AppCompatActivity {
     private RecyclerView rv_playlist;
     private DataPlaylist dataPlaylist;
     private Album album;
-    private Items items, mSong;
-    private boolean isPlaying;
-    private int action;
     private ArrayList<Items> itemsArrayList;
     private SongAllAdapter songAllAdapter;
     private SharedPreferencesManager sharedPreferencesManager;
+    private MusicHelper musicHelper;
 
-    private View layoutPlayerBottom;
-    private LinearLayout layoutPlayer, linear_play_pause, linear_next;
-    private ImageView img_play_pause;
-    private RoundedImageView img_album_song;
-    private TextView tvTitleSong, tvSingleSong;
-    private LinearProgressIndicator progressIndicator;
-    private int currentTime, total_time;
-
-    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle bundle = intent.getExtras();
-            if (bundle == null) {
-                return;
-            }
-            mSong = (Items) bundle.get("object_song");
-            isPlaying = bundle.getBoolean("status_player");
-            action = bundle.getInt("action_music");
-            handleLayoutMusic(action);
-            checkIsPlayingPlaylist(mSong, itemsArrayList);
-        }
-    };
-
-    private final BroadcastReceiver seekBarUpdateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            currentTime = intent.getIntExtra("current_time", 0);
-            total_time = intent.getIntExtra("total_time", 0);
-            updateIndicator(currentTime, total_time);
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +93,8 @@ public class ViewPlaylistActivity extends AppCompatActivity {
         Helper.changeNavigationColor(this, R.color.gray, true);
 
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
-        items = sharedPreferencesManager.restoreSongState();
+        musicHelper = new MusicHelper(this, sharedPreferencesManager);
+
 
         imageBackground = findViewById(R.id.imageBackground);
         img_back = findViewById(R.id.img_back);
@@ -147,26 +116,32 @@ public class ViewPlaylistActivity extends AppCompatActivity {
         txt_content_playlist = findViewById(R.id.txt_content_playlist);
         rv_playlist = findViewById(R.id.rv_playlist);
 
-        layoutPlayerBottom = findViewById(R.id.layoutPlayerBottom);
-        layoutPlayer = layoutPlayerBottom.findViewById(R.id.layoutPlayer);
-        linear_play_pause = layoutPlayerBottom.findViewById(R.id.linear_play_pause);
-        img_play_pause = layoutPlayerBottom.findViewById(R.id.img_play_pause);
-
-        linear_next = layoutPlayerBottom.findViewById(R.id.linear_next);
-
-        img_album_song = layoutPlayerBottom.findViewById(R.id.img_album_song);
-        tvTitleSong = layoutPlayerBottom.findViewById(R.id.txtTile);
-        tvTitleSong.setSelected(true);
-        tvSingleSong = layoutPlayerBottom.findViewById(R.id.txtArtist);
-        tvSingleSong.setSelected(true);
-        progressIndicator = layoutPlayerBottom.findViewById(R.id.progressIndicator);
-
         itemsArrayList = new ArrayList<>();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rv_playlist.setLayoutManager(layoutManager);
         songAllAdapter = new SongAllAdapter(itemsArrayList, ViewPlaylistActivity.this, ViewPlaylistActivity.this);
         rv_playlist.setAdapter(songAllAdapter);
+
+
+        // Khởi tạo các view
+        View layoutPlayerBottom = findViewById(R.id.layoutPlayerBottom);
+        LinearLayout layoutPlayer = layoutPlayerBottom.findViewById(R.id.layoutPlayer);
+        LinearLayout linearPlayPause = layoutPlayerBottom.findViewById(R.id.linear_play_pause);
+        ImageView imgPlayPause = layoutPlayerBottom.findViewById(R.id.img_play_pause);
+        LinearLayout linearNext = layoutPlayerBottom.findViewById(R.id.linear_next);
+        ImageView imgAlbumSong = layoutPlayerBottom.findViewById(R.id.img_album_song);
+        TextView tvTitleSong = layoutPlayerBottom.findViewById(R.id.txtTile);
+        tvTitleSong.setSelected(true);
+        TextView tvSingleSong = layoutPlayerBottom.findViewById(R.id.txtArtist);
+        tvSingleSong.setSelected(true);
+        LinearProgressIndicator progressIndicator = layoutPlayerBottom.findViewById(R.id.progressIndicator);
+
+        musicHelper.initViews(layoutPlayerBottom, layoutPlayer, linearPlayPause, imgPlayPause, linearNext, imgAlbumSong, tvTitleSong, tvSingleSong, progressIndicator);
+
+        // Lấy thông tin bài hát hiện tại
+        musicHelper.getSongCurrent();
+        musicHelper.initAdapter(songAllAdapter);
 
         img_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,13 +177,7 @@ public class ViewPlaylistActivity extends AppCompatActivity {
             }
         });
 
-        layoutPlayer.setOnClickListener(v -> {
-            Intent intent = new Intent(ViewPlaylistActivity.this, PlayNowActivity.class);
-            startActivity(intent);
-        });
-
         getDataBundle();
-        getSongCurrent();
     }
 
     private void getDataBundle() {
@@ -224,8 +193,6 @@ public class ViewPlaylistActivity extends AppCompatActivity {
                         .load(dataPlaylist.getThumbnailM())
                         .transform(new CenterCrop(), new BlurAndBlackOverlayTransformation(this, 25, 220)) // 25 là mức độ mờ, 150 là độ mờ của lớp phủ đen
                         .into(imageBackground);
-
-
             } else {
                 album = (Album) bundle.getSerializable("playlist");
                 getPlaylist(album.getEncodeId());
@@ -234,115 +201,6 @@ public class ViewPlaylistActivity extends AppCompatActivity {
                         .load(album.getThumbnail())
                         .transform(new CenterCrop(), new BlurAndBlackOverlayTransformation(this, 25, 220)) // 25 là mức độ mờ, 150 là độ mờ của lớp phủ đen
                         .into(imageBackground);
-
-            }
-        }
-    }
-
-
-    private void sendActionToService(int action) {
-        Intent intent = new Intent(this, MyService.class);
-        intent.putExtra("action_music_service", action);
-        startService(intent);
-    }
-
-    private void showInfoSong() {
-        if (mSong == null) {
-            return;
-        }
-
-        Glide.with(this)
-                .load(mSong.getThumbnail())
-                .into(img_album_song);
-        tvTitleSong.setText(mSong.getTitle());
-        tvSingleSong.setText(mSong.getArtistsNames());
-
-        linear_play_pause.setOnClickListener(v -> {
-            if (!Helper.isMyServiceRunning(ViewPlaylistActivity.this, MyService.class)) {
-                startService(new Intent(this, MyService.class));
-            }
-            if (isPlaying) {
-                sendActionToService(MyService.ACTION_PAUSE);
-            } else {
-                sendActionToService(MyService.ACTION_RESUME);
-            }
-        });
-        linear_next.setOnClickListener(v -> {
-            if (!Helper.isMyServiceRunning(ViewPlaylistActivity.this, MyService.class)) {
-                startService(new Intent(ViewPlaylistActivity.this, MyService.class));
-            }
-            sendActionToService(MyService.ACTION_NEXT);
-        });
-        int color = getResources().getColor(R.color.gray);
-        ColorStateList colorStateList = ColorStateList.valueOf(color);
-        ViewCompat.setBackgroundTintList(layoutPlayer, colorStateList);
-
-    }
-
-    private void setStatusButtonPlayOrPause() {
-        if (!Helper.isMyServiceRunning(ViewPlaylistActivity.this, MyService.class)) {
-            isPlaying = false;
-        }
-        if (isPlaying) {
-            img_play_pause.setImageResource(R.drawable.baseline_pause_24);
-        } else {
-            img_play_pause.setImageResource(R.drawable.baseline_play_arrow_24);
-
-        }
-    }
-
-    private void handleLayoutMusic(int action) {
-        switch (action) {
-            case MyService.ACTION_START:
-                layoutPlayerBottom.setVisibility(View.VISIBLE);
-                showInfoSong();
-                setStatusButtonPlayOrPause();
-                break;
-            case MyService.ACTION_PAUSE:
-                layoutPlayerBottom.setVisibility(View.VISIBLE);
-                showInfoSong();
-                setStatusButtonPlayOrPause();
-                break;
-            case MyService.ACTION_RESUME:
-                layoutPlayerBottom.setVisibility(View.VISIBLE);
-                showInfoSong();
-                setStatusButtonPlayOrPause();
-                break;
-            case MyService.ACTION_CLEAR:
-                layoutPlayerBottom.setVisibility(View.GONE);
-                break;
-        }
-    }
-
-    private void getSongCurrent() {
-        mSong = sharedPreferencesManager.restoreSongState();
-        isPlaying = sharedPreferencesManager.restoreIsPlayState();
-        action = sharedPreferencesManager.restoreActionState();
-//        getBaiHatNhanh(mSong);
-//        new SearchTask().execute();
-        handleLayoutMusic(action);
-    }
-
-    private void updateIndicator(int currentTime, int totalTime) {
-        if (totalTime > 0) {
-            float progress = (float) currentTime / totalTime;
-            int progressInt = (int) (progress * 100);
-            progressIndicator.setProgressCompat(progressInt, true);
-        }
-    }
-
-    private void checkIsPlayingTop(Items items, ArrayList<Items> songList) {
-        if (items == null || songList == null) {
-            return;
-        }
-
-        String currentEncodeId = items.getEncodeId();
-        if (currentEncodeId != null && !currentEncodeId.isEmpty()) {
-            for (Items song : songList) {
-                if (currentEncodeId.equals(song.getEncodeId())) {
-                    songAllAdapter.updatePlayingStatus(currentEncodeId);
-                    break;
-                }
             }
         }
     }
@@ -387,7 +245,7 @@ public class ViewPlaylistActivity extends AppCompatActivity {
 
                                                 itemsArrayList = arrayList;
                                                 songAllAdapter.setFilterList(arrayList);
-                                                checkIsPlayingTop(items, arrayList);
+                                                musicHelper.checkIsPlayingPlaylist(sharedPreferencesManager.restoreSongState(), itemsArrayList, songAllAdapter);
                                             }
                                         });
                                     } else {
@@ -418,52 +276,6 @@ public class ViewPlaylistActivity extends AppCompatActivity {
         });
     }
 
-    private int getColor(String urlImage) {
-        final int[] brighterColor = new int[1]; // Sử dụng mảng để lưu giá trị mới
-
-        Glide.with(this)
-                .asBitmap()
-                .load(urlImage)
-                .listener(new RequestListener<Bitmap>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
-                        Palette.from(resource).generate(palette -> {
-                            int dominantColor = palette.getDominantColor(getResources().getColor(R.color.default_color));
-                            float[] hsv = new float[3];
-                            Color.colorToHSV(dominantColor, hsv);
-                            hsv[2] *= 1.2f;
-                            brighterColor[0] = Color.HSVToColor(hsv); // Lưu giá trị vào mảng
-                        });
-                        return false;
-                    }
-                })
-                .submit();
-
-        return brighterColor[0]; // Trả về giá trị mới
-    }
-
-    private void checkIsPlayingPlaylist(Items items, ArrayList<Items> songList) {
-        if (items == null || songList == null) {
-            return;
-        }
-
-        String currentEncodeId = items.getEncodeId();
-        if (currentEncodeId != null && !currentEncodeId.isEmpty()) {
-            for (Items song : songList) {
-                if (currentEncodeId.equals(song.getEncodeId())) {
-                    songAllAdapter.updatePlayingStatus(currentEncodeId);
-                    break;
-                }
-            }
-        }
-    }
-
-
     private String convertLongToString(int size, long time) {
         int gio = (int) (time / 3600);
         int phut = (int) ((time % 3600) / 60);
@@ -471,19 +283,17 @@ public class ViewPlaylistActivity extends AppCompatActivity {
 
         return size + " bài hát · " + gio + " giờ " + phut + " phút";
     }
-
     @Override
     protected void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("send_data_to_activity"));
-        LocalBroadcastManager.getInstance(this).registerReceiver(seekBarUpdateReceiver, new IntentFilter("send_seekbar_update"));
+        musicHelper.registerReceivers();
+        musicHelper.checkIsPlayingPlaylist(sharedPreferencesManager.restoreSongState(), itemsArrayList, songAllAdapter);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(seekBarUpdateReceiver);
+        musicHelper.unregisterReceivers();
     }
 
 }

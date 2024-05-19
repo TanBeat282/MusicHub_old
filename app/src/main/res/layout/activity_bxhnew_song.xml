@@ -24,10 +24,8 @@
                 android:id="@+id/txt_new_release"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 android:fontFamily="@font/roboto_bold"
-                android:text="BXH nhạc mới"
                 android:textColor="@color/white"
                 android:textSize="30sp" />
 
@@ -36,7 +34,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/txt_new_release"
-                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal" />
 
@@ -104,4 +101,5 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp"
         android:visibility="gone" />
+
 </RelativeLayout>

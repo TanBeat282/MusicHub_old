@@ -38,7 +38,6 @@ public class SelectArtistAdapter extends RecyclerView.Adapter<SelectArtistAdapte
     private ArrayList<Artists> artistsList;
     private final Context context;
     private final Activity activity;
-    private int selectedPosition = -1;
     private ArtistItemClickListener listener;
 
     public SelectArtistAdapter(ArrayList<Artists> artistsList, Activity activity, Context context) {
@@ -62,8 +61,8 @@ public class SelectArtistAdapter extends RecyclerView.Adapter<SelectArtistAdapte
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setFilterList(ArrayList<Artists> fillterList) {
-        this.artistsList = fillterList;
+    public void setFilterList(ArrayList<Artists> filterList) {
+        this.artistsList = filterList;
         notifyDataSetChanged();
     }
 
@@ -98,20 +97,17 @@ public class SelectArtistAdapter extends RecyclerView.Adapter<SelectArtistAdapte
         Glide.with(context)
                 .load(artists.getThumbnail())
                 .into(holder.thumbImageView);
-        holder.btn_more.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (listener != null) {
-                    listener.onArtistItemClick(true);
-                }
-
-                Intent intent = new Intent(context, ViewArtistActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("artist", artists);
-                intent.putExtras(bundle);
-
-                context.startActivity(intent);
+        holder.btn_more.setOnClickListener(view -> {
+            if (listener != null) {
+                listener.onArtistItemClick(true);
             }
+
+            Intent intent = new Intent(context, ViewArtistActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("artist", artists);
+            intent.putExtras(bundle);
+
+            context.startActivity(intent);
         });
 
         holder.itemView.setOnClickListener(v -> {
@@ -163,7 +159,7 @@ public class SelectArtistAdapter extends RecyclerView.Adapter<SelectArtistAdapte
                     Call<ResponseBody> call = service.ARTISTS_CALL(artistId, map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                             if (response.isSuccessful() && response.body() != null) {
                                 try {
                                     String responseBody = response.body().string();
@@ -185,7 +181,7 @@ public class SelectArtistAdapter extends RecyclerView.Adapter<SelectArtistAdapte
                         }
 
                         @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+                        public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable throwable) {
                             activity.runOnUiThread(() -> callback.onError("API call failed: " + throwable.getMessage()));
                         }
                     });
