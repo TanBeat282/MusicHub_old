@@ -463,7 +463,7 @@ public class MyService extends Service {
                 sendSeekBarUpdate(currentTime, totalTime);
 
                 // Lên lịch để cập nhật lại SeekBar sau một khoảng thời gian nhỏ (ví dụ: 1000ms)
-                seekBarHandler.postDelayed(this, 1000);
+                seekBarHandler.postDelayed(this, 100);
             }
         }
     };
