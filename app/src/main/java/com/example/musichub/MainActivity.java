@@ -38,6 +38,8 @@ import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
 import com.example.musichub.api.categories.SongCategories;
+import com.example.musichub.bottomsheet.BottomSheetProfile;
+import com.example.musichub.bottomsheet.BottomSheetSelectArtist;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.ui.MusicHelper;
 import com.example.musichub.model.chart.chart_home.ChartHome;
@@ -135,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
         image_slider = findViewById(R.id.image_slider);
 
         ImageView img_search = findViewById(R.id.img_search);
+        ImageView img_account = findViewById(R.id.img_account);
 
 
         //btn nhac moi phat hanh
@@ -197,6 +200,13 @@ public class MainActivity extends AppCompatActivity {
         //onclick
         img_search.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SearchActivity.class)));
         img_history.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, HistoryActivity.class)));
+        img_account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BottomSheetProfile bottomSheetProfile = new BottomSheetProfile(MainActivity.this, MainActivity.this);
+                bottomSheetProfile.show(getSupportFragmentManager(), bottomSheetProfile.getTag());
+            }
+        });
 
         linear_bxh_new_release_song.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, BXHNewSongActivity.class);
@@ -211,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
         btn_viet_nam.setOnClickListener(view -> checkCategoriesNewReleaseSong(1));
         btn_quoc_te.setOnClickListener(view -> checkCategoriesNewReleaseSong(2));
         btn_tat_ca.setOnClickListener(view -> checkCategoriesNewReleaseSong(0));
-
 
 
         //get data
@@ -272,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private void getHome() {
         ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
             @Override
@@ -409,6 +419,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private void getBXH() {
         ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
             @Override
@@ -463,6 +474,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private void getTop100() {
         ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
             @Override

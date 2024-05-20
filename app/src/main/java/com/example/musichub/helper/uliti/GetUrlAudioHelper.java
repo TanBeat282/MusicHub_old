@@ -89,12 +89,14 @@ public class GetUrlAudioHelper {
                     call.enqueue(new Callback<Lyric>() {
                         @Override
                         public void onResponse(Call<Lyric> call, Response<Lyric> response) {
+                            String requestUrl = call.request().url().toString();
+                            Log.d(">>>>>>>>>>>>>>>>>>>", " - " + requestUrl);
                             if (response.isSuccessful()) {
                                 Lyric lyric = response.body();
                                 if (lyric != null) {
                                     if (lyric.getErr() != -201) {
 
-//                                        callback.onSuccess(lyric.getData().getFile());
+                                        callback.onSuccess(lyric.getData().getFile());
                                     } else {
                                         callback.onFailure(new RuntimeException("Error -201: Unable to get audio URL"));
                                     }

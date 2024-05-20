@@ -1,10 +1,17 @@
 package com.example.musichub.fragment;
 
+import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -41,7 +48,7 @@ public class ContinueSongFragment extends Fragment {
 //            song = (Items) bundle.get("object_song");
 //            isPlaying = bundle.getBoolean("status_player");
 //            action = bundle.getInt("action_music");
-//            checkisPlaying(song);
+//            checkIsPlaying(song);
 //        }
 //    };
 
@@ -67,20 +74,20 @@ public class ContinueSongFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
 
 //        sharedPreferencesManager = new SharedPreferencesManager(requireContext());
-//        songArrayList = sharedPreferencesManager.restoreSongArrayList();
+////        songArrayList = sharedPreferencesManager.restoreSongArrayList();
 //        items = sharedPreferencesManager.restoreSongState();
 //        positionSong = sharedPreferencesManager.restoreSongPosition();
 //        // Khoi tạo RecyclerView và Adapter
 //        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 //
 ////         Khoi tạo Adapter
-//        adapter = new TopSongAdapter(songArrayList, requireActivity(), requireContext());
+//        adapter = new SongAllAdapter(songArrayList, requireActivity(), requireContext());
 //        recyclerView.setAdapter(adapter);
-//        checkisPlaying(items);
+//        checkIsPlaying(items);
 
     }
-
-//    private void checkisPlaying(Items items) {
+//
+//    private void checkIsPlaying(Items items) {
 //        if (items == null || songArrayList == null) {
 //            return;
 //        }
@@ -95,12 +102,12 @@ public class ContinueSongFragment extends Fragment {
 //            }
 //        }
 //    }
-//
-//
-//    @SuppressLint("NotifyDataSetChanged")
-//    @Override
-//    public void onResume() {
-//        super.onResume();
+
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void onResume() {
+        super.onResume();
 //        // Xóa dữ liệu cũ và lấy dữ liệu mới từ SharedPreferences
 //        songArrayList.clear(); // Xóa dữ liệu cũ
 //        songArrayList.addAll(sharedPreferencesManager.restoreSongArrayList()); // Lấy dữ liệu mới
@@ -110,14 +117,14 @@ public class ContinueSongFragment extends Fragment {
 //        LocalBroadcastManager.getInstance(requireContext()).registerReceiver(broadcastReceiver, new IntentFilter("send_data_to_activity"));
 //        // Cập nhật RecyclerView
 //        adapter.notifyDataSetChanged();
-//        checkisPlaying(items);
-//    }
-//
-//
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//        // Hủy đăng ký BroadcastReceiver khi Fragment bị hủy
+//        checkIsPlaying(items);
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // Hủy đăng ký BroadcastReceiver khi Fragment bị hủy
 //        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(broadcastReceiver);
-//    }
+    }
 }

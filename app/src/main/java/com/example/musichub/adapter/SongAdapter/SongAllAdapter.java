@@ -25,6 +25,7 @@ import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.bottomsheet.BottomSheetOptionSong;
 import com.example.musichub.helper.ui.PlayingStatusUpdater;
 import com.example.musichub.model.chart.chart_home.Items;
+import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
@@ -40,6 +41,8 @@ public class SongAllAdapter extends RecyclerView.Adapter<SongAllAdapter.ViewHold
         this.songList = fillterList;
         notifyDataSetChanged();
     }
+
+
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void updatePlayingStatus(String currentEncodeId) {
@@ -56,6 +59,7 @@ public class SongAllAdapter extends RecyclerView.Adapter<SongAllAdapter.ViewHold
         selectedPosition = -1;
         notifyDataSetChanged();
     }
+
     public SongAllAdapter(ArrayList<Items> songList, Activity activity, Context context) {
         this.songList = songList;
         this.activity = activity;

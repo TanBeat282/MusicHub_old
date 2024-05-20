@@ -115,7 +115,7 @@ public class LyricSongFragment extends Fragment {
 
         lyrics = new ArrayList<>();
 
-        getDataSong(song);
+        getDataSong(sharedPreferencesManager.restoreSongState());
 
     }
 
@@ -249,6 +249,7 @@ public class LyricSongFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        getDataSong(sharedPreferencesManager.restoreSongState());
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(broadcastReceiver, new IntentFilter("send_data_to_activity"));
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(seekBarUpdateReceiver, new IntentFilter("send_seekbar_update"));
     }

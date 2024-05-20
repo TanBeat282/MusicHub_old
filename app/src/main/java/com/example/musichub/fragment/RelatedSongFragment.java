@@ -19,11 +19,9 @@ import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import java.util.ArrayList;
 
 public class RelatedSongFragment extends Fragment {
+
     private RecyclerView recyclerView;
-    private SongAllAdapter adapter;
-    private SharedPreferencesManager sharedPreferencesManager;
-    private ArrayList<Song> songArrayList;
-    private int positionSong = -1;
+
     public RelatedSongFragment() {
     }
 
@@ -42,6 +40,7 @@ public class RelatedSongFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        recyclerView = view.findViewById(R.id.recyclerView);
         
     }
 }

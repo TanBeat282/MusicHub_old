@@ -515,7 +515,7 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                 }
 
                                                 //noi_bat
-                                                if (sectionArtistSong != null) {
+                                                if (sectionArtistSong != null && !sectionArtistSong.getItems().isEmpty()) {
                                                     relative_noibat.setVisibility(View.VISIBLE);
                                                     itemsArrayListNoiBat = sectionArtistSong.getItems();
                                                     noibatAdapter.setFilterList(sectionArtistSong.getItems());
@@ -525,7 +525,7 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                 }
 
                                                 //single
-                                                if (sectionArtistPlaylistSingle != null) {
+                                                if (sectionArtistPlaylistSingle != null && !sectionArtistPlaylistSingle.getItems().isEmpty()) {
                                                     relative_single.setVisibility(View.VISIBLE);
                                                     singleAdapter.setFilterList(sectionArtistPlaylistSingle.getItems());
                                                 } else {
@@ -533,7 +533,7 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                 }
 
                                                 //playlist
-                                                if (sectionArtistPlaylist != null) {
+                                                if (sectionArtistPlaylist != null && !sectionArtistPlaylist.getItems().isEmpty()) {
                                                     relative_playlist.setVisibility(View.VISIBLE);
                                                     playlistAdapter.setFilterList(sectionArtistPlaylist.getItems());
                                                 } else {
@@ -541,7 +541,7 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                 }
 
                                                 //xuat hien trong
-                                                if (sectionArtistPlaylistXuatHienTrong != null) {
+                                                if (sectionArtistPlaylistXuatHienTrong != null && !sectionArtistPlaylistXuatHienTrong.getItems().isEmpty()) {
                                                     relative_xuathientrong.setVisibility(View.VISIBLE);
                                                     xuatHienTrongAdapter.setFilterList(sectionArtistPlaylistXuatHienTrong.getItems());
                                                 } else {
@@ -550,7 +550,7 @@ public class ViewArtistActivity extends AppCompatActivity {
 
 
                                                 //other_artist
-                                                if (sectionArtistArtist != null) {
+                                                if (sectionArtistArtist != null && !sectionArtistArtist.getItems().isEmpty()) {
                                                     relative_other_single.setVisibility(View.VISIBLE);
                                                     otherSingleAdapter.setFilterList(sectionArtistArtist.getItems());
                                                 } else {

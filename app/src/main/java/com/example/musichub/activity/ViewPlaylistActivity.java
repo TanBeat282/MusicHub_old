@@ -1,13 +1,6 @@
 package com.example.musichub.activity;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,22 +11,15 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
 import androidx.core.widget.NestedScrollView;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.example.musichub.R;
 import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
 import com.example.musichub.api.ApiService;
@@ -46,7 +32,6 @@ import com.example.musichub.model.chart.chart_home.Album;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.playlist.DataPlaylist;
 import com.example.musichub.model.playlist.Playlist;
-import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -65,17 +50,11 @@ public class ViewPlaylistActivity extends AppCompatActivity {
     private TextView txt_title_playlist;
     private TextView txt_user_name;
     private TextView txt_song_and_time;
-    private LinearLayout btn_play_playlist;
-    private NestedScrollView nested_scroll;
     private RelativeLayout relative_header;
     private TextView txt_name_artist;
     private TextView txt_view;
-    private ImageView img_back;
-    private ImageView img_more;
     private TextView txt_content_playlist;
-    private RecyclerView rv_playlist;
     private DataPlaylist dataPlaylist;
-    private Album album;
     private ArrayList<Items> itemsArrayList;
     private SongAllAdapter songAllAdapter;
     private SharedPreferencesManager sharedPreferencesManager;
@@ -85,10 +64,10 @@ public class ViewPlaylistActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-            getWindow().setStatusBarColor(android.graphics.Color.TRANSPARENT);
-        }
+
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(android.graphics.Color.TRANSPARENT);
+
         setContentView(R.layout.activity_view_playlist);
         Helper.changeNavigationColor(this, R.color.gray, true);
 
@@ -97,11 +76,11 @@ public class ViewPlaylistActivity extends AppCompatActivity {
 
 
         imageBackground = findViewById(R.id.imageBackground);
-        img_back = findViewById(R.id.img_back);
-        img_more = findViewById(R.id.img_more);
+        ImageView img_back = findViewById(R.id.img_back);
+        ImageView img_more = findViewById(R.id.img_more);
 
         relative_header = findViewById(R.id.relative_header);
-        nested_scroll = findViewById(R.id.nested_scroll);
+        NestedScrollView nested_scroll = findViewById(R.id.nested_scroll_view);
         txt_name_artist = findViewById(R.id.txt_name_artist);
         txt_view = findViewById(R.id.txt_view);
 
@@ -111,10 +90,9 @@ public class ViewPlaylistActivity extends AppCompatActivity {
         txt_title_playlist.setSelected(true);
         txt_user_name = findViewById(R.id.txt_user_name);
         txt_song_and_time = findViewById(R.id.txt_song_and_time);
-        btn_play_playlist = findViewById(R.id.btn_play_playlist);
-        nested_scroll = findViewById(R.id.nested_scroll_view);
+        LinearLayout btn_play_playlist = findViewById(R.id.btn_play_playlist);
         txt_content_playlist = findViewById(R.id.txt_content_playlist);
-        rv_playlist = findViewById(R.id.rv_playlist);
+        RecyclerView rv_playlist = findViewById(R.id.rv_playlist);
 
         itemsArrayList = new ArrayList<>();
 
@@ -143,17 +121,12 @@ public class ViewPlaylistActivity extends AppCompatActivity {
         musicHelper.getSongCurrent();
         musicHelper.initAdapter(songAllAdapter);
 
-        img_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        img_back.setOnClickListener(view -> finish());
 
         nested_scroll.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @SuppressLint("ObsoleteSdkInt")
             @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+            public void onScrollChange(@NonNull NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 // Kiểm tra nếu người dùng đã cuộn đến đầu trang
                 if (scrollY <= 600) {
                     // Ẩn TextView khi người dùng cuộn trở lại đầu trang
@@ -183,7 +156,6 @@ public class ViewPlaylistActivity extends AppCompatActivity {
     private void getDataBundle() {
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
-            return;
         } else {
             if (bundle.getSerializable("playlist") instanceof DataPlaylist) {
                 dataPlaylist = (DataPlaylist) bundle.getSerializable("playlist");
@@ -194,13 +166,14 @@ public class ViewPlaylistActivity extends AppCompatActivity {
                         .transform(new CenterCrop(), new BlurAndBlackOverlayTransformation(this, 25, 220)) // 25 là mức độ mờ, 150 là độ mờ của lớp phủ đen
                         .into(imageBackground);
             } else {
-                album = (Album) bundle.getSerializable("playlist");
+                Album album = (Album) bundle.getSerializable("playlist");
                 getPlaylist(album.getEncodeId());
                 // Sử dụng Glide để tải và áp dụng hiệu ứng mờ
                 Glide.with(this)
                         .load(album.getThumbnail())
                         .transform(new CenterCrop(), new BlurAndBlackOverlayTransformation(this, 25, 220)) // 25 là mức độ mờ, 150 là độ mờ của lớp phủ đen
                         .into(imageBackground);
+
             }
         }
     }
@@ -216,7 +189,7 @@ public class ViewPlaylistActivity extends AppCompatActivity {
                     retrofit2.Call<Playlist> call = service.PLAYLIST_CALL(encodeId, map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
                     call.enqueue(new Callback<Playlist>() {
                         @Override
-                        public void onResponse(Call<Playlist> call, Response<Playlist> response) {
+                        public void onResponse(@NonNull Call<Playlist> call, @NonNull Response<Playlist> response) {
                             String requestUrl = call.request().url().toString();
                             Log.d(">>>>>>>>>>>>>>>>>>>", " - " + requestUrl);
                             if (response.isSuccessful()) {
@@ -224,29 +197,23 @@ public class ViewPlaylistActivity extends AppCompatActivity {
                                 if (playlist != null && playlist.getErr() == 0) {
                                     ArrayList<Items> arrayList = playlist.getData().getSong().getItems();
                                     if (!arrayList.isEmpty()) {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
+                                        runOnUiThread(() -> {
 
-//                                                imageBackground.setBackgroundColor(getColor(playlist.getData().getThumbnail()));
+                                            Glide.with(ViewPlaylistActivity.this)
+                                                    .load(playlist.getData().getThumbnailM())
+                                                    .into(img_playlist);
 
-                                                Glide.with(ViewPlaylistActivity.this)
-                                                        .load(playlist.getData().getThumbnailM())
-                                                        .into(img_playlist);
+                                            img_playlist.setVisibility(View.VISIBLE);
+                                            progress_image.setVisibility(View.GONE);
 
-                                                img_playlist.setVisibility(View.VISIBLE);
-                                                progress_image.setVisibility(View.GONE);
+                                            txt_title_playlist.setText(playlist.getData().getTitle());
+                                            txt_user_name.setText(playlist.getData().getUserName());
 
-                                                txt_title_playlist.setText(playlist.getData().getTitle());
-                                                txt_user_name.setText(playlist.getData().getUserName());
+                                            txt_song_and_time.setText(convertLongToString(arrayList.size(), playlist.getData().getSong().getTotalDuration()));
+                                            txt_content_playlist.setText(playlist.getData().getDescription());
 
-                                                txt_song_and_time.setText(convertLongToString(arrayList.size(), playlist.getData().getSong().getTotalDuration()));
-                                                txt_content_playlist.setText(playlist.getData().getDescription());
-
-                                                itemsArrayList = arrayList;
-                                                songAllAdapter.setFilterList(arrayList);
-                                                musicHelper.checkIsPlayingPlaylist(sharedPreferencesManager.restoreSongState(), itemsArrayList, songAllAdapter);
-                                            }
+                                            itemsArrayList = arrayList;
+                                            songAllAdapter.setFilterList(arrayList);
                                         });
                                     } else {
                                         Log.d("TAG", "Items list is empty");
@@ -260,7 +227,7 @@ public class ViewPlaylistActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<Playlist> call, Throwable throwable) {
+                        public void onFailure(@NonNull Call<Playlist> call, @NonNull Throwable throwable) {
                             Log.d("TAG", "Failed to retrieve data: " + throwable);
                         }
                     });
@@ -279,10 +246,10 @@ public class ViewPlaylistActivity extends AppCompatActivity {
     private String convertLongToString(int size, long time) {
         int gio = (int) (time / 3600);
         int phut = (int) ((time % 3600) / 60);
-        int giay = (int) (time % 60);
 
         return size + " bài hát · " + gio + " giờ " + phut + " phút";
     }
+
     @Override
     protected void onResume() {
         super.onResume();
