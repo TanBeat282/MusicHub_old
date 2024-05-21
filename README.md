@@ -27,18 +27,10 @@ MusicHub is an online music streaming application designed and developed indepen
 
 ## Usage
 
-1. Register or log in with your account.
-2. Browse and search for your favorite songs.
-3. Create and manage your playlists.
-4. Enjoy streaming music seamlessly.
-
 ## Contributing
 
 Contributions are welcome! Please fork the repository and create a pull request with your changes. Make sure to follow the coding guidelines and include a detailed description of your changes.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
@@ -46,10 +38,6 @@ For any inquiries or support, please contact me at:
 - **Email:** trantan28022003@gmail.com
 - **Facebook:** [Trần Ngọc Tân](https://www.facebook.com/trantan03)
 
-## Acknowledgements
-
-- Thank you to the open-source community for providing invaluable resources and support.
-- Special thanks to my friends and family for their encouragement.
 
 ---
 
