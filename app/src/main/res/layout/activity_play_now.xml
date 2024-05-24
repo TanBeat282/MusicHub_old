@@ -40,7 +40,7 @@
                 app:tint="@color/white" />
 
             <TextView
-                android:id="@+id/txtPlayform"
+                android:id="@+id/txtPlayForm"
                 android:layout_width="310dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

@@ -32,7 +32,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
-import com.example.musichub.MainActivity;
 
 import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.helper.uliti.GetUrlAudioHelper;
@@ -403,13 +402,14 @@ public class MyService extends Service {
                 .load(urlImage)
                 .listener(new RequestListener<Bitmap>() {
                     @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, @NonNull Target<Bitmap> target, boolean isFirstResource) {
                         return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                    public boolean onResourceReady(@NonNull Bitmap resource, @NonNull Object model, Target<Bitmap> target, @NonNull DataSource dataSource, boolean isFirstResource) {
                         Palette.from(resource).generate(palette -> {
+                            assert palette != null;
                             int dominantColor = palette.getDominantColor(getResources().getColor(R.color.default_color));
                             float[] hsv = new float[3];
                             Color.colorToHSV(dominantColor, hsv);
@@ -476,7 +476,7 @@ public class MyService extends Service {
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                 int currentTime = mediaPlayer.getCurrentPosition();
                 int totalTime = mediaPlayer.getDuration();
-                if (totalTime - currentTime <= 2000) {
+                if (totalTime - currentTime <= 500) {
                     nextMusic();
                 } else {
                     autoNextSongHandler.postDelayed(this, 1000);

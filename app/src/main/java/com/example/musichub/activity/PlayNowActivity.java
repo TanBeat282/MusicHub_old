@@ -64,41 +64,32 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PlayNowActivity extends AppCompatActivity {
-    private DownloadAudio downloadAudio;
-    private long downloadID;
-    private static final int PERMISSIONS_REQUEST_CODE = 100;
-    private TextView txtTitle, txtArtist, tvCurrentTime, tvFullTime, txtPlayform;
+    private TextView txtTitle, txtArtist, tvCurrentTime, tvFullTime, txtPlayForm, txt_download_audio, txt_view_audio, txt_like, txt_comment;
     private RoundedImageView imageAlbumArt;
     private ProgressBar progress_image;
-    private ImageView imageBackground, imageBack;
-    private Items items;
-    private SongDetail songDetail;
+    private ImageView imageBackground, imageBack, img_play_pause, imageMore, img_download_audio;
     private LottieAnimationView btnPlay;
-    private boolean isPlaying;
     private SeekBar playerSeekBar;
-    private ImageButton btPrevious;
-    private ImageButton btNext;
-    private SharedPreferencesManager sharedPreferencesManager;
+    private ImageButton btPrevious, btShuffle, btRepeat, btNext;
     private BottomSheetBehavior<LinearLayout> bottomSheetBehavior;
     private View layoutPlayer;
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
-    private LinearLayout linear_play_pause;
-    private LinearLayout linear_next;
-    private ImageButton btRepeat;
-    private ImageButton btShuffle;
-    private LinearLayout linear_tabLayout;
-    private LinearLayout linear_bottomSheet;
-    private LinearLayout linear_bottom;
-    private LinearLayout layoutPlayerTop;
-    private LinearLayout btn_down_audio;
-    private ImageView img_play_pause, imageMore;
-    private ImageView img_download_audio;
-    private TextView txt_download_audio;
-    private TextView txt_view_audio, txt_like, txt_comment;
+    private LinearLayout linear_play_pause, linear_next, linear_tabLayout, linear_bottomSheet, linear_bottom, layoutPlayerTop, btn_down_audio;
+
+
+    private DownloadAudio downloadAudio;
+    private long downloadID;
+    private static final int PERMISSIONS_REQUEST_CODE = 100;
+    private Items items;
+    private SongDetail songDetail;
+    private boolean isPlaying;
+    private SharedPreferencesManager sharedPreferencesManager;
     private int currentTime, total_time;
     private ArrayList<Items> songArrayList;
     private GetUrlAudioHelper getUrlAudioHelper;
+
+
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -111,10 +102,11 @@ public class PlayNowActivity extends AppCompatActivity {
             isPlaying = bundle.getBoolean("status_player");
             int action = bundle.getInt("action_music");
             if (action == MyService.ACTION_START || action == MyService.ACTION_NEXT || action == MyService.ACTION_PREVIOUS) {
+                getColorBackground();
                 imageAlbumArt.setVisibility(View.GONE);
                 progress_image.setVisibility(View.VISIBLE);
-                getColorBackground();
             }
+
             getSongDetail(items.getEncodeId(), new SongdetailCallback() {
                 @Override
                 public void onSuccess(SongDetail songDetail1) {
@@ -161,22 +153,24 @@ public class PlayNowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_now);
 
-        init();
+        initData();
         anhXaView();
         configView();
         onClick();
 
-        getBundleSong();
         getColorBackground();
+        getBundleSong();
         setStatusButtonPlayOrPause();
         registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
 
-    private void init() {
+    private void initData() {
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
         items = sharedPreferencesManager.restoreSongState();
         isPlaying = sharedPreferencesManager.restoreIsPlayState();
         downloadAudio = new DownloadAudio(this);
+        getUrlAudioHelper = new GetUrlAudioHelper();
+        songArrayList = new ArrayList<>();
     }
 
     private void anhXaView() {
@@ -198,7 +192,7 @@ public class PlayNowActivity extends AppCompatActivity {
         playerSeekBar = findViewById(R.id.playerSeekBar);
         tvCurrentTime = findViewById(R.id.tvCurrentTime);
         tvFullTime = findViewById(R.id.tvFullTime);
-        txtPlayform = findViewById(R.id.txtPlayform);
+        txtPlayForm = findViewById(R.id.txtPlayform);
         imageMore = findViewById(R.id.imageMore);
 
         layoutPlayer = findViewById(R.id.layoutPlayerBottom);
@@ -221,8 +215,6 @@ public class PlayNowActivity extends AppCompatActivity {
         linear_next = layoutPlayer.findViewById(R.id.linear_next);
         img_play_pause = layoutPlayer.findViewById(R.id.img_play_pause);
 
-        getUrlAudioHelper = new GetUrlAudioHelper();
-        songArrayList = new ArrayList<>();
         tabLayout.setVisibility(View.GONE);
         viewPager.setVisibility(View.VISIBLE);
         linear_tabLayout.setVisibility(View.VISIBLE);
@@ -380,22 +372,22 @@ public class PlayNowActivity extends AppCompatActivity {
                     Toast.makeText(PlayNowActivity.this, "Lỗi bất định, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                xinquyen();
+                requestPermissions();
             }
         });
 
-        //bottomsheet
+        //bottom_sheet
         linear_play_pause.setOnClickListener(v -> {
             if (!Helper.isMyServiceRunning(this, MyService.class)) {
                 startService(new Intent(this, MyService.class));
                 isPlaying = false;
             }
             if (isPlaying) {
-                sendActionToService(MyService.ACTION_PAUSE);
                 img_play_pause.setImageResource(R.drawable.baseline_play_arrow_24);
+                sendActionToService(MyService.ACTION_PAUSE);
             } else {
-                sendActionToService(MyService.ACTION_RESUME);
                 img_play_pause.setImageResource(R.drawable.baseline_pause_24);
+                sendActionToService(MyService.ACTION_RESUME);
             }
         });
 
@@ -464,7 +456,7 @@ public class PlayNowActivity extends AppCompatActivity {
     }
 
     // request permissions
-    private void xinquyen() {
+    private void requestPermissions() {
         if (!PermissionUtils.checkAndRequestPermissions(this, PERMISSIONS_REQUEST_CODE,
                 android.Manifest.permission.READ_EXTERNAL_STORAGE,
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -594,7 +586,7 @@ public class PlayNowActivity extends AppCompatActivity {
             items = (Items) bundle.getSerializable("song");
             int position_song = bundle.getInt("position_song");
             songArrayList = (ArrayList<Items>) bundle.getSerializable("song_list");
-            setTitleNowPlaying(bundle.getInt("title_now_playing"));
+//            setTitleNowPlaying(bundle.getInt("title_now_playing"));
 
             if (items != null && songArrayList != null) {
                 getSongDetail(items.getEncodeId(), new SongdetailCallback() {
@@ -652,15 +644,15 @@ public class PlayNowActivity extends AppCompatActivity {
     private void setTitleNowPlaying(int title_now_playing) {
         // set now playing
         if (title_now_playing == 0) {
-            txtPlayform.setText("ĐANG PHÁT" + "\n" + "Bảng xếp hạng");
+            txtPlayForm.setText("ĐANG PHÁT" + "\n" + "Bảng xếp hạng");
         } else if (title_now_playing == 1) {
-            txtPlayform.setText("ĐANG PHÁT" + "\n" + "Tìm kiếm");
+            txtPlayForm.setText("ĐANG PHÁT" + "\n" + "Tìm kiếm");
         } else if (title_now_playing == 2) {
-            txtPlayform.setText("ĐANG PHÁT" + "\n" + "Bài hát liên quan");
+            txtPlayForm.setText("ĐANG PHÁT" + "\n" + "Bài hát liên quan");
         } else if (title_now_playing == 3) {
-            txtPlayform.setText("ĐANG PHÁT" + "\n" + "Đã nghe");
+            txtPlayForm.setText("ĐANG PHÁT" + "\n" + "Đã nghe");
         } else {
-            txtPlayform.setText("Now Playing");
+            txtPlayForm.setText("Now Playing");
         }
     }
 

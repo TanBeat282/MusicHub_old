@@ -14,10 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +23,7 @@ import android.widget.LinearLayout;
 import com.example.musichub.R;
 import com.example.musichub.adapter.LyricsAdapter;
 import com.example.musichub.helper.uliti.GetUrlAudioHelper;
-import com.example.musichub.model.LyricLine;
+import com.example.musichub.model.lyric.LyricLine;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 
@@ -185,7 +182,7 @@ public class LyricSongFragment extends Fragment {
 
     private void smoothScrollToPosition(int position) {
         LinearSmoothScroller smoothScroller = new LinearSmoothScroller(requireContext()) {
-            private static final float MILLISECONDS_PER_INCH = 1000f; // Điều chỉnh tốc độ cuộn ở đây
+            private static final float MILLISECONDS_PER_INCH = 500f; // Điều chỉnh tốc độ cuộn ở đây
 
             @Override
             protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {

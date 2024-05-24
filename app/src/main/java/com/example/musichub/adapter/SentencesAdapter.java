@@ -11,11 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.musichub.R;
-import com.example.musichub.model.Sentence;
 import com.example.musichub.model.song.Sentences;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SentencesAdapter extends RecyclerView.Adapter<SentencesAdapter.SentenceViewHolder> {
     private ArrayList<Sentences> sentences;

@@ -1,6 +1,6 @@
 package com.example.musichub.model.search;
 
-import com.example.musichub.model.Artist;
+import com.example.musichub.model.chart.chart_home.Artists;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class Playlist implements Serializable {
     private long releasedAt;
     private List<String> genreIds;
     private boolean PR;
-    private ArrayList<Artist> artists;
+    private ArrayList<Artists> artists;
     private String artistsNames;
     private int playItemMode;
     private int subType;
@@ -122,11 +122,11 @@ public class Playlist implements Serializable {
         this.PR = PR;
     }
 
-    public ArrayList<Artist> getArtists() {
+    public ArrayList<Artists> getArtists() {
         return artists;
     }
 
-    public void setArtists(ArrayList<Artist> artists) {
+    public void setArtists(ArrayList<Artists> artists) {
         this.artists = artists;
     }
 

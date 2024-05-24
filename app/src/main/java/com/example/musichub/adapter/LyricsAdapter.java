@@ -3,7 +3,6 @@ package com.example.musichub.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.musichub.R;
-import com.example.musichub.activity.PlayNowActivity;
-import com.example.musichub.model.LyricLine;
+import com.example.musichub.model.lyric.LyricLine;
 import com.example.musichub.service.MyService;
 
 import java.util.List;

@@ -7,42 +7,23 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 
 import com.bumptech.glide.Glide;
-import com.example.musichub.MainActivity;
 import com.example.musichub.R;
-import com.example.musichub.model.Artist;
-import com.example.musichub.model.Song;
 import com.example.musichub.model.song.SongDetail;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.makeramen.roundedimageview.RoundedImageView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 
 public class BottomSheetInfoSong extends BottomSheetDialogFragment {

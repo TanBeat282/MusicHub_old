@@ -1,11 +1,7 @@
 package com.example.musichub;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,8 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import androidx.core.view.ViewCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,7 +23,6 @@ import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.example.musichub.activity.BXHNewSongActivity;
 import com.example.musichub.activity.HistoryActivity;
-import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.activity.SearchActivity;
 import com.example.musichub.adapter.SongAdapter.SongMoreAdapter;
 import com.example.musichub.adapter.Top100Adapter.Top100MoreAdapter;
@@ -37,9 +30,7 @@ import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
-import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.bottomsheet.BottomSheetProfile;
-import com.example.musichub.bottomsheet.BottomSheetSelectArtist;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.ui.MusicHelper;
 import com.example.musichub.model.chart.chart_home.ChartHome;
@@ -51,17 +42,13 @@ import com.example.musichub.model.chart.home.ItemsData;
 import com.example.musichub.model.chart.new_release.NewRelease;
 import com.example.musichub.model.chart.top100.Top100;
 import com.example.musichub.model.playlist.DataPlaylist;
-import com.example.musichub.model.playlist.Playlist;
-import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -75,13 +62,12 @@ public class MainActivity extends AppCompatActivity {
     //view
     private ImageSlider image_slider;
     private LinearLayout btn_tat_ca, btn_viet_nam, btn_quoc_te;
+    private LinearLayout linear_bxh_new_release_song;
+    private ImageView img_history, img_search, img_account;
 
     private RoundedImageView img_categories;
 
-    //variable
-    private Items mSong;
-    private boolean isPlaying;
-    private int action;
+
     private NewRelease newRelease;
     private final DataHomeAll dataHomeAll = new DataHomeAll();
     private SharedPreferencesManager sharedPreferencesManager;
@@ -89,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     //init_view
-
     // rv_new_release_song
     private RecyclerView rv_new_release_song;
     private SongAllAdapter new_release_songAdapter;
@@ -97,16 +82,19 @@ public class MainActivity extends AppCompatActivity {
 
 
     // bxh_new_release_song
+    private RecyclerView rv_bxh_new_release_song;
     private SongMoreAdapter bxh_new_release_songAdapter;
     private ArrayList<Items> bxh_new_release_songArrayList = new ArrayList<>();
 
 
     // bxh nhac
+    private RecyclerView rv_bang_xep_hang;
     private SongMoreAdapter bang_xep_hangAdapter;
     private ArrayList<Items> bang_xep_hangArrayList = new ArrayList<>();
 
 
     //top100
+    private RecyclerView rv_top100;
     private Top100MoreAdapter top100MoreAdapter;
     private ArrayList<DataPlaylist> dataPlaylistArrayListTop100 = new ArrayList<>();
 
@@ -116,53 +104,65 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initData();
+        initViews();
+        initRecyclerView();
+        initAdapter();
+        initBottomPlay();
+
+        //get data
+        getBXH();
+        getTop100();
+        getNewRelease();
+        getHome();
+
+        onClick();
+    }
+
+    private void initData() {
         Helper.changeStatusBarColor(this, R.color.black);
         Helper.changeNavigationColor(this, R.color.gray, true);
 
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
         musicHelper = new MusicHelper(this, sharedPreferencesManager);
+    }
 
-        //init_view
+    private void initViews() {
         rv_new_release_song = findViewById(R.id.rv_new_release_song);
-        RecyclerView rv_bxh_new_release_song = findViewById(R.id.rv_bxh_new_release_song);
-        RecyclerView rv_bang_xep_hang = findViewById(R.id.rv_bang_xep_hang);
-        RecyclerView rv_top100 = findViewById(R.id.rv_top100);
-
+        rv_bxh_new_release_song = findViewById(R.id.rv_bxh_new_release_song);
+        rv_bang_xep_hang = findViewById(R.id.rv_bang_xep_hang);
+        rv_top100 = findViewById(R.id.rv_top100);
 
         img_categories = findViewById(R.id.img_categories);
-        LinearLayout linear_bxh_new_release_song = findViewById(R.id.linear_bxh_new_release_song);
+        linear_bxh_new_release_song = findViewById(R.id.linear_bxh_new_release_song);
 
-
-        ImageView img_history = findViewById(R.id.img_history);
+        img_history = findViewById(R.id.img_history);
         image_slider = findViewById(R.id.image_slider);
 
-        ImageView img_search = findViewById(R.id.img_search);
-        ImageView img_account = findViewById(R.id.img_account);
-
+        img_search = findViewById(R.id.img_search);
+        img_account = findViewById(R.id.img_account);
 
         //btn nhac moi phat hanh
         btn_tat_ca = findViewById(R.id.btn_tat_ca);
         btn_viet_nam = findViewById(R.id.btn_viet_nam);
         btn_quoc_te = findViewById(R.id.btn_quoc_te);
+    }
 
+    private void initRecyclerView() {
+        GridLayoutManager layoutManagerNewReleaseSong = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
+        rv_new_release_song.setLayoutManager(layoutManagerNewReleaseSong);
 
-        // Khoi tạo RecyclerView và Adapter
-        GridLayoutManager layoutManagerNhacMoi = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
-        rv_new_release_song.setLayoutManager(layoutManagerNhacMoi);
-
-        GridLayoutManager layoutManagerChonNhanh = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
-        rv_bxh_new_release_song.setLayoutManager(layoutManagerChonNhanh);
+        GridLayoutManager layoutManagerBXHNewReleaseSong = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
+        rv_bxh_new_release_song.setLayoutManager(layoutManagerBXHNewReleaseSong);
 
         GridLayoutManager layoutManagerBangXepHang = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
         rv_bang_xep_hang.setLayoutManager(layoutManagerBangXepHang);
 
-        LinearLayoutManager layoutManagerNoiBat = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        rv_top100.setLayoutManager(layoutManagerNoiBat);
+        LinearLayoutManager layoutManagerTop100 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rv_top100.setLayoutManager(layoutManagerTop100);
+    }
 
-
-        // Khoi tạo Adapter
-
-        //new_release_song
+    private void initAdapter() {
         new_release_songAdapter = new SongAllAdapter(new_release_songArrayList, MainActivity.this, MainActivity.this);
         rv_new_release_song.setAdapter(new_release_songAdapter);
 
@@ -174,9 +174,9 @@ public class MainActivity extends AppCompatActivity {
 
         top100MoreAdapter = new Top100MoreAdapter(dataPlaylistArrayListTop100, MainActivity.this);
         rv_top100.setAdapter(top100MoreAdapter);
+    }
 
-
-        //init_bottom_view_player
+    private void initBottomPlay() {
         View layoutPlayerBottom = findViewById(R.id.layoutPlayerBottom);
         LinearLayout layoutPlayer = layoutPlayerBottom.findViewById(R.id.layoutPlayer);
         LinearLayout linearPlayPause = layoutPlayerBottom.findViewById(R.id.linear_play_pause);
@@ -196,16 +196,14 @@ public class MainActivity extends AppCompatActivity {
         musicHelper.initAdapter(new_release_songAdapter);
         musicHelper.initAdapter(bxh_new_release_songAdapter);
         musicHelper.initAdapter(bang_xep_hangAdapter);
+    }
 
-        //onclick
+    private void onClick() {
         img_search.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SearchActivity.class)));
         img_history.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, HistoryActivity.class)));
-        img_account.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                BottomSheetProfile bottomSheetProfile = new BottomSheetProfile(MainActivity.this, MainActivity.this);
-                bottomSheetProfile.show(getSupportFragmentManager(), bottomSheetProfile.getTag());
-            }
+        img_account.setOnClickListener(view -> {
+            BottomSheetProfile bottomSheetProfile = new BottomSheetProfile(MainActivity.this, MainActivity.this);
+            bottomSheetProfile.show(getSupportFragmentManager(), bottomSheetProfile.getTag());
         });
 
         linear_bxh_new_release_song.setOnClickListener(view -> {
@@ -221,14 +219,6 @@ public class MainActivity extends AppCompatActivity {
         btn_viet_nam.setOnClickListener(view -> checkCategoriesNewReleaseSong(1));
         btn_quoc_te.setOnClickListener(view -> checkCategoriesNewReleaseSong(2));
         btn_tat_ca.setOnClickListener(view -> checkCategoriesNewReleaseSong(0));
-
-
-        //get data
-        getBXH();
-        getTop100();
-        getNewRelease();
-        getHome();
-//        getAlbum();
     }
 
     private void getNewRelease() {
@@ -244,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(@NonNull Call<NewRelease> call, @NonNull Response<NewRelease> response) {
                             if (response.isSuccessful()) {
-                                Log.d("getNewRelese", call.request().url().toString());
+                                Log.d(">>>>>>>>>>>>>>>>>>", "getNewRelease " + call.request().url());
                                 newRelease = response.body();
                                 if (newRelease != null && newRelease.getErr() == 0) {
                                     ArrayList<Items> itemsArrayList = newRelease.getData().getItems();
@@ -294,10 +284,10 @@ public class MainActivity extends AppCompatActivity {
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                            String requestUrl = call.request().url().toString();
-                            Log.d(">>>>>>>>>>>>>>>>>>>", "HOme - " + requestUrl);
+                            Log.d(">>>>>>>>>>>>>>>>>>", "getHome " + call.request().url());
                             if (response.isSuccessful()) {
                                 try {
+                                    assert response.body() != null;
                                     String jsonData = response.body().string();
                                     JSONObject jsonObject = new JSONObject(jsonData);
                                     JSONObject dataObject = jsonObject.getJSONObject("data");
@@ -393,8 +383,8 @@ public class MainActivity extends AppCompatActivity {
                                         });
 
                                     }
-                                } catch (JSONException | IOException e) {
-                                    e.printStackTrace();
+                                } catch (Exception e) {
+                                    Log.e("TAG", "Error: " + e.getMessage(), e);
                                 }
 
 
@@ -433,7 +423,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(@NonNull Call<ChartHome> call, @NonNull Response<ChartHome> response) {
                             if (response.isSuccessful()) {
-                                Log.d("getBXH", call.request().url().toString());
+                                Log.d(">>>>>>>>>>>>>>>>>>", "getBXH " + call.request().url());
                                 ChartHome chartHome = response.body();
                                 if (chartHome != null && chartHome.getErr() == 0) {
                                     ArrayList<Items> itemsArrayList = chartHome.getData().getRTChart().getItems();
@@ -488,7 +478,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(@NonNull Call<Top100> call, @NonNull Response<Top100> response) {
                             if (response.isSuccessful()) {
-                                Log.d("getTop100", call.request().url().toString());
+                                Log.d(">>>>>>>>>>>>>>>>>>", "getTop100 " + call.request().url());
                                 Top100 top100 = response.body();
                                 if (top100 != null && top100.getErr() == 0) {
                                     ArrayList<DataPlaylist> itemsTop100sNoiBat = top100.getDataTop100().get(0).getItems();

@@ -1,35 +1,20 @@
 package com.example.musichub.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
-import androidx.palette.graphics.Palette;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.view.TextureView;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.musichub.R;
-import com.example.musichub.model.Song;
-import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class PlayNowVideoActivity extends AppCompatActivity {
@@ -38,7 +23,6 @@ public class PlayNowVideoActivity extends AppCompatActivity {
     private SeekBar seekBar;
     private LottieAnimationView btnPlay;
     private TextView txtTitle, txtArtist, tvCurrentTime, tvFullTime, txtPlayform;
-    private ArrayList<Song> songArrayList;
     private ImageView imageBackground, imageBack;
 
     @Override
@@ -70,24 +54,7 @@ public class PlayNowVideoActivity extends AppCompatActivity {
         if (bundle == null) {
             return;
         }
-        Song song = (Song) bundle.getSerializable("song");
         int position_song = bundle.getInt("position_song");
-        songArrayList = (ArrayList<Song>) bundle.getSerializable("song_list");
-        if (song != null && songArrayList != null) {
-            Uri videoUri = Uri.parse(song.getLink_audio());
-            MediaItem mediaItem = MediaItem.fromUri(videoUri);
-            exoPlayer.setMediaItem(mediaItem);
-            exoPlayer.prepare();
-            exoPlayer.play();
-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    //
-                }
-            }, 3000);
-            txtTitle.setText(song.getName());
-            txtArtist.setText(song.getArtist());
-        }
 
         exoPlayer.addListener(new Player.Listener() {
             @Override

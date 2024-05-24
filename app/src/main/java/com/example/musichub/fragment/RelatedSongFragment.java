@@ -13,27 +13,22 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.musichub.R;
 import com.example.musichub.adapter.SentencesAdapter;
-import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.helper.uliti.GetUrlAudioHelper;
-import com.example.musichub.model.Sentence;
-import com.example.musichub.model.Song;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.song.Lyric;
 import com.example.musichub.model.song.Sentences;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;

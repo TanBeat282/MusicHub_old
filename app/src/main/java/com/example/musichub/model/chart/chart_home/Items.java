@@ -1,6 +1,5 @@
 package com.example.musichub.model.chart.chart_home;
 
-import com.example.musichub.model.Artist;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
