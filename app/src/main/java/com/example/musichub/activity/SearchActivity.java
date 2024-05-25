@@ -5,6 +5,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -44,6 +45,7 @@ public class SearchActivity extends AppCompatActivity {
     private MusicHelper musicHelper;
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +121,7 @@ public class SearchActivity extends AppCompatActivity {
                 return true;
             }
         });
+        getRecommendKeyword();
     }
 
     private void fetchDataMusic(String textSearch) {
@@ -140,6 +143,7 @@ public class SearchActivity extends AppCompatActivity {
                         call.enqueue(new Callback<Search>() {
                             @Override
                             public void onResponse(Call<Search> call, Response<Search> response) {
+                                Log.d(">>>>>>>>>>>>>>>>>>", "search_getResult " + call.request().url());
                                 if (response.isSuccessful()) {
                                     Search search = response.body();
                                     if (search != null && search.getErr() == 0) {
@@ -183,6 +187,38 @@ public class SearchActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void getRecommendKeyword() {
+        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
+            @Override
+            public void onServiceCreated(ApiService service) {
+                try {
+                    SearchCategories searchCategories = new SearchCategories(null, null);
+                    Map<String, String> map = searchCategories.getResultByType("jack", 3, 1);
+
+                    retrofit2.Call<Search> call = service.SEARCH_TYPE_CALL(map.get("q"), map.get("type"), map.get("count"), map.get("page"), map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                    call.enqueue(new Callback<Search>() {
+                        @Override
+                        public void onResponse(Call<Search> call, Response<Search> response) {
+                            Log.d(">>>>>>>>>>>>>>>>>>", "getRecommendKeyword " + call.request().url());
+                        }
+
+                        @Override
+                        public void onFailure(Call<Search> call, Throwable throwable) {
+
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("TAG", "Error: " + e.getMessage(), e);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 
     @Override

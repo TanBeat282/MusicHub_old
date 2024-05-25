@@ -23,6 +23,7 @@ import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.example.musichub.activity.BXHNewSongActivity;
 import com.example.musichub.activity.HistoryActivity;
+import com.example.musichub.activity.NewReleaseSongActivity;
 import com.example.musichub.activity.SearchActivity;
 import com.example.musichub.adapter.SongAdapter.SongMoreAdapter;
 import com.example.musichub.adapter.Top100Adapter.Top100MoreAdapter;
@@ -30,6 +31,7 @@ import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
+import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.bottomsheet.BottomSheetProfile;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.ui.MusicHelper;
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     //view
     private ImageSlider image_slider;
     private LinearLayout btn_tat_ca, btn_viet_nam, btn_quoc_te;
-    private LinearLayout linear_bxh_new_release_song;
+    private LinearLayout linear_new_release_song, linear_bxh_new_release_song;
     private ImageView img_history, img_search, img_account;
 
     private RoundedImageView img_categories;
@@ -115,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
         getTop100();
         getNewRelease();
         getHome();
-
         onClick();
     }
 
@@ -134,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
         rv_top100 = findViewById(R.id.rv_top100);
 
         img_categories = findViewById(R.id.img_categories);
+        linear_new_release_song = findViewById(R.id.linear_new_release_song);
         linear_bxh_new_release_song = findViewById(R.id.linear_bxh_new_release_song);
 
         img_history = findViewById(R.id.img_history);
@@ -206,10 +208,19 @@ public class MainActivity extends AppCompatActivity {
             bottomSheetProfile.show(getSupportFragmentManager(), bottomSheetProfile.getTag());
         });
 
+        linear_new_release_song.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, NewReleaseSongActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("new_release_song", newRelease.getData().getItems());
+            intent.putExtras(bundle);
+
+            startActivity(intent);
+        });
+
         linear_bxh_new_release_song.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, BXHNewSongActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putSerializable("new_release_song", newRelease);
+            bundle.putSerializable("new_release_song", newRelease.getData().getItems());
             intent.putExtras(bundle);
 
             startActivity(intent);
@@ -229,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                     ChartCategories chartCategories = new ChartCategories(null, null);
                     Map<String, String> map = chartCategories.getNewReleaseChart();
 
-                    retrofit2.Call<NewRelease> call = service.NEW_RELEASE_CALL(map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                    retrofit2.Call<NewRelease> call = service.CHART_NEW_RELEASE_CALL(map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
                     call.enqueue(new Callback<NewRelease>() {
                         @Override
                         public void onResponse(@NonNull Call<NewRelease> call, @NonNull Response<NewRelease> response) {
@@ -514,39 +525,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-//    private void getAlbum() {
-//        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
-//            @Override
-//            public void onServiceCreated(ApiService service) {
-//                try {
-//                    SongCategories songCategories = new SongCategories(null, null);
-//                    Map<String, String> map = songCategories.getPlaylist("SC0708EF");
-//
-//                    retrofit2.Call<Playlist> call = service.PLAYLIST_CALL("SC0708EF", map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
-//                    call.enqueue(new Callback<Playlist>() {
-//                        @Override
-//                        public void onResponse(@NonNull Call<Playlist> call, @NonNull Response<Playlist> response) {
-//                            String requestUrl = call.request().url().toString();
-//                            Log.d(">>>>>>>>>>>>>>>>>>>", " - " + requestUrl);
-//                        }
-//
-//                        @Override
-//                        public void onFailure(@NonNull Call<Playlist> call, @NonNull Throwable throwable) {
-//
-//                        }
-//                    });
-//                } catch (Exception e) {
-//                    Log.e("TAG", "Error: " + e.getMessage(), e);
-//                }
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//
-//            }
-//        });
-//    }
 
     @SuppressLint("NotifyDataSetChanged")
     private void checkCategoriesNewReleaseSong(int categories_nhac_moi) {

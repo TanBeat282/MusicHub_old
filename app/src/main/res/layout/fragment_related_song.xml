@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.RelatedSongFragment">
+    tools:context=".fragment.BottomSheetPlay.RelatedSongFragment">
 
 
     <androidx.recyclerview.widget.RecyclerView

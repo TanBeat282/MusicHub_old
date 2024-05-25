@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -8,167 +9,61 @@
     tools:context=".activity.NewReleaseSongActivity">
 
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/nested_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/layoutPlayerBottom"
-        android:layout_below="@+id/relative_header">
+        android:layout_marginHorizontal="20dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/txt_new_release"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="100dp"
                 android:fontFamily="@font/roboto_bold"
                 android:text="Mới phát hành"
                 android:textColor="@color/white"
                 android:textSize="30sp" />
 
             <LinearLayout
-                android:id="@+id/linear_country_new_release"
-                android:layout_width="200dp"
-                android:layout_height="40dp"
-                android:layout_below="@+id/txt_new_release"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/background_button_option_song"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_weight="1"
-                    android:text="Tất cả"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:rotation="-90"
-                    android:src="@drawable/ic_back" />
-            </LinearLayout>
-
-
-            <LinearLayout
                 android:id="@+id/linear_new_release_song"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/linear_country_new_release"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="40dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_bold"
-                            android:text="Bài hát mới phát hành"
-                            android:textColor="@color/white"
-                            android:textSize="20sp" />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="10dp"
-                            android:rotation="-180"
-                            android:src="@drawable/ic_back" />
-                    </LinearLayout>
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_new_release_song"
-                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/linear_new_release_song"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal" />
-
-
-            <LinearLayout
-                android:id="@+id/linear_new_release_album"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rv_new_release_song"
-                android:layout_marginHorizontal="10dp"
+                android:layout_below="@+id/txt_new_release"
                 android:layout_marginTop="40dp"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tab_layout_new_release_song"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:background="@color/black"
+                    app:tabSelectedTextColor="@color/white" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_bold"
-                            android:text="Album mới phát hành"
-                            android:textColor="@color/white"
-                            android:textSize="20sp" />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="10dp"
-                            android:rotation="-180"
-                            android:src="@drawable/ic_back" />
-                    </LinearLayout>
-                </LinearLayout>
-
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/view_pager_new_release_song"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:layout_height="match_parent" />
             </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_new_release_album"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/linear_new_release_album"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal" />
 
 
         </RelativeLayout>
 
 
-    </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <RelativeLayout
         android:id="@+id/relative_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginHorizontal="20dp"
         android:fitsSystemWindows="true">
 
         <LinearLayout
@@ -181,7 +76,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="20dp"
                 android:src="@drawable/ic_back" />
 
             <TextView
@@ -208,7 +102,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="20dp"
                 android:src="@drawable/baseline_more_vert_24" />
         </LinearLayout>
 

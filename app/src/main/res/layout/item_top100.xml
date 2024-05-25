@@ -10,7 +10,7 @@
         android:id="@+id/thumbImageView"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        app:riv_corner_radius="15dp" />
+        app:riv_corner_radius="5dp" />
 
     <TextView
         android:id="@+id/nameTextView"

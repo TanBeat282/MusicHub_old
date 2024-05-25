@@ -70,6 +70,7 @@ public class SongCategories extends Base {
             throw error;
         }
     }
+
     public Map<String, String> getAlbum(String artistId) throws Exception {
         try {
             String sig = createIdSig("/api/v2/page/get/album", artistId);
@@ -82,4 +83,16 @@ public class SongCategories extends Base {
         }
     }
 
+    public Map<String, String> getNewRelease(String type) throws Exception {
+        //  String type = song or album
+        try {
+            String sig = createNewReleaseSig("/api/v2/chart/get/new-release", type);
+            Map<String, String> params = createRequest();
+            params.put("type", type);
+            params.put("sig", sig);
+            return params;
+        } catch (Exception error) {
+            throw error;
+        }
+    }
 }

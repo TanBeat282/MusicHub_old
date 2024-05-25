@@ -88,7 +88,7 @@ public class BXHNewSongActivity extends AppCompatActivity {
         musicHelper.initAdapter(bxhSongAdapter);
 
         nested_scroll.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @SuppressLint("ObsoleteSdkInt")
+            @SuppressLint({"ObsoleteSdkInt", "SetTextI18n"})
             @Override
             public void onScrollChange(@NonNull NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 if (scrollY <= 200) {
@@ -103,7 +103,7 @@ public class BXHNewSongActivity extends AppCompatActivity {
                 } else if (scrollY >= 300) {
                     txt_name_artist.setVisibility(View.VISIBLE);
                     txt_view.setVisibility(View.GONE);
-                    txt_name_artist.setText(newRelease.getData().getTitle());
+                    txt_name_artist.setText("BXH Nhạc Mới");
                     relative_header.setBackgroundColor(ContextCompat.getColor(BXHNewSongActivity.this, R.color.gray));
                     Helper.changeStatusBarColor(BXHNewSongActivity.this, R.color.gray);
                 }
@@ -114,14 +114,14 @@ public class BXHNewSongActivity extends AppCompatActivity {
         getDataBundle();
     }
 
+    @SuppressLint("SetTextI18n")
     private void getDataBundle() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            newRelease = (NewRelease) bundle.getSerializable("new_release_song");
-            if (newRelease != null) {
-                itemsArrayList = newRelease.getData().getItems();
+            itemsArrayList = (ArrayList<Items>) bundle.getSerializable("new_release_song");
+            if (itemsArrayList != null) {
                 bxhSongAdapter.setFilterList(itemsArrayList);
-                txt_new_release.setText(newRelease.getData().getTitle());
+                txt_new_release.setText("BXH Nhạc Mới");
                 musicHelper.checkIsPlayingPlaylist(sharedPreferencesManager.restoreSongState(), itemsArrayList, bxhSongAdapter);
             }
         }

@@ -110,10 +110,49 @@ public class SharedPreferencesManager {
     }
 
     // save data search
+    public void saveSearchHistory(String keyword) {
+        // Lấy danh sách lịch sử tìm kiếm hiện tại
+        ArrayList<String> searchHistory = restoreSearchHistory();
+
+        // Kiểm tra nếu danh sách lịch sử tìm kiếm là null
+        if (searchHistory == null) {
+            searchHistory = new ArrayList<>();
+        }
+
+        // Thêm từ khóa tìm kiếm mới vào đầu danh sách
+        searchHistory.add(0, keyword);
+
+        // Giới hạn số lượng mục trong danh sách lịch sử tìm kiếm (nếu cần)
+        int maxSearchHistorySize = 20; // Số lượng tối đa mục trong danh sách lịch sử tìm kiếm
+        if (searchHistory.size() > maxSearchHistorySize) {
+            searchHistory.subList(maxSearchHistorySize, searchHistory.size()).clear();
+        }
+
+        // Lưu danh sách lịch sử tìm kiếm đã cập nhật vào SharedPreferences
+        Gson gson = new Gson();
+        String searchHistoryJson = gson.toJson(searchHistory);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("searchHistory", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("search_history", searchHistoryJson);
+        editor.apply();
+    }
+
+    public ArrayList<String> restoreSearchHistory() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("searchHistory", Context.MODE_PRIVATE);
+        String searchHistoryJson = sharedPreferences.getString("search_history", null);
+
+        if (searchHistoryJson != null) {
+            Gson gson = new Gson();
+            return gson.fromJson(searchHistoryJson, new TypeToken<ArrayList<String>>() {}.getType());
+        } else {
+            return null;
+        }
+    }
 
 
 
-    //positon song
+    //position song
     public void saveSongPosition(int positionSong) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("songPosition", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

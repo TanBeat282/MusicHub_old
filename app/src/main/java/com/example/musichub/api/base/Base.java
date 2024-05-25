@@ -23,7 +23,7 @@ public class Base {
     private final String secretKey;
     private final String apiKey;
     public Base(String apiKey, String secretKey) {
-        this.version = "1.10.12"; // Default 0
+        this.version = "1.10.30"; // Default 0
         this.ctime = String.valueOf(System.currentTimeMillis() / 1000);
         this.secretKey = secretKey != null ? secretKey : "acOrvUS15XRW2o9JksiK1KgQ6Vbds8ZW";
         this.apiKey = apiKey != null ? apiKey : "X5BM3w8N7MKozC0B85o4KMlzLZKhV00y";
@@ -94,6 +94,9 @@ public class Base {
 
     protected String createNoIdSig(String path) throws NoSuchAlgorithmException, Exception {
         return createHashAndHmac(path, "ctime=" + this.ctime + "version=" + this.version);
+    }
+    protected String createNewReleaseSig(String path, String type) throws NoSuchAlgorithmException, Exception {
+        return createHashAndHmac(path, "ctime=" + this.ctime + "type=" + type + "version=" + this.version);
     }
 
     protected String createSuggestSig(String path) throws NoSuchAlgorithmException, Exception {

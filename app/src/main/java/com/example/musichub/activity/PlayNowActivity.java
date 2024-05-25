@@ -37,9 +37,9 @@ import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.bottomsheet.BottomSheetInfoSong;
-import com.example.musichub.fragment.ContinueSongFragment;
-import com.example.musichub.fragment.LyricSongFragment;
-import com.example.musichub.fragment.RelatedSongFragment;
+import com.example.musichub.fragment.BottomSheetPlay.ContinueSongFragment;
+import com.example.musichub.fragment.BottomSheetPlay.LyricSongFragment;
+import com.example.musichub.fragment.BottomSheetPlay.RelatedSongFragment;
 import com.example.musichub.helper.uliti.CheckIsFile;
 import com.example.musichub.helper.uliti.DownloadAudio;
 import com.example.musichub.helper.uliti.GetUrlAudioHelper;
@@ -75,7 +75,7 @@ public class PlayNowActivity extends AppCompatActivity {
     private View layoutPlayer;
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
-    private LinearLayout linear_play_pause, linear_next, linear_tabLayout, linear_bottomSheet, linear_bottom, layoutPlayerTop, btn_down_audio;
+    private LinearLayout linear_play_pause, linear_next, linear_tabLayout, linear_bottomSheet, linear_bottom, layoutPlayerTop, btn_down_audio, linear_rewind, linear_forward;
 
 
     private DownloadAudio downloadAudio;
@@ -88,7 +88,6 @@ public class PlayNowActivity extends AppCompatActivity {
     private int currentTime, total_time;
     private ArrayList<Items> songArrayList;
     private GetUrlAudioHelper getUrlAudioHelper;
-
 
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -209,6 +208,9 @@ public class PlayNowActivity extends AppCompatActivity {
         txt_view_audio = findViewById(R.id.txt_view_audio);
         txt_like = findViewById(R.id.txt_like);
         txt_comment = findViewById(R.id.txt_comment);
+
+        linear_rewind = findViewById(R.id.linear_rewind);
+        linear_forward = findViewById(R.id.linear_forward);
 
         layoutPlayerTop = layoutPlayer.findViewById(R.id.layoutPlayer);
         linear_play_pause = layoutPlayer.findViewById(R.id.linear_play_pause);
@@ -390,6 +392,46 @@ public class PlayNowActivity extends AppCompatActivity {
                 sendActionToService(MyService.ACTION_RESUME);
             }
         });
+        linear_rewind.setOnClickListener(new View.OnClickListener() {
+            boolean isFirstClick = true;
+            long lastClickTime = 0;
+
+            @Override
+            public void onClick(View view) {
+                long clickTime = System.currentTimeMillis();
+                if (!isFirstClick && clickTime - lastClickTime < 500) { // 500 milliseconds threshold for double click
+                    // Double click happened, perform the action
+                    Intent intent = new Intent(PlayNowActivity.this, MyService.class);
+                    intent.putExtra("seek_to_position", currentTime - 10000);
+                    startService(intent);
+                    isFirstClick = true; // Reset the flag
+                } else {
+                    isFirstClick = false;
+                }
+                lastClickTime = clickTime;
+            }
+        });
+
+        linear_forward.setOnClickListener(new View.OnClickListener() {
+            boolean isFirstClick = true;
+            long lastClickTime = 0;
+
+            @Override
+            public void onClick(View view) {
+                long clickTime = System.currentTimeMillis();
+                if (!isFirstClick && clickTime - lastClickTime < 500) { // 500 milliseconds threshold for double click
+                    // Double click happened, perform the action
+                    Intent intent = new Intent(PlayNowActivity.this, MyService.class);
+                    intent.putExtra("seek_to_position", currentTime + 10000);
+                    startService(intent);
+                    isFirstClick = true; // Reset the flag
+                } else {
+                    isFirstClick = false;
+                }
+                lastClickTime = clickTime;
+            }
+        });
+
 
         linear_next.setOnClickListener(v -> sendActionToService(ACTION_NEXT));
         btPrevious.setOnClickListener(v -> sendActionToService(MyService.ACTION_PREVIOUS));

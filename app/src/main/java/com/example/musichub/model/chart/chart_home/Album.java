@@ -18,6 +18,16 @@ public class Album implements Serializable {
     private boolean PR;
     private ArrayList<Artists> artists;
     private String artistsNames;
+    private int playItemMode;
+    private int subType;
+    private int uid;
+    private String thumbnailM;
+    private boolean isShuffle;
+    private boolean isPrivate;
+    private String userName;
+    private boolean isAlbum;
+    private String textType;
+    private boolean isSingle;
 
     public String getEncodeId() {
         return encodeId;
@@ -91,7 +101,7 @@ public class Album implements Serializable {
         this.releasedAt = releasedAt;
     }
 
-    public List<String> getGenreIds() {
+    public ArrayList<String> getGenreIds() {
         return genreIds;
     }
 
@@ -107,7 +117,7 @@ public class Album implements Serializable {
         this.PR = PR;
     }
 
-    public List<Artists> getArtists() {
+    public ArrayList<Artists> getArtists() {
         return artists;
     }
 
@@ -121,5 +131,85 @@ public class Album implements Serializable {
 
     public void setArtistsNames(String artistsNames) {
         this.artistsNames = artistsNames;
+    }
+
+    public int getPlayItemMode() {
+        return playItemMode;
+    }
+
+    public void setPlayItemMode(int playItemMode) {
+        this.playItemMode = playItemMode;
+    }
+
+    public int getSubType() {
+        return subType;
+    }
+
+    public void setSubType(int subType) {
+        this.subType = subType;
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
+    public String getThumbnailM() {
+        return thumbnailM;
+    }
+
+    public void setThumbnailM(String thumbnailM) {
+        this.thumbnailM = thumbnailM;
+    }
+
+    public boolean isShuffle() {
+        return isShuffle;
+    }
+
+    public void setShuffle(boolean shuffle) {
+        isShuffle = shuffle;
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public boolean isAlbum() {
+        return isAlbum;
+    }
+
+    public void setAlbum(boolean album) {
+        isAlbum = album;
+    }
+
+    public String getTextType() {
+        return textType;
+    }
+
+    public void setTextType(String textType) {
+        this.textType = textType;
+    }
+
+    public boolean isSingle() {
+        return isSingle;
+    }
+
+    public void setSingle(boolean single) {
+        isSingle = single;
     }
 }

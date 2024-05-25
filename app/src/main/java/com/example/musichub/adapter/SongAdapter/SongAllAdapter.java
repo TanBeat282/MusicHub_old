@@ -37,8 +37,8 @@ public class SongAllAdapter extends RecyclerView.Adapter<SongAllAdapter.ViewHold
     private int selectedPosition = -1;
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setFilterList(ArrayList<Items> fillterList) {
-        this.songList = fillterList;
+    public void setFilterList(ArrayList<Items> filterList) {
+        this.songList = filterList;
         notifyDataSetChanged();
     }
 

@@ -1,0 +1,113 @@
+package com.example.musichub.fragment.NewReleaseSong;
+
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.example.musichub.R;
+import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
+import com.example.musichub.api.ApiService;
+import com.example.musichub.api.ApiServiceFactory;
+import com.example.musichub.api.categories.SongCategories;
+import com.example.musichub.model.chart.chart_home.Album;
+import com.example.musichub.model.chart.chart_home.Items;
+import com.example.musichub.model.new_release.NewReleaseAlbum;
+import com.example.musichub.model.new_release.NewReleaseSong;
+
+import java.util.ArrayList;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class AlbumFragment extends Fragment {
+    private RecyclerView recycler_view_album;
+    private ArrayList<Album> albumArrayList = new ArrayList<>();
+    private SongAllAdapter songAllAdapter;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_album, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        recycler_view_album = view.findViewById(R.id.recycler_view_album);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+        recycler_view_album.setLayoutManager(layoutManager);
+
+
+
+        getNewReleaseSong("album");
+    }
+
+    private void getNewReleaseSong(String type) {
+        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
+            @Override
+            public void onServiceCreated(ApiService service) {
+                try {
+                    SongCategories songCategories = new SongCategories(null, null);
+                    Map<String, String> map = songCategories.getNewRelease(type);
+
+                    retrofit2.Call<NewReleaseAlbum> call = service.NEW_RELEASE_ALBUM_CALL(type, map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                    call.enqueue(new Callback<NewReleaseAlbum>() {
+                        @Override
+                        public void onResponse(Call<NewReleaseAlbum> call, Response<NewReleaseAlbum> response) {
+                            if (response.isSuccessful()) {
+                                Log.d(">>>>>>>>>>>>>>>>>>", "getNewReleaseAlbum " + call.request().url());
+                                NewReleaseAlbum newReleaseAlbum = response.body();
+                                if (newReleaseAlbum != null && newReleaseAlbum.getErr() == 0) {
+                                    ArrayList<Album> arrayList = newReleaseAlbum.getData();
+                                    if (!arrayList.isEmpty()) {
+                                        requireActivity().runOnUiThread(() -> {
+//                                            albumArrayList = arrayList;
+//                                            songAllAdapter.setFilterList(albumArrayList);
+                                        });
+                                    } else {
+                                        Log.d("TAG", "Items list is empty");
+                                    }
+                                } else {
+                                    Log.d("TAG", "Error: ");
+                                }
+                            } else {
+                                Log.d("TAG", "Failed to retrieve data: " + response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<NewReleaseAlbum> call, Throwable throwable) {
+
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("TAG", "Error: " + e.getMessage(), e);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+}

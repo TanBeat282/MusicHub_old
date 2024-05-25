@@ -22,6 +22,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.palette.graphics.Palette;
 
@@ -63,7 +64,7 @@ public class MyService extends Service {
     private final Handler stopServiceHandler = new Handler();
     private final Handler autoNextSongHandler = new Handler();
     private final GetUrlAudioHelper getUrlAudioHelper = new GetUrlAudioHelper();
-
+    private final String urlImageDefault = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/3/2/a/3/32a35f4d26ee56366397c09953f6c269.jpg";
 
     @Override
     public void onCreate() {
@@ -139,6 +140,7 @@ public class MyService extends Service {
 
     private void startMusic(Items song) {
         getColor(song.getThumbnailM());
+
         getUrlAudioHelper.getSongAudio(song.getEncodeId(), new GetUrlAudioHelper.SongAudioCallback() {
             @Override
             public void onSuccess(SongAudio songAudio) {
@@ -397,31 +399,36 @@ public class MyService extends Service {
     }
 
     private void getColor(String urlImage) {
-        Glide.with(this)
-                .asBitmap()
-                .load(urlImage)
-                .listener(new RequestListener<Bitmap>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, @NonNull Target<Bitmap> target, boolean isFirstResource) {
-                        return false;
-                    }
+        if (urlImage.equals(urlImageDefault)) {
+            int blackColor = ContextCompat.getColor(this, R.color.black);
+            int grayColor = ContextCompat.getColor(this, R.color.colorPrimaryText);
+            sharedPreferencesManager.saveColorBackgroundState(blackColor, grayColor);
+        } else {
+            Glide.with(this)
+                    .asBitmap()
+                    .load(urlImage)
+                    .listener(new RequestListener<Bitmap>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, @NonNull Target<Bitmap> target, boolean isFirstResource) {
+                            return false;
+                        }
 
-                    @Override
-                    public boolean onResourceReady(@NonNull Bitmap resource, @NonNull Object model, Target<Bitmap> target, @NonNull DataSource dataSource, boolean isFirstResource) {
-                        Palette.from(resource).generate(palette -> {
-                            assert palette != null;
-                            int dominantColor = palette.getDominantColor(getResources().getColor(R.color.default_color));
-                            float[] hsv = new float[3];
-                            Color.colorToHSV(dominantColor, hsv);
-                            hsv[2] *= 1.2f;
-                            int brighterColor = Color.HSVToColor(hsv);
-                            sharedPreferencesManager.saveColorBackgroundState(dominantColor, brighterColor);
-
-                        });
-                        return false;
-                    }
-                })
-                .submit();
+                        @Override
+                        public boolean onResourceReady(@NonNull Bitmap resource, @NonNull Object model, Target<Bitmap> target, @NonNull DataSource dataSource, boolean isFirstResource) {
+                            Palette.from(resource).generate(palette -> {
+                                assert palette != null;
+                                int dominantColor = palette.getDominantColor(Color.BLACK);
+                                float[] hsv = new float[3];
+                                Color.colorToHSV(dominantColor, hsv);
+                                hsv[2] *= 1.2f;
+                                int brighterColor = Color.HSVToColor(hsv);
+                                sharedPreferencesManager.saveColorBackgroundState(dominantColor, brighterColor);
+                            });
+                            return false;
+                        }
+                    })
+                    .submit();
+        }
     }
 
     @Override

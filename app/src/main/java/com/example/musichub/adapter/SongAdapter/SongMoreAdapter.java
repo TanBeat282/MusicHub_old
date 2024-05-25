@@ -21,7 +21,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.example.musichub.MainActivity;
 import com.example.musichub.R;
+import com.example.musichub.activity.BXHNewSongActivity;
 import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.bottomsheet.BottomSheetOptionSong;
 import com.example.musichub.helper.ui.PlayingStatusUpdater;
@@ -61,7 +63,7 @@ public class SongMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     selectedPosition = i;
                     notifyDataSetChanged();
                     return;
-                }else {
+                } else {
                     selectedPosition = -1;
                     notifyDataSetChanged();
                 }
@@ -70,6 +72,7 @@ public class SongMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         selectedPosition = -1;
         notifyDataSetChanged();
     }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -144,7 +147,12 @@ public class SongMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ButtonViewHolder buttonViewHolder = (ButtonViewHolder) holder;
             // Handle button click event
             buttonViewHolder.btn_more.setOnClickListener(v -> {
-                // Do something when button is clicked
+                Intent intent = new Intent(context, BXHNewSongActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("new_release_song", songList);
+                intent.putExtras(bundle);
+
+                context.startActivity(intent);
             });
         }
     }
