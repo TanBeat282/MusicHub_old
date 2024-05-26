@@ -12,16 +12,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.musichub.R;
+import com.example.musichub.adapter.Album.AlbumAllAdapter;
 import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
+import com.example.musichub.helper.ui.Helper;
+import com.example.musichub.helper.ui.MusicHelper;
 import com.example.musichub.model.chart.chart_home.Album;
-import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.new_release.NewReleaseAlbum;
-import com.example.musichub.model.new_release.NewReleaseSong;
+import com.example.musichub.sharedpreferences.SharedPreferencesManager;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -33,7 +39,12 @@ import retrofit2.Response;
 public class AlbumFragment extends Fragment {
     private RecyclerView recycler_view_album;
     private ArrayList<Album> albumArrayList = new ArrayList<>();
-    private SongAllAdapter songAllAdapter;
+    private AlbumAllAdapter albumAllAdapter;
+    private MusicHelper musicHelper;
+    private static final String VIETNAM_CATEGORY = "IWZ9Z08I";
+    private static final String AU_MY_CATEGORY = "IWZ9Z08O";
+    private static final String HAN_QUOC_CATEGORY = "IWZ9Z08W";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,26 +60,62 @@ public class AlbumFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Helper.changeNavigationColor(requireActivity(), R.color.gray, true);
 
-        recycler_view_album = view.findViewById(R.id.recycler_view_album);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
-        recycler_view_album.setLayoutManager(layoutManager);
-
+        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(requireContext());
+        musicHelper = new MusicHelper(requireContext(), sharedPreferencesManager);
 
 
-        getNewReleaseSong("album");
+        initializeViews(view);
+        setupRecyclerView();
+        setupButtonListeners();
+        initBottomPlayer(view);
+        getNewReleaseAlbum();
     }
 
-    private void getNewReleaseSong(String type) {
+    private void initializeViews(View view) {
+        recycler_view_album = view.findViewById(R.id.recycler_view_album);
+    }
+
+    private void setupRecyclerView() {
+        recycler_view_album.setLayoutManager(new LinearLayoutManager(requireContext()));
+        albumAllAdapter = new AlbumAllAdapter(albumArrayList, requireActivity(), requireContext());
+        recycler_view_album.setAdapter(albumAllAdapter);
+    }
+
+    private void setupButtonListeners() {
+
+    }
+
+    private void initBottomPlayer(View view) {
+        // Khởi tạo các view
+        View layoutPlayerBottom = view.findViewById(R.id.layoutPlayerBottom);
+        LinearLayout layoutPlayer = layoutPlayerBottom.findViewById(R.id.layoutPlayer);
+        LinearLayout linearPlayPause = layoutPlayerBottom.findViewById(R.id.linear_play_pause);
+        ImageView imgPlayPause = layoutPlayerBottom.findViewById(R.id.img_play_pause);
+        LinearLayout linearNext = layoutPlayerBottom.findViewById(R.id.linear_next);
+        ImageView imgAlbumSong = layoutPlayerBottom.findViewById(R.id.img_album_song);
+        TextView tvTitleSong = layoutPlayerBottom.findViewById(R.id.txtTile);
+        tvTitleSong.setSelected(true);
+        TextView tvSingleSong = layoutPlayerBottom.findViewById(R.id.txtArtist);
+        tvSingleSong.setSelected(true);
+        LinearProgressIndicator progressIndicator = layoutPlayerBottom.findViewById(R.id.progressIndicator);
+
+        musicHelper.initViews(layoutPlayerBottom, layoutPlayer, linearPlayPause, imgPlayPause, linearNext, imgAlbumSong, tvTitleSong, tvSingleSong, progressIndicator);
+
+        // Lấy thông tin bài hát hiện tại
+        musicHelper.getSongCurrent();
+    }
+
+    private void getNewReleaseAlbum() {
         ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
             @Override
             public void onServiceCreated(ApiService service) {
                 try {
                     SongCategories songCategories = new SongCategories(null, null);
-                    Map<String, String> map = songCategories.getNewRelease(type);
+                    Map<String, String> map = songCategories.getNewRelease("album");
 
-                    retrofit2.Call<NewReleaseAlbum> call = service.NEW_RELEASE_ALBUM_CALL(type, map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                    retrofit2.Call<NewReleaseAlbum> call = service.NEW_RELEASE_ALBUM_CALL("album", map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
                     call.enqueue(new Callback<NewReleaseAlbum>() {
                         @Override
                         public void onResponse(Call<NewReleaseAlbum> call, Response<NewReleaseAlbum> response) {
@@ -79,8 +126,8 @@ public class AlbumFragment extends Fragment {
                                     ArrayList<Album> arrayList = newReleaseAlbum.getData();
                                     if (!arrayList.isEmpty()) {
                                         requireActivity().runOnUiThread(() -> {
-//                                            albumArrayList = arrayList;
-//                                            songAllAdapter.setFilterList(albumArrayList);
+                                            albumArrayList = arrayList;
+                                            albumAllAdapter.setFilterList(albumArrayList);
                                         });
                                     } else {
                                         Log.d("TAG", "Items list is empty");
@@ -110,4 +157,15 @@ public class AlbumFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        musicHelper.registerReceivers();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        musicHelper.unregisterReceivers();
+    }
 }

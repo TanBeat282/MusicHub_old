@@ -55,6 +55,7 @@ public class ViewPlaylistActivity extends AppCompatActivity {
     private TextView txt_view;
     private TextView txt_content_playlist;
     private DataPlaylist dataPlaylist;
+    private Album album;
     private ArrayList<Items> itemsArrayList;
     private SongAllAdapter songAllAdapter;
     private SharedPreferencesManager sharedPreferencesManager;
@@ -143,7 +144,7 @@ public class ViewPlaylistActivity extends AppCompatActivity {
                     // Hiển thị TextView khi người dùng cuộn xuống khỏi đầu trang
                     txt_name_artist.setVisibility(View.VISIBLE);
                     txt_view.setVisibility(View.GONE);
-                    txt_name_artist.setText(dataPlaylist.getTitle());
+                    txt_name_artist.setText(dataPlaylist == null ? album.getTitle() : dataPlaylist.getTitle());
                     relative_header.setBackgroundColor(ContextCompat.getColor(ViewPlaylistActivity.this, R.color.gray));
                     Helper.changeStatusBarColor(ViewPlaylistActivity.this, R.color.gray);
                 }
@@ -166,7 +167,7 @@ public class ViewPlaylistActivity extends AppCompatActivity {
                         .transform(new CenterCrop(), new BlurAndBlackOverlayTransformation(this, 25, 220)) // 25 là mức độ mờ, 150 là độ mờ của lớp phủ đen
                         .into(imageBackground);
             } else {
-                Album album = (Album) bundle.getSerializable("playlist");
+                album = (Album) bundle.getSerializable("playlist");
                 getPlaylist(album.getEncodeId());
                 // Sử dụng Glide để tải và áp dụng hiệu ứng mờ
                 Glide.with(this)

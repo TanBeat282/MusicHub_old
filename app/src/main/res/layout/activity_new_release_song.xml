@@ -12,18 +12,17 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/nested_scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/layoutPlayerBottom"
-        android:layout_marginHorizontal="20dp">
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/txt_new_release"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="100dp"
                 android:fontFamily="@font/roboto_bold"
                 android:text="Mới phát hành"
@@ -35,27 +34,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/txt_new_release"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tab_layout_new_release_song"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:background="@color/black"
                     app:tabSelectedTextColor="@color/white" />
 
                 <androidx.viewpager.widget.ViewPager
                     android:id="@+id/view_pager_new_release_song"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="20dp"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp" />
             </LinearLayout>
 
 
         </RelativeLayout>
-
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <RelativeLayout
@@ -107,12 +105,4 @@
 
     </RelativeLayout>
 
-    <include
-        android:id="@+id/layoutPlayerBottom"
-        layout="@layout/bottom_player_music_home_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="0dp"
-        android:visibility="gone" />
 </RelativeLayout>
