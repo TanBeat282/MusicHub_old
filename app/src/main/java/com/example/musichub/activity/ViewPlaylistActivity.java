@@ -156,26 +156,15 @@ public class ViewPlaylistActivity extends AppCompatActivity {
 
     private void getDataBundle() {
         Bundle bundle = getIntent().getExtras();
-        if (bundle == null) {
-        } else {
-            if (bundle.getSerializable("playlist") instanceof DataPlaylist) {
-                dataPlaylist = (DataPlaylist) bundle.getSerializable("playlist");
-                getPlaylist(dataPlaylist.getEncodeId());
-                // Sử dụng Glide để tải và áp dụng hiệu ứng mờ
-                Glide.with(this)
-                        .load(dataPlaylist.getThumbnailM())
-                        .transform(new CenterCrop(), new BlurAndBlackOverlayTransformation(this, 25, 220)) // 25 là mức độ mờ, 150 là độ mờ của lớp phủ đen
-                        .into(imageBackground);
-            } else {
-                album = (Album) bundle.getSerializable("playlist");
-                getPlaylist(album.getEncodeId());
-                // Sử dụng Glide để tải và áp dụng hiệu ứng mờ
-                Glide.with(this)
-                        .load(album.getThumbnail())
-                        .transform(new CenterCrop(), new BlurAndBlackOverlayTransformation(this, 25, 220)) // 25 là mức độ mờ, 150 là độ mờ của lớp phủ đen
-                        .into(imageBackground);
+        if (bundle != null) {
+            dataPlaylist = (DataPlaylist) bundle.getSerializable("playlist");
+            getPlaylist(dataPlaylist.getEncodeId());
 
-            }
+            // Sử dụng Glide để tải và áp dụng hiệu ứng mờ
+            Glide.with(this)
+                    .load(dataPlaylist.getThumbnailM())
+                    .transform(new CenterCrop(), new BlurAndBlackOverlayTransformation(this, 25, 220)) // 25 là mức độ mờ, 150 là độ mờ của lớp phủ đen
+                    .into(imageBackground);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.musichub.api;
 
+import com.example.musichub.model.Album.Album;
 import com.example.musichub.model.artist.ArtistDetail;
 import com.example.musichub.model.chart.chart_home.ChartHome;
 import com.example.musichub.model.chart.new_release.NewRelease;
@@ -28,6 +29,7 @@ public interface ApiService {
     String pathAudioSong = "/api/v2/song/get/streaming?";
     String pathArtist = "/api/v2/page/get/artist?";
     String pathPlaylist = "/api/v2/page/get/playlist?";
+    String pathAlbum = "/api/v2/page/get/album?";
     String pathLyric = "/api/v2/lyric/get/lyric?";
 
     //search
@@ -57,10 +59,10 @@ public interface ApiService {
 
     @GET(pathNewRelease)
     Call<NewReleaseSong> NEW_RELEASE_SONG_CALL(@Query("type") String type,
-                                          @Query("sig") String sig,
-                                          @Query("ctime") String ctime,
-                                          @Query("version") String version,
-                                          @Query("apiKey") String apiKey);
+                                               @Query("sig") String sig,
+                                               @Query("ctime") String ctime,
+                                               @Query("version") String version,
+                                               @Query("apiKey") String apiKey);
 
     @GET(pathNewRelease)
     Call<NewReleaseAlbum> NEW_RELEASE_ALBUM_CALL(@Query("type") String type,
@@ -111,6 +113,13 @@ public interface ApiService {
                                  @Query("ctime") String ctime,
                                  @Query("version") String version,
                                  @Query("apiKey") String apiKey);
+
+    @GET(pathAlbum)
+    Call<Album> ALBUM_CALL(@Query("id") String id,
+                           @Query("sig") String sig,
+                           @Query("ctime") String ctime,
+                           @Query("version") String version,
+                           @Query("apiKey") String apiKey);
 
     @GET(pathSearch)
     Call<Search> SEARCH_CALL(@Query("q") String q,

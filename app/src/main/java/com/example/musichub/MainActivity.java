@@ -44,6 +44,7 @@ import com.example.musichub.model.chart.home.ItemsData;
 import com.example.musichub.model.chart.new_release.NewRelease;
 import com.example.musichub.model.chart.top100.Top100;
 import com.example.musichub.model.playlist.DataPlaylist;
+import com.example.musichub.model.playlist.Playlist;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         getNewRelease();
         getHome();
         onClick();
+        getAlbum();
     }
 
     private void initData() {
@@ -514,6 +516,38 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     });
+                } catch (Exception e) {
+                    Log.e("TAG", "Error: " + e.getMessage(), e);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+    private void getAlbum() {
+        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
+            @Override
+            public void onServiceCreated(ApiService service) {
+                try {
+                    SongCategories songCategories = new SongCategories(null, null);
+                    Map<String, String> map = songCategories.getPlaylist("6CI0A6BA");
+
+                    retrofit2.Call<Playlist> call = service.PLAYLIST_CALL("6CI0A6BA", map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                   call.enqueue(new Callback<Playlist>() {
+                       @Override
+                       public void onResponse(Call<Playlist> call, Response<Playlist> response) {
+                           Log.d(">>>>>>>>>>>>>>>>>>", "getAlbum " + call.request().url());
+                       }
+
+                       @Override
+                       public void onFailure(Call<Playlist> call, Throwable throwable) {
+
+                       }
+                   });
                 } catch (Exception e) {
                     Log.e("TAG", "Error: " + e.getMessage(), e);
                 }
