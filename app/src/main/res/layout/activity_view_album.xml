@@ -278,10 +278,11 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/linear_artist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/linear_info_album"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="30dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -296,8 +297,13 @@
                     android:id="@+id/rv_artist"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="20dp" />
             </LinearLayout>
+
+            <View
+                android:layout_below="@+id/linear_artist"
+                android:layout_width="match_parent"
+                android:layout_height="500dp" />
 
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
@@ -332,6 +338,12 @@
                 android:fontFamily="@font/roboto_bold"
                 android:textColor="@color/white"
                 android:textSize="16sp"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
                 android:visibility="gone" />
 
             <TextView

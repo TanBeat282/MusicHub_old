@@ -9,10 +9,10 @@
     <TextView
         android:id="@+id/textViewContent"
         android:layout_width="match_parent"
+        android:layout_gravity="start"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_bold"
         android:textColor="@color/white"
-        android:textSize="24sp"
-        tools:ignore="RtlHardcoded" />
+        android:textSize="24sp" />
 
 </LinearLayout>

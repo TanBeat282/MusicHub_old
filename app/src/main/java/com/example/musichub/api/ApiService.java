@@ -115,7 +115,7 @@ public interface ApiService {
                                  @Query("apiKey") String apiKey);
 
     @GET(pathAlbum)
-    Call<Album> ALBUM_CALL(@Query("id") String id,
+    Call<com.example.musichub.model.Album.Album> ALBUM_CALL(@Query("id") String id,
                            @Query("sig") String sig,
                            @Query("ctime") String ctime,
                            @Query("version") String version,

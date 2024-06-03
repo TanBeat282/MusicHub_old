@@ -55,7 +55,7 @@
                     android:id="@+id/linear_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginHorizontal="20dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -63,7 +63,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginStart="10dp"
                         android:fontFamily="@font/roboto_bold"
                         android:textColor="@color/white"
                         android:textSize="30sp" />
@@ -73,7 +72,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginStart="10dp"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -129,6 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relative_info"
                 android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="20dp"
                 android:visibility="gone">
 
 
@@ -136,7 +135,6 @@
                     android:id="@+id/linear_new_song"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
                     android:background="@drawable/background_button_option_song"
                     android:orientation="horizontal"
                     android:padding="10dp"
@@ -213,8 +211,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relative_new_song"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="30dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <LinearLayout
                     android:id="@+id/linear_noibat"
@@ -224,7 +223,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
                         android:fontFamily="@font/roboto_bold"
                         android:text="Bài hát nổi bật"
                         android:textColor="@color/white"
@@ -244,8 +242,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/linear_noibat"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="20dp" />
 
             </RelativeLayout>
 
@@ -254,6 +251,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relative_noibat"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="30dp"
                 android:visibility="gone">
 
@@ -265,7 +263,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
                         android:fontFamily="@font/roboto_bold"
                         android:text="Single"
                         android:textColor="@color/white"
@@ -285,8 +282,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/linear_single"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="20dp" />
 
             </RelativeLayout>
 
@@ -295,6 +291,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relative_single"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="30dp"
                 android:visibility="gone">
 
@@ -306,19 +303,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
                         android:fontFamily="@font/roboto_bold"
                         android:text="Album"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="10dp"
-                        android:rotation="-180"
-                        android:src="@drawable/ic_back" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -326,17 +314,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/linear_album"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="20dp" />
 
             </RelativeLayout>
-
 
             <RelativeLayout
                 android:id="@+id/relative_mv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relative_album"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="30dp"
                 android:visibility="gone">
 
@@ -353,14 +340,6 @@
                         android:text="MV"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="10dp"
-                        android:rotation="-180"
-                        android:src="@drawable/ic_back" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -368,8 +347,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/linear_mv"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="20dp" />
 
             </RelativeLayout>
 
@@ -378,6 +356,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relative_mv"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="30dp"
                 android:visibility="gone">
 
@@ -389,19 +368,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
                         android:fontFamily="@font/roboto_bold"
                         android:text="Playlist"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="10dp"
-                        android:rotation="-180"
-                        android:src="@drawable/ic_back" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -409,17 +379,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/linear_playlist"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="20dp" />
 
             </RelativeLayout>
-
 
             <RelativeLayout
                 android:id="@+id/relative_xuathientrong"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relative_playlist"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="30dp"
                 android:visibility="gone">
 
@@ -431,19 +400,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
                         android:fontFamily="@font/roboto_bold"
                         android:text="Xuất hiện trong"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="10dp"
-                        android:rotation="-180"
-                        android:src="@drawable/ic_back" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -451,17 +411,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/linear_xuathientrong"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="20dp" />
 
             </RelativeLayout>
-
 
             <RelativeLayout
                 android:id="@+id/relative_other_single"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relative_xuathientrong"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="30dp"
                 android:visibility="gone">
 
@@ -473,19 +432,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
                         android:fontFamily="@font/roboto_bold"
                         android:text="Nghệ sĩ có thể bạn sẽ thích"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="10dp"
-                        android:rotation="-180"
-                        android:src="@drawable/ic_back" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -493,18 +443,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/linear_other_single"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="20dp" />
 
             </RelativeLayout>
-
 
             <RelativeLayout
                 android:id="@+id/relative_info_single"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relative_other_single"
-                android:layout_marginHorizontal="10dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="30dp">
 
                 <TextView
@@ -523,7 +471,6 @@
                     android:layout_below="@+id/txt_heading_info"
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/roboto"
-                    android:text="Trần Đăng Quang sinh ra trong một gia đình không có truyền thống âm nhạc nhưng lại được gia đình cho học piano để giải trí. Từ đó, anh nhận ra mình có sở thích và đam mê với âm nhạc. Anh cũng sớm định hình cho mình về phong cách âm nhạc và hướng đi trong con đường nghệ thuật.Năm 2015, anh đã tham gia chương trình The Voice (2015) và vào đội của nam ca sĩ Tuấn Hưng. Tuy phải dừng lại cuộc chơi khá sớm vì lý do sức khỏe nhưng anh đã để lại những dấu ấn riêng biệt, thể hiện được màu sắc và cá tính âm nhạc của bản thân. Giữa năm 2017, Quang Đăng tung sản phẩm đầu tay của mình với tên Sẽ Đến Lúc, đánh dấu hoạt động của mình trong vai trò ca sĩ chuyên nghiệp."
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
@@ -556,7 +503,6 @@
                             android:layout_gravity="center"
                             android:layout_marginStart="20dp"
                             android:fontFamily="@font/roboto_bold"
-                            android:text="Trần Đăng Quang"
                             android:textColor="@color/white"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -582,7 +528,6 @@
                             android:layout_gravity="center"
                             android:layout_marginStart="20dp"
                             android:fontFamily="@font/roboto_bold"
-                            android:text="11/11/1111"
                             android:textColor="@color/white"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -608,7 +553,6 @@
                             android:layout_gravity="center"
                             android:layout_marginStart="20dp"
                             android:fontFamily="@font/roboto_bold"
-                            android:text="Việt Nam"
                             android:textColor="@color/white"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -633,7 +577,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:fontFamily="@font/roboto_bold"
-                            android:text="Việt Nam"
                             android:textColor="@color/white"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -643,7 +586,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="100dp"
                 android:layout_below="@+id/relative_info_single" />
 
         </RelativeLayout>
@@ -659,6 +602,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginHorizontal="20dp"
             android:orientation="horizontal">
 
             <ImageView
@@ -666,7 +610,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="20dp"
                 android:src="@drawable/ic_back" />
 
             <TextView
@@ -694,7 +637,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="20dp"
                 android:src="@drawable/baseline_more_vert_24" />
         </LinearLayout>
 

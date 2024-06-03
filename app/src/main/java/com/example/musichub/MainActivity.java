@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     //init_view
     // rv_new_release_song
     private RecyclerView rv_new_release_song;
-    private SongAllAdapter new_release_songAdapter;
+    private SongMoreAdapter new_release_songAdapter;
     private ArrayList<Items> new_release_songArrayList = new ArrayList<>();
 
 
@@ -167,13 +167,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initAdapter() {
-        new_release_songAdapter = new SongAllAdapter(new_release_songArrayList, MainActivity.this, MainActivity.this);
+        new_release_songAdapter = new SongMoreAdapter(new_release_songArrayList,0, MainActivity.this, MainActivity.this);
         rv_new_release_song.setAdapter(new_release_songAdapter);
 
-        bxh_new_release_songAdapter = new SongMoreAdapter(bxh_new_release_songArrayList, MainActivity.this, MainActivity.this);
+        bxh_new_release_songAdapter = new SongMoreAdapter(bxh_new_release_songArrayList,1, MainActivity.this, MainActivity.this);
         rv_bxh_new_release_song.setAdapter(bxh_new_release_songAdapter);
 
-        bang_xep_hangAdapter = new SongMoreAdapter(bang_xep_hangArrayList, MainActivity.this, MainActivity.this);
+        bang_xep_hangAdapter = new SongMoreAdapter(bang_xep_hangArrayList,2, MainActivity.this, MainActivity.this);
         rv_bang_xep_hang.setAdapter(bang_xep_hangAdapter);
 
         top100MoreAdapter = new Top100MoreAdapter(dataPlaylistArrayListTop100, MainActivity.this);
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
         linear_bxh_new_release_song.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, BXHNewSongActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putSerializable("new_release_song", newRelease.getData().getItems());
+            bundle.putSerializable("bxh_new_release_song", newRelease.getData().getItems());
             intent.putExtras(bundle);
 
             startActivity(intent);

@@ -30,6 +30,7 @@ import androidx.core.view.ViewCompat;
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.activity.PlayNowActivity;
+import com.example.musichub.activity.ViewAlbumActivity;
 import com.example.musichub.activity.ViewArtistActivity;
 import com.example.musichub.activity.ViewPlaylistActivity;
 import com.example.musichub.helper.ui.Helper;
@@ -129,15 +130,21 @@ public class BottomSheetOptionSong extends BottomSheetDialogFragment {
         linear_album.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, ViewPlaylistActivity.class);
+                Intent intent = new Intent(context, ViewAlbumActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("playlist", items.getAlbum());
+                bundle.putSerializable("album", items.getAlbum());
                 intent.putExtras(bundle);
 
                 context.startActivity(intent);
                 bottomSheetDialog.dismiss();
             }
         });
+
+        if (items.getAlbum() == null){
+            linear_album.setVisibility(View.GONE);
+        }else {
+            linear_album.setVisibility(View.VISIBLE);
+        }
 
         context.registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), Context.RECEIVER_NOT_EXPORTED);
         setInfoSong(items);

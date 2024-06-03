@@ -31,6 +31,7 @@ import com.example.musichub.R;
 import com.example.musichub.adapter.ArtistsAdapter;
 import com.example.musichub.adapter.PlaylistAdapter;
 import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
+import com.example.musichub.adapter.SongAdapter.SongMoreAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
@@ -80,6 +81,7 @@ public class ViewArtistActivity extends AppCompatActivity {
     private RelativeLayout relative_new_song;
 
 
+    private LinearLayout linear_noibat;
     private RelativeLayout relative_noibat;
     private RecyclerView rv_noibat;
 
@@ -107,9 +109,11 @@ public class ViewArtistActivity extends AppCompatActivity {
     private TextView txt_date_birth;
     private TextView txt_country;
     private TextView txt_genre;
+    private String name;
+
 
     //noi bat
-    private SongAllAdapter noibatAdapter;
+    private SongMoreAdapter noibatAdapter;
     private ArrayList<Items> itemsArrayListNoiBat;
     private SectionArtistSong sectionArtistSong;
 
@@ -178,6 +182,7 @@ public class ViewArtistActivity extends AppCompatActivity {
 
         relative_new_song = findViewById(R.id.relative_new_song);
 
+        linear_noibat = findViewById(R.id.linear_noibat);
         relative_noibat = findViewById(R.id.relative_noibat);
         rv_noibat = findViewById(R.id.rv_noibat);
 
@@ -214,7 +219,7 @@ public class ViewArtistActivity extends AppCompatActivity {
 
         sectionArtistSong = new SectionArtistSong();
         itemsArrayListNoiBat = new ArrayList<>();
-        noibatAdapter = new SongAllAdapter(itemsArrayListNoiBat, ViewArtistActivity.this, ViewArtistActivity.this);
+        noibatAdapter = new SongMoreAdapter(itemsArrayListNoiBat, 3, ViewArtistActivity.this, ViewArtistActivity.this);
         rv_noibat.setAdapter(noibatAdapter);
 
 
@@ -310,12 +315,24 @@ public class ViewArtistActivity extends AppCompatActivity {
 
 
         relative_new_song.setOnClickListener(view -> {
-            Intent intent = new Intent(this, ViewPlaylistActivity.class);
+            Intent intent = new Intent(ViewArtistActivity.this, ViewPlaylistActivity.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable("playlist", dataPlaylistNewSong);
             intent.putExtras(bundle);
 
             startActivity(intent);
+        });
+        linear_noibat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ViewArtistActivity.this, ViewAllActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("song_arraylist", itemsArrayListNoiBat);
+                bundle.putString("name_artist", name);
+                intent.putExtras(bundle);
+
+                startActivity(intent);
+            }
         });
 
         getBundleSong();
@@ -370,7 +387,7 @@ public class ViewArtistActivity extends AppCompatActivity {
 
                                     if (jsonObject.getInt("err") == 0) {
                                         JSONObject data = jsonObject.getJSONObject("data");
-                                        String name = data.getString("name");
+                                        name = data.getString("name");
                                         String totalFollow = data.getString("totalFollow");
                                         String thumbnailM = data.getString("thumbnailM");
 
@@ -550,9 +567,11 @@ public class ViewArtistActivity extends AppCompatActivity {
 
 
                                                 //other_artist
-                                                if (sectionArtistArtist != null && !sectionArtistArtist.getItems().isEmpty()) {
-                                                    relative_other_single.setVisibility(View.VISIBLE);
-                                                    otherSingleAdapter.setFilterList(sectionArtistArtist.getItems());
+                                                if (sectionArtistArtist != null) {
+                                                    if (sectionArtistArtist.getItems() == null && sectionArtistArtist.getItems().isEmpty()) {
+                                                        relative_other_single.setVisibility(View.VISIBLE);
+                                                        otherSingleAdapter.setFilterList(sectionArtistArtist.getItems());
+                                                    }
                                                 } else {
                                                     relative_other_single.setVisibility(View.GONE);
                                                 }

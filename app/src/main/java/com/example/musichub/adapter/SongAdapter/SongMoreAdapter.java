@@ -24,7 +24,9 @@ import com.bumptech.glide.Glide;
 import com.example.musichub.MainActivity;
 import com.example.musichub.R;
 import com.example.musichub.activity.BXHNewSongActivity;
+import com.example.musichub.activity.NewReleaseSongActivity;
 import com.example.musichub.activity.PlayNowActivity;
+import com.example.musichub.activity.ViewAllActivity;
 import com.example.musichub.bottomsheet.BottomSheetOptionSong;
 import com.example.musichub.helper.ui.PlayingStatusUpdater;
 import com.example.musichub.model.chart.chart_home.Items;
@@ -40,9 +42,16 @@ public class SongMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private final Context context;
     private final Activity activity;
     private int selectedPosition = -1;
+    private int typeOnClicked = -1;
+    // 0 -> New Release
+    // 1 -> BXH New Release
+    // 2 -> BXH
+    // 3 -> Artist -> Bai hat noi bat
 
-    public SongMoreAdapter(ArrayList<Items> songList, Activity activity, Context context) {
+
+    public SongMoreAdapter(ArrayList<Items> songList, int typeOnClicked, Activity activity, Context context) {
         this.songList = songList;
+        this.typeOnClicked = typeOnClicked;
         this.activity = activity;
         this.context = context;
     }
@@ -147,12 +156,36 @@ public class SongMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ButtonViewHolder buttonViewHolder = (ButtonViewHolder) holder;
             // Handle button click event
             buttonViewHolder.btn_more.setOnClickListener(v -> {
-                Intent intent = new Intent(context, BXHNewSongActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("new_release_song", songList);
-                intent.putExtras(bundle);
+                if (typeOnClicked == 1) {
+                    Intent intent = new Intent(context, BXHNewSongActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("bxh_new_release_song", songList);
+                    intent.putExtras(bundle);
 
-                context.startActivity(intent);
+                    context.startActivity(intent);
+                } else if (typeOnClicked == 2) {
+//                    Intent intent = new Intent(context, BXHNewSongActivity.class);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("new_release_song", songList);
+//                    intent.putExtras(bundle);
+//
+//                    context.startActivity(intent);
+                } else if (typeOnClicked == 3) {
+                    Intent intent = new Intent(context, ViewAllActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("song_arraylist", songList);
+                    bundle.putString("name_artist", "name");
+                    intent.putExtras(bundle);
+
+                    context.startActivity(intent);
+                } else {
+                    Intent intent = new Intent(context, NewReleaseSongActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("new_release_song", songList);
+                    intent.putExtras(bundle);
+
+                    context.startActivity(intent);
+                }
             });
         }
     }

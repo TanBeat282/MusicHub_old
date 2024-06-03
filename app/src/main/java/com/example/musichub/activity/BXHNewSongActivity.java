@@ -118,7 +118,7 @@ public class BXHNewSongActivity extends AppCompatActivity {
     private void getDataBundle() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            itemsArrayList = (ArrayList<Items>) bundle.getSerializable("new_release_song");
+            itemsArrayList = (ArrayList<Items>) bundle.getSerializable("bxh_new_release_song");
             if (itemsArrayList != null) {
                 bxhSongAdapter.setFilterList(itemsArrayList);
                 txt_new_release.setText("BXH Nhạc Mới");
