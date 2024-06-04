@@ -1,11 +1,7 @@
 package com.example.musichub.activity;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -19,9 +15,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
 import androidx.core.widget.NestedScrollView;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,7 +24,6 @@ import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.adapter.ArtistsAdapter;
 import com.example.musichub.adapter.PlaylistAdapter;
-import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
 import com.example.musichub.adapter.SongAdapter.SongMoreAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
@@ -43,7 +36,6 @@ import com.example.musichub.model.artist.SectionArtistSong;
 import com.example.musichub.model.chart.chart_home.Artists;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.playlist.DataPlaylist;
-import com.example.musichub.service.MyService;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -315,9 +307,9 @@ public class ViewArtistActivity extends AppCompatActivity {
 
 
         relative_new_song.setOnClickListener(view -> {
-            Intent intent = new Intent(ViewArtistActivity.this, ViewPlaylistActivity.class);
+            Intent intent = new Intent(ViewArtistActivity.this, ViewAlbumActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putSerializable("playlist", dataPlaylistNewSong);
+            bundle.putSerializable("album_endCodeId", dataPlaylistNewSong.getEncodeId());
             intent.putExtras(bundle);
 
             startActivity(intent);
@@ -325,7 +317,7 @@ public class ViewArtistActivity extends AppCompatActivity {
         linear_noibat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ViewArtistActivity.this, ViewAllActivity.class);
+                Intent intent = new Intent(ViewArtistActivity.this, ViewAllSongActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("song_arraylist", itemsArrayListNoiBat);
                 bundle.putString("name_artist", name);
@@ -388,7 +380,7 @@ public class ViewArtistActivity extends AppCompatActivity {
                                     if (jsonObject.getInt("err") == 0) {
                                         JSONObject data = jsonObject.getJSONObject("data");
                                         name = data.getString("name");
-                                        String totalFollow = data.getString("totalFollow");
+                                        int totalFollow = data.getInt("totalFollow");
                                         String thumbnailM = data.getString("thumbnailM");
 
                                         String real_name = data.getString("realname");
@@ -507,10 +499,11 @@ public class ViewArtistActivity extends AppCompatActivity {
 
 
                                         runOnUiThread(new Runnable() {
+                                            @SuppressLint("SetTextI18n")
                                             @Override
                                             public void run() {
                                                 txt_artist.setText(name);
-                                                txt_follow.setText(totalFollow);
+                                                txt_follow.setText(Helper.convertToIntString(totalFollow) + " quan tâm");
                                                 Glide.with(ViewArtistActivity.this).load(thumbnailM).into(img_artist);
                                                 img_artist.setVisibility(View.VISIBLE);
                                                 progress_image.setVisibility(View.GONE);
@@ -568,10 +561,10 @@ public class ViewArtistActivity extends AppCompatActivity {
 
                                                 //other_artist
                                                 if (sectionArtistArtist != null) {
-                                                    if (sectionArtistArtist.getItems() == null && sectionArtistArtist.getItems().isEmpty()) {
-                                                        relative_other_single.setVisibility(View.VISIBLE);
-                                                        otherSingleAdapter.setFilterList(sectionArtistArtist.getItems());
-                                                    }
+
+                                                    relative_other_single.setVisibility(View.VISIBLE);
+                                                    otherSingleAdapter.setFilterList(sectionArtistArtist.getItems());
+
                                                 } else {
                                                     relative_other_single.setVisibility(View.GONE);
                                                 }

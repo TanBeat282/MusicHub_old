@@ -24,6 +24,7 @@ import com.example.musichub.R;
 import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.activity.ViewArtistActivity;
 import com.example.musichub.bottomsheet.BottomSheetOptionSong;
+import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.model.chart.chart_home.Artists;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -54,13 +55,14 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Artists artist = artistsArrayList.get(position);
 
 
         holder.txt_name.setText(artist.getName());
-        holder.txt_follow.setText(String.valueOf(artist.getTotalFollow()) + " quan tâm");
+        holder.txt_follow.setText(Helper.convertToIntString(artist.getTotalFollow()) + " quan tâm");
         Glide.with(context)
                 .load(artist.getThumbnail())
                 .into(holder.img_avatar);

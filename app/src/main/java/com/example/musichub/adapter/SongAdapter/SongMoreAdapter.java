@@ -21,12 +21,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
-import com.example.musichub.MainActivity;
 import com.example.musichub.R;
 import com.example.musichub.activity.BXHNewSongActivity;
 import com.example.musichub.activity.NewReleaseSongActivity;
 import com.example.musichub.activity.PlayNowActivity;
-import com.example.musichub.activity.ViewAllActivity;
+import com.example.musichub.activity.ViewAllSongActivity;
 import com.example.musichub.bottomsheet.BottomSheetOptionSong;
 import com.example.musichub.helper.ui.PlayingStatusUpdater;
 import com.example.musichub.model.chart.chart_home.Items;
@@ -171,7 +170,7 @@ public class SongMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //
 //                    context.startActivity(intent);
                 } else if (typeOnClicked == 3) {
-                    Intent intent = new Intent(context, ViewAllActivity.class);
+                    Intent intent = new Intent(context, ViewAllSongActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("song_arraylist", songList);
                     bundle.putString("name_artist", "name");

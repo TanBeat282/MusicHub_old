@@ -41,7 +41,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ViewAlbumActivity extends AppCompatActivity {
-    private Album album;
+    private Playlist playlist;
     private NestedScrollView nested_scroll_view;
     private RelativeLayout relative_header;
     private ImageView img_back;
@@ -81,7 +81,8 @@ public class ViewAlbumActivity extends AppCompatActivity {
         initAdapter();
         getDataBundle();
     }
-    private void initView(){
+
+    private void initView() {
         imageBackground = findViewById(R.id.imageBackground);
         relative_header = findViewById(R.id.relative_header);
         img_back = findViewById(R.id.img_back);
@@ -107,6 +108,7 @@ public class ViewAlbumActivity extends AppCompatActivity {
 
         rv_artist = findViewById(R.id.rv_artist);
     }
+
     private void configView() {
         nested_scroll_view.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @SuppressLint("ObsoleteSdkInt")
@@ -128,13 +130,14 @@ public class ViewAlbumActivity extends AppCompatActivity {
                     // Hiển thị TextView khi người dùng cuộn xuống khỏi đầu trang
                     txt_name_artist.setVisibility(View.VISIBLE);
                     txt_view.setVisibility(View.GONE);
-                    txt_name_artist.setText(album.getTitle());
+                    txt_name_artist.setText(playlist.getData().getTitle());
                     relative_header.setBackgroundColor(ContextCompat.getColor(ViewAlbumActivity.this, R.color.gray));
                     Helper.changeStatusBarColor(ViewAlbumActivity.this, R.color.gray);
                 }
             }
         });
     }
+
     private void initAdapter() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rv_album.setLayoutManager(layoutManager);
@@ -146,6 +149,7 @@ public class ViewAlbumActivity extends AppCompatActivity {
         selectArtistAdapter = new SelectArtistAdapter(artistsArrayList, ViewAlbumActivity.this, ViewAlbumActivity.this);
         rv_artist.setAdapter(selectArtistAdapter);
     }
+
     private void onClick() {
         img_back.setOnClickListener(view -> finish());
     }
@@ -153,14 +157,8 @@ public class ViewAlbumActivity extends AppCompatActivity {
     private void getDataBundle() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            album = (Album) bundle.getSerializable("album");
-            getAlbum(album.getEncodeId());
-
-            // Sử dụng Glide để tải và áp dụng hiệu ứng mờ
-            Glide.with(this)
-                    .load(album.getThumbnail())
-                    .transform(new CenterCrop(), new BlurAndBlackOverlayTransformation(this, 25, 220)) // 25 là mức độ mờ, 150 là độ mờ của lớp phủ đen
-                    .into(imageBackground);
+            String encodeId = bundle.getString("album_endCodeId");
+            getAlbum(encodeId);
         }
     }
 
@@ -180,11 +178,18 @@ public class ViewAlbumActivity extends AppCompatActivity {
                             String requestUrl = call.request().url().toString();
                             Log.d(">>>>>>>>>>>>>>>>>>>", " - " + requestUrl);
                             if (response.isSuccessful()) {
-                                Playlist playlist = response.body();
+                                playlist = response.body();
                                 if (playlist != null && playlist.getErr() == 0) {
                                     ArrayList<Items> arrayList = playlist.getData().getSong().getItems();
+
                                     if (!arrayList.isEmpty()) {
                                         runOnUiThread(() -> {
+
+                                            // Sử dụng Glide để tải và áp dụng hiệu ứng mờ
+                                            Glide.with(ViewAlbumActivity.this)
+                                                    .load(playlist.getData().getThumbnailM())
+                                                    .transform(new CenterCrop(), new BlurAndBlackOverlayTransformation(ViewAlbumActivity.this, 25, 220)) // 25 là mức độ mờ, 150 là độ mờ của lớp phủ đen
+                                                    .into(imageBackground);
 
                                             Glide.with(ViewAlbumActivity.this)
                                                     .load(playlist.getData().getThumbnailM())

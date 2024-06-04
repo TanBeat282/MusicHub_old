@@ -38,7 +38,7 @@
             android:name=".activity.ViewArtistActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.ViewAllActivity"
+            android:name=".activity.ViewAllSongActivity"
             android:exported="false" />
         <activity
             android:name=".activity.HistoryActivity"

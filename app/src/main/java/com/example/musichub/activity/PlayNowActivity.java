@@ -713,9 +713,9 @@ public class PlayNowActivity extends AppCompatActivity {
         txtTitle.setText(items.getTitle());
         txtArtist.setText(items.getArtistsNames());
 
-        txt_view_audio.setText(String.valueOf(convertToIntString(songDetail.getData().getListen())));
-        txt_like.setText(String.valueOf(convertToIntString(songDetail.getData().getLike())));
-        txt_comment.setText(String.valueOf(convertToIntString(songDetail.getData().getComment())));
+        txt_view_audio.setText(Helper.convertToIntString(songDetail.getData().getListen()));
+        txt_like.setText(Helper.convertToIntString(songDetail.getData().getLike()));
+        txt_comment.setText(Helper.convertToIntString(songDetail.getData().getComment()));
 
         updateSeekBar(currentTime, total_time);
 
@@ -740,28 +740,6 @@ public class PlayNowActivity extends AppCompatActivity {
             img_download_audio.setImageResource(R.drawable.ic_download);
         }
     }
-
-    public String convertToIntString(int number) {
-        String numberString = String.valueOf(number);
-        int length = numberString.length();
-
-        if (length == 4) {
-            return numberString.charAt(0) + "." + numberString.charAt(1) + "K";
-        } else if (length == 5) {
-            return numberString.charAt(0) + numberString.charAt(1) + "K";
-        } else if (length == 6) {
-            return numberString.charAt(0) + numberString.charAt(1) + numberString.charAt(2) + "K";
-        } else if (length == 7) {
-            return numberString.charAt(0) + "." + numberString.charAt(1) + "M";
-        } else if (length == 8) {
-            return numberString.charAt(0) + numberString.charAt(1) + "M";
-        } else if (length == 9) {
-            return numberString.charAt(0) + numberString.charAt(1) + numberString.charAt(2) + "M";
-        } else {
-            return numberString;
-        }
-    }
-
 
     private void setDataSongBottomSheet() {
 

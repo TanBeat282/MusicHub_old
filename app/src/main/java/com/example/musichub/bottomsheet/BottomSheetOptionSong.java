@@ -132,7 +132,7 @@ public class BottomSheetOptionSong extends BottomSheetDialogFragment {
             public void onClick(View view) {
                 Intent intent = new Intent(context, ViewAlbumActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("album", items.getAlbum());
+                bundle.putSerializable("album_endCodeId", items.getAlbum().getEncodeId());
                 intent.putExtras(bundle);
 
                 context.startActivity(intent);

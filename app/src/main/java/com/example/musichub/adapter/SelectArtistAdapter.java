@@ -21,6 +21,7 @@ import com.example.musichub.activity.ViewArtistActivity;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
+import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.model.chart.chart_home.Artists;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -45,6 +46,7 @@ public class SelectArtistAdapter extends RecyclerView.Adapter<SelectArtistAdapte
         this.activity = activity;
         this.context = context;
     }
+
     public void setListener(ArtistItemClickListener listener) {
         this.listener = listener;
     }
@@ -84,7 +86,9 @@ public class SelectArtistAdapter extends RecyclerView.Adapter<SelectArtistAdapte
         getArtist(artists.getAlias(), new ArtistFollowersCallback() {
             @Override
             public void onFollowersFetched(int totalFollow) {
-                holder.artistTextView.setText(totalFollow + " quan tâm");
+                holder.artistTextView.setText(Helper.convertToIntString(totalFollow) + " quan tâm");
+                Log.d(">>>>>>>>>>>>", "totalFollow: " + totalFollow);
+                Log.d(">>>>>>>>>>>>", "totalFollow Convert: " + Helper.convertToIntString(totalFollow));
             }
 
             @Override

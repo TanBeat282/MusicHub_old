@@ -12,13 +12,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,14 +23,13 @@ import com.example.musichub.R;
 import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.ui.MusicHelper;
-import com.example.musichub.model.chart.chart_home.Artists;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import java.util.ArrayList;
 
-public class ViewAllActivity extends AppCompatActivity {
+public class ViewAllSongActivity extends AppCompatActivity {
     private SharedPreferencesManager sharedPreferencesManager;
     private MusicHelper musicHelper;
 
@@ -58,7 +53,7 @@ public class ViewAllActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_all);
-        Helper.changeStatusBarColor(ViewAllActivity.this, R.color.black);
+        Helper.changeStatusBarColor(ViewAllSongActivity.this, R.color.black);
 
         sharedPreferencesManager = new SharedPreferencesManager(this);
         musicHelper = new MusicHelper(this, sharedPreferencesManager);
@@ -111,8 +106,8 @@ public class ViewAllActivity extends AppCompatActivity {
                     txt_name_artist.setVisibility(View.VISIBLE);
                     txt_view.setVisibility(View.GONE);
                     txt_name_artist.setText(name);
-                    relative_header.setBackgroundColor(ContextCompat.getColor(ViewAllActivity.this, R.color.gray));
-                    Helper.changeStatusBarColor(ViewAllActivity.this, R.color.gray);
+                    relative_header.setBackgroundColor(ContextCompat.getColor(ViewAllSongActivity.this, R.color.gray));
+                    Helper.changeStatusBarColor(ViewAllSongActivity.this, R.color.gray);
                 }
             }
         });
@@ -122,7 +117,7 @@ public class ViewAllActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rv_song_of_artist.setLayoutManager(linearLayoutManager);
 
-        songAllAdapter = new SongAllAdapter(itemsArrayList, ViewAllActivity.this, ViewAllActivity.this);
+        songAllAdapter = new SongAllAdapter(itemsArrayList, ViewAllSongActivity.this, ViewAllSongActivity.this);
         rv_song_of_artist.setAdapter(songAllAdapter);
     }
 
@@ -132,9 +127,9 @@ public class ViewAllActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (itemsArrayList.get(0).getStreamingStatus() == 2) {
-                    Toast.makeText(ViewAllActivity.this, "Không thể phát bài hát Premium!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ViewAllSongActivity.this, "Không thể phát bài hát Premium!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Intent intent = new Intent(ViewAllActivity.this, PlayNowActivity.class);
+                    Intent intent = new Intent(ViewAllSongActivity.this, PlayNowActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("song", itemsArrayList.get(0));
                     bundle.putInt("position_song", 0);

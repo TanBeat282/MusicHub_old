@@ -1,5 +1,6 @@
 package com.example.musichub.helper.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -45,24 +46,24 @@ public class Helper {
     }
 
 
+    @SuppressLint("DefaultLocale")
     public static String convertToIntString(int number) {
-        String numberString = String.valueOf(number);
-        int length = numberString.length();
+        String numberStr = String.valueOf(number);
+        int length = numberStr.length();
 
-        if (length == 4) {
-            return numberString.charAt(0) + "." + numberString.charAt(1) + "K";
-        } else if (length == 5) {
-            return numberString.charAt(0) + numberString.charAt(1) + "K";
-        } else if (length == 6) {
-            return numberString.charAt(0) + numberString.charAt(1) + numberString.charAt(2) + "K";
-        } else if (length == 7) {
-            return numberString.charAt(0) + "." + numberString.charAt(1) + "M";
-        } else if (length == 8) {
-            return numberString.charAt(0) + numberString.charAt(1) + "M";
-        } else if (length == 9) {
-            return numberString.charAt(0) + numberString.charAt(1) + numberString.charAt(2) + "M";
+        if (length <= 3) {
+            return numberStr;
+        } else if (length <= 6) {
+            int thousands = number / 1000;
+            double decimal = (double) number % 1000 / 100;
+            return String.format("%,d.%dK", thousands, Math.round(decimal));
+        } else if (length <= 9) {
+            int millions = number / 1000000;
+            return String.format("%,dM", millions);
         } else {
-            return numberString;
+            return String.format("%,d.##B", number);
+
         }
     }
+
 }
