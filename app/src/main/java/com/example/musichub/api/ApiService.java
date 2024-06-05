@@ -3,8 +3,10 @@ package com.example.musichub.api;
 import com.example.musichub.model.Album.Album;
 import com.example.musichub.model.artist.ArtistDetail;
 import com.example.musichub.model.chart.chart_home.ChartHome;
+import com.example.musichub.model.chart.chart_home.ItemWeekChart;
 import com.example.musichub.model.chart.new_release.NewRelease;
 import com.example.musichub.model.chart.top100.Top100;
+import com.example.musichub.model.chart.weekchart.WeekChart;
 import com.example.musichub.model.new_release.NewReleaseAlbum;
 import com.example.musichub.model.new_release.NewReleaseSong;
 import com.example.musichub.model.playlist.Playlist;
@@ -24,6 +26,8 @@ public interface ApiService {
     String pathHome = "/api/v2/page/get/home?";
     String pathChartNewRelease = "/api/v2/page/get/newrelease-chart?";
     String pathNewRelease = "/api/v2/chart/get/new-release?";
+    String pathWeekChart = "/api/v2/page/get/week-chart?";
+    String pathSectionBottom = "/api/v2/playlist/get/section-bottom?";
     String pathTop100 = "/api/v2/page/get/top-100?";
     String pathDetailSong = "/api/v2/song/get/info?";
     String pathAudioSong = "/api/v2/song/get/streaming?";
@@ -71,6 +75,22 @@ public interface ApiService {
                                                  @Query("version") String version,
                                                  @Query("apiKey") String apiKey);
 
+    @GET(pathWeekChart)
+    Call<WeekChart> WEEK_CHART_CALL(@Query("id") String id,
+                                    @Query("week") String week,
+                                    @Query("year") String year,
+                                    @Query("sig") String sig,
+                                    @Query("ctime") String ctime,
+                                    @Query("version") String version,
+                                    @Query("apiKey") String apiKey);
+
+    @GET(pathSectionBottom)
+    Call<ResponseBody> SECTION_BOTTOM_CALL(@Query("id") String id,
+                                           @Query("sig") String sig,
+                                           @Query("ctime") String ctime,
+                                           @Query("version") String version,
+                                           @Query("apiKey") String apiKey);
+
     @GET(pathTop100)
     Call<Top100> TOP100_CALL(@Query("sig") String sig,
                              @Query("ctime") String ctime,
@@ -116,10 +136,10 @@ public interface ApiService {
 
     @GET(pathAlbum)
     Call<com.example.musichub.model.Album.Album> ALBUM_CALL(@Query("id") String id,
-                           @Query("sig") String sig,
-                           @Query("ctime") String ctime,
-                           @Query("version") String version,
-                           @Query("apiKey") String apiKey);
+                                                            @Query("sig") String sig,
+                                                            @Query("ctime") String ctime,
+                                                            @Query("version") String version,
+                                                            @Query("apiKey") String apiKey);
 
     @GET(pathSearch)
     Call<Search> SEARCH_CALL(@Query("q") String q,

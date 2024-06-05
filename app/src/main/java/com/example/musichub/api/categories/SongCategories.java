@@ -95,4 +95,16 @@ public class SongCategories extends Base {
             throw error;
         }
     }
+
+    public Map<String, String> getSectionBottom(String id) throws Exception {
+        try {
+            String sig = createIdSig("/api/v2/playlist/get/section-bottom", id);
+            Map<String, String> params = createRequest();
+            params.put("id", id);
+            params.put("sig", sig);
+            return params;
+        } catch (Exception error) {
+            throw error;
+        }
+    }
 }

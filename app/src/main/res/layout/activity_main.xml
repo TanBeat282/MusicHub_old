@@ -220,12 +220,12 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1">
 
-                    <com.makeramen.roundedimageview.RoundedImageView
-                        android:id="@+id/img_categories"
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/view_pager2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@color/white"
-                        app:riv_corner_radius="5dp" />
+                        android:paddingStart="40dp"
+                        android:paddingEnd="40dp" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -391,6 +391,67 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_top100"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto"
+                        android:text="ĐỀ XUẤT"
+                        android:textColor="@color/colorSecondaryText"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/txt_title_playlist"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/background_phat_tat_ca"
+                        android:fontFamily="@font/roboto"
+                        android:padding="6dp"
+                        android:text="Xem tất cả"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_song_remix"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"

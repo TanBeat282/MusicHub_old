@@ -22,8 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
-import com.example.musichub.adapter.ArtistsAdapter;
-import com.example.musichub.adapter.PlaylistAdapter;
+import com.example.musichub.adapter.Artist.ArtistsAdapter;
+import com.example.musichub.adapter.Playlist.PlaylistAdapter;
+import com.example.musichub.adapter.Single.SingleAdapter;
 import com.example.musichub.adapter.SongAdapter.SongMoreAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
@@ -111,7 +112,7 @@ public class ViewArtistActivity extends AppCompatActivity {
 
 
     //single
-    private PlaylistAdapter singleAdapter;
+    private SingleAdapter singleAdapter;
     private ArrayList<DataPlaylist> dataSingleArrayList;
     private SectionArtistPlaylist sectionArtistPlaylistSingle;
 
@@ -231,7 +232,7 @@ public class ViewArtistActivity extends AppCompatActivity {
 
         sectionArtistPlaylistSingle = new SectionArtistPlaylist();
         dataSingleArrayList = new ArrayList<>();
-        singleAdapter = new PlaylistAdapter(dataSingleArrayList, ViewArtistActivity.this, ViewArtistActivity.this);
+        singleAdapter = new SingleAdapter(dataSingleArrayList, ViewArtistActivity.this, ViewArtistActivity.this);
         rv_single.setAdapter(singleAdapter);
 
 
@@ -332,9 +333,7 @@ public class ViewArtistActivity extends AppCompatActivity {
 
     private void getBundleSong() {
         Bundle bundle = getIntent().getExtras();
-        if (bundle == null) {
-            return;
-        } else {
+        if (bundle != null) {
             artists = (Artists) bundle.getSerializable("artist");
 
             if (artists != null) {
@@ -525,7 +524,7 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                 }
 
                                                 //noi_bat
-                                                if (sectionArtistSong != null && !sectionArtistSong.getItems().isEmpty()) {
+                                                if (sectionArtistSong != null && sectionArtistSong.getItems() != null && !sectionArtistSong.getItems().isEmpty()) {
                                                     relative_noibat.setVisibility(View.VISIBLE);
                                                     itemsArrayListNoiBat = sectionArtistSong.getItems();
                                                     noibatAdapter.setFilterList(sectionArtistSong.getItems());
@@ -535,7 +534,7 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                 }
 
                                                 //single
-                                                if (sectionArtistPlaylistSingle != null && !sectionArtistPlaylistSingle.getItems().isEmpty()) {
+                                                if (sectionArtistPlaylistSingle != null && sectionArtistPlaylistSingle.getItems() != null  && !sectionArtistPlaylistSingle.getItems().isEmpty()) {
                                                     relative_single.setVisibility(View.VISIBLE);
                                                     singleAdapter.setFilterList(sectionArtistPlaylistSingle.getItems());
                                                 } else {
@@ -543,7 +542,7 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                 }
 
                                                 //playlist
-                                                if (sectionArtistPlaylist != null && !sectionArtistPlaylist.getItems().isEmpty()) {
+                                                if (sectionArtistPlaylist != null && sectionArtistPlaylist.getItems() != null && !sectionArtistPlaylist.getItems().isEmpty()) {
                                                     relative_playlist.setVisibility(View.VISIBLE);
                                                     playlistAdapter.setFilterList(sectionArtistPlaylist.getItems());
                                                 } else {
@@ -551,7 +550,7 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                 }
 
                                                 //xuat hien trong
-                                                if (sectionArtistPlaylistXuatHienTrong != null && !sectionArtistPlaylistXuatHienTrong.getItems().isEmpty()) {
+                                                if (sectionArtistPlaylistXuatHienTrong != null && sectionArtistPlaylistXuatHienTrong.getItems() != null && !sectionArtistPlaylistXuatHienTrong.getItems().isEmpty()) {
                                                     relative_xuathientrong.setVisibility(View.VISIBLE);
                                                     xuatHienTrongAdapter.setFilterList(sectionArtistPlaylistXuatHienTrong.getItems());
                                                 } else {
@@ -560,14 +559,13 @@ public class ViewArtistActivity extends AppCompatActivity {
 
 
                                                 //other_artist
-                                                if (sectionArtistArtist != null) {
-
+                                                if (sectionArtistArtist != null && sectionArtistArtist.getItems() != null && !sectionArtistArtist.getItems().isEmpty()) {
                                                     relative_other_single.setVisibility(View.VISIBLE);
                                                     otherSingleAdapter.setFilterList(sectionArtistArtist.getItems());
-
                                                 } else {
                                                     relative_other_single.setVisibility(View.GONE);
                                                 }
+
 
 
                                                 CharSequence styledText = Html.fromHtml(biography);

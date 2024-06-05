@@ -18,7 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.musichub.R;
-import com.example.musichub.adapter.SentencesAdapter;
+import com.example.musichub.adapter.Lyric.SentencesAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;

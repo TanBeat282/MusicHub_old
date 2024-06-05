@@ -26,6 +26,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activity.WeekChartActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.BXHNewSongActivity"
             android:exported="false" />
         <activity

@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.musichub.R;
-import com.example.musichub.adapter.SearchAdapter;
+import com.example.musichub.adapter.Search.SearchAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SearchCategories;

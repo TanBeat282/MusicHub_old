@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Data implements Serializable {
     private RTCharts RTChart;
     private ArrayList<Items> newRelease;
-    private WeekChart weekChart;
+    private WeekChart_Home weekChart;
 
     public RTCharts getRTChart() {
         return RTChart;
@@ -24,11 +24,11 @@ public class Data implements Serializable {
         this.newRelease = newRelease;
     }
 
-    public WeekChart getWeekChart() {
+    public WeekChart_Home getWeekChart() {
         return weekChart;
     }
 
-    public void setWeekChart(WeekChart weekChart) {
+    public void setWeekChart(WeekChart_Home weekChart) {
         this.weekChart = weekChart;
     }
 }

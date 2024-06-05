@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.musichub.R;
-import com.example.musichub.adapter.LyricsAdapter;
+import com.example.musichub.adapter.Lyric.LyricsAdapter;
 import com.example.musichub.helper.uliti.GetUrlAudioHelper;
 import com.example.musichub.model.lyric.LyricLine;
 import com.example.musichub.model.chart.chart_home.Items;

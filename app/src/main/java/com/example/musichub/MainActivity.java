@@ -15,8 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
+import androidx.viewpager2.widget.CompositePageTransformer;
+import androidx.viewpager2.widget.MarginPageTransformer;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
@@ -27,7 +28,7 @@ import com.example.musichub.activity.NewReleaseSongActivity;
 import com.example.musichub.activity.SearchActivity;
 import com.example.musichub.adapter.SongAdapter.SongMoreAdapter;
 import com.example.musichub.adapter.Top100Adapter.Top100MoreAdapter;
-import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
+import com.example.musichub.adapter.WeekChart.WeekChartSlideAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
@@ -35,7 +36,11 @@ import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.bottomsheet.BottomSheetProfile;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.ui.MusicHelper;
+import com.example.musichub.model.artist.SectionArtistArtist;
+import com.example.musichub.model.artist.SectionArtistPlaylist;
+import com.example.musichub.model.chart.chart_home.Artists;
 import com.example.musichub.model.chart.chart_home.ChartHome;
+import com.example.musichub.model.chart.chart_home.ItemWeekChart;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.chart.home.DataHomeAll;
 import com.example.musichub.model.chart.home.DataHomeSlider;
@@ -45,9 +50,12 @@ import com.example.musichub.model.chart.new_release.NewRelease;
 import com.example.musichub.model.chart.top100.Top100;
 import com.example.musichub.model.playlist.DataPlaylist;
 import com.example.musichub.model.playlist.Playlist;
+import com.example.musichub.model.sectionBottom.DataSectionBottom;
+import com.example.musichub.model.sectionBottom.DataSectionBottomArtist;
+import com.example.musichub.model.sectionBottom.DataSectionBottomPlaylist;
+import com.example.musichub.model.sectionBottom.SectionBottom;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -68,7 +76,10 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout linear_new_release_song, linear_bxh_new_release_song;
     private ImageView img_history, img_search, img_account;
 
-    private RoundedImageView img_categories;
+    //
+    private ViewPager2 view_pager2;
+    private ArrayList<ItemWeekChart> itemWeekChartArrayList = new ArrayList<>();
+    private WeekChartSlideAdapter weekChartSlideAdapter;
 
 
     private NewRelease newRelease;
@@ -100,6 +111,11 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rv_top100;
     private Top100MoreAdapter top100MoreAdapter;
     private ArrayList<DataPlaylist> dataPlaylistArrayListTop100 = new ArrayList<>();
+
+    private RecyclerView rv_song_remix;
+    private TextView txt_title_playlist;
+    private Top100MoreAdapter songRemixMoreAdapter;
+    private ArrayList<DataPlaylist> songRemixArrayList = new ArrayList<>();
 
 
     @Override
@@ -136,7 +152,10 @@ public class MainActivity extends AppCompatActivity {
         rv_bang_xep_hang = findViewById(R.id.rv_bang_xep_hang);
         rv_top100 = findViewById(R.id.rv_top100);
 
-        img_categories = findViewById(R.id.img_categories);
+        txt_title_playlist = findViewById(R.id.txt_title_playlist);
+        rv_song_remix = findViewById(R.id.rv_song_remix);
+
+        view_pager2 = findViewById(R.id.view_pager2);
         linear_new_release_song = findViewById(R.id.linear_new_release_song);
         linear_bxh_new_release_song = findViewById(R.id.linear_bxh_new_release_song);
 
@@ -164,20 +183,26 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayoutManager layoutManagerTop100 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rv_top100.setLayoutManager(layoutManagerTop100);
+
+        LinearLayoutManager layoutManagerSongRemix = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rv_song_remix.setLayoutManager(layoutManagerSongRemix);
     }
 
     private void initAdapter() {
-        new_release_songAdapter = new SongMoreAdapter(new_release_songArrayList,0, MainActivity.this, MainActivity.this);
+        new_release_songAdapter = new SongMoreAdapter(new_release_songArrayList, 0, MainActivity.this, MainActivity.this);
         rv_new_release_song.setAdapter(new_release_songAdapter);
 
-        bxh_new_release_songAdapter = new SongMoreAdapter(bxh_new_release_songArrayList,1, MainActivity.this, MainActivity.this);
+        bxh_new_release_songAdapter = new SongMoreAdapter(bxh_new_release_songArrayList, 1, MainActivity.this, MainActivity.this);
         rv_bxh_new_release_song.setAdapter(bxh_new_release_songAdapter);
 
-        bang_xep_hangAdapter = new SongMoreAdapter(bang_xep_hangArrayList,2, MainActivity.this, MainActivity.this);
+        bang_xep_hangAdapter = new SongMoreAdapter(bang_xep_hangArrayList, 2, MainActivity.this, MainActivity.this);
         rv_bang_xep_hang.setAdapter(bang_xep_hangAdapter);
 
         top100MoreAdapter = new Top100MoreAdapter(dataPlaylistArrayListTop100, MainActivity.this);
         rv_top100.setAdapter(top100MoreAdapter);
+
+        songRemixMoreAdapter = new Top100MoreAdapter(songRemixArrayList, MainActivity.this);
+        rv_song_remix.setAdapter(songRemixMoreAdapter);
     }
 
     private void initBottomPlay() {
@@ -445,9 +470,10 @@ public class MainActivity extends AppCompatActivity {
                                             bang_xep_hangArrayList = itemsArrayList;
                                             bang_xep_hangAdapter.setFilterList(itemsArrayList);
                                             musicHelper.checkIsPlayingPlaylist(sharedPreferencesManager.restoreSongState(), bang_xep_hangArrayList, bang_xep_hangAdapter);
-                                            Glide.with(MainActivity.this)
-                                                    .load(chartHome.getData().getWeekChart().getVn().getCover())
-                                                    .into(img_categories);
+//                                            Glide.with(MainActivity.this)
+//                                                    .load(chartHome.getData().getWeekChart().getVn().getCover())
+//                                                    .into(img_categories);
+                                            setUpViewPage2(chartHome);
 
                                         });
                                     } else {
@@ -534,20 +560,30 @@ public class MainActivity extends AppCompatActivity {
             public void onServiceCreated(ApiService service) {
                 try {
                     SongCategories songCategories = new SongCategories(null, null);
-                    Map<String, String> map = songCategories.getPlaylist("6CI0A6BA");
+                    Map<String, String> map = songCategories.getSectionBottom("ZWZB969E");
+                    Call<ResponseBody> call = service.SECTION_BOTTOM_CALL("ZWZB969E", map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                            if (response.isSuccessful()) {
+                                try {
+                                    String jsonData = response.body().string();
+                                    JSONObject jsonObject = new JSONObject(jsonData);
+                                    SectionBottom sectionBottom = new SectionBottom();
+                                    sectionBottom.parseFromJson(jsonObject);
+                                } catch (Exception e) {
+                                    Log.e("TAG", "Error: " + e.getMessage(), e);
+                                }
+                            } else {
+                                Log.d("TAG", "Failed to retrieve data: " + response.code());
+                            }
+                        }
 
-                    retrofit2.Call<Playlist> call = service.PLAYLIST_CALL("6CI0A6BA", map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
-                   call.enqueue(new Callback<Playlist>() {
-                       @Override
-                       public void onResponse(Call<Playlist> call, Response<Playlist> response) {
-                           Log.d(">>>>>>>>>>>>>>>>>>", "getAlbum " + call.request().url());
-                       }
-
-                       @Override
-                       public void onFailure(Call<Playlist> call, Throwable throwable) {
-
-                       }
-                   });
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+                            Log.e("TAG", "API call failed: " + throwable.getMessage(), throwable);
+                        }
+                    });
                 } catch (Exception e) {
                     Log.e("TAG", "Error: " + e.getMessage(), e);
                 }
@@ -555,9 +591,30 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onError(Exception e) {
-
+                Log.e("TAG", "Service creation error: " + e.getMessage(), e);
             }
         });
+    }
+
+    private void setUpViewPage2(ChartHome chartHome) {
+        itemWeekChartArrayList.add(chartHome.getData().getWeekChart().getUs());
+        itemWeekChartArrayList.add(chartHome.getData().getWeekChart().getVn());
+        itemWeekChartArrayList.add(chartHome.getData().getWeekChart().getKorea());
+
+        view_pager2.setAdapter(new WeekChartSlideAdapter(itemWeekChartArrayList, view_pager2, MainActivity.this, MainActivity.this));
+        view_pager2.setClipToPadding(false);
+        view_pager2.setClipChildren(false);
+        view_pager2.setOffscreenPageLimit(3);
+        view_pager2.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
+
+        CompositePageTransformer compositePageTransformer = new CompositePageTransformer();
+        compositePageTransformer.addTransformer(new MarginPageTransformer(40));
+        compositePageTransformer.addTransformer((page, position) -> {
+            float r = 1 - Math.abs(position);
+            page.setScaleY(0.85f + r * 0.15f);
+        });
+        view_pager2.setPageTransformer(compositePageTransformer);
+        view_pager2.setCurrentItem(1, false);
     }
 
     @SuppressLint("NotifyDataSetChanged")

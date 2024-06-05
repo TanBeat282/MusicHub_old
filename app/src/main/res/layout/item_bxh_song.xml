@@ -7,6 +7,42 @@
     android:paddingEnd="10dp"
     android:paddingBottom="14dp">
 
+    <TextView
+        android:id="@+id/txt_number_top_song"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/roboto_bold"
+        android:textColor="@color/colorSecondaryText1"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="10dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_rank_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="2dp"
+            android:fontFamily="@font/roboto_bold"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/img_bxh"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_trending_up"
+            app:tint="@color/green" />
+    </LinearLayout>
+
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/thumbImageView"
         android:layout_width="55dp"
@@ -22,40 +58,6 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txt_number_top_song"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/roboto_bold"
-            android:textColor="@color/white"
-            android:textSize="16sp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/img_bxh"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_trending_up"
-                app:tint="@color/green" />
-
-            <TextView
-                android:id="@+id/txt_rank_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="2dp"
-                android:fontFamily="@font/roboto_bold"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
-        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -75,9 +77,9 @@
                 android:id="@+id/aniPlay"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
+                android:visibility="gone"
                 app:lottie_autoPlay="true"
                 app:lottie_loop="true"
-                android:visibility="gone"
                 app:lottie_rawRes="@raw/play" />
 
             <TextView

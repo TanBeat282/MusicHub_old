@@ -61,6 +61,18 @@ public class ChartCategories extends Base {
         }
     }
 
+    public Map<String, String> getWeekChart(String id) throws NoSuchAlgorithmException, IOException, Exception {
+        try {
+            String sig = createIdSig("/api/v2/page/get/week-chart", id);
+            Map<String, String> params = createRequest();
+            params.put("id", id);
+            params.put("sig", sig);
+            return params;
+        } catch (Exception error) {
+            throw error;
+        }
+    }
+
 //    public String getWeekChart(String idGenreIds,int nation, String a) throws NoSuchAlgorithmException, IOException, Exception {
 //
 //        try {
