@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.musichub.R;
-import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
+import com.example.musichub.adapter.Song.SongAllAdapter;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.ui.MusicHelper;
 import com.example.musichub.model.chart.chart_home.Items;

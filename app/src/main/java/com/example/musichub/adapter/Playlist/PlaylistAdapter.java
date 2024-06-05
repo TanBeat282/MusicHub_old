@@ -41,7 +41,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_single, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_playlist, parent, false);
         return new ViewHolder(view);
     }
 
@@ -49,11 +49,10 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         DataPlaylist dataPlaylist = dataPlaylistArrayList.get(position);
 
-        holder.txt_name.setText(dataPlaylist.getTitle());
-        holder.txt_follow.setText(String.valueOf(dataPlaylist.getReleaseDate()));
+        holder.nameTextView.setText(dataPlaylist.getTitle());
         Glide.with(context)
                 .load(dataPlaylist.getThumbnail())
-                .into(holder.img_avatar);
+                .into(holder.thumbImageView);
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ViewPlaylistActivity.class);
@@ -72,17 +71,13 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public RoundedImageView img_avatar;
-        public TextView txt_name;
-        public TextView txt_follow;
+        public RoundedImageView thumbImageView;
+        public TextView nameTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            img_avatar = itemView.findViewById(R.id.img_avatar);
-            txt_name = itemView.findViewById(R.id.txt_name);
-            txt_follow = itemView.findViewById(R.id.txt_follow);
-            txt_name.setSelected(true);
-            txt_follow.setSelected(true);
+            thumbImageView = itemView.findViewById(R.id.thumbImageView);
+            nameTextView = itemView.findViewById(R.id.nameTextView);
         }
     }
 

@@ -26,19 +26,15 @@ import com.example.musichub.activity.BXHNewSongActivity;
 import com.example.musichub.activity.HistoryActivity;
 import com.example.musichub.activity.NewReleaseSongActivity;
 import com.example.musichub.activity.SearchActivity;
-import com.example.musichub.adapter.SongAdapter.SongMoreAdapter;
-import com.example.musichub.adapter.Top100Adapter.Top100MoreAdapter;
+import com.example.musichub.adapter.Playlist.PlaylistMoreAdapter;
+import com.example.musichub.adapter.Song.SongMoreAdapter;
 import com.example.musichub.adapter.WeekChart.WeekChartSlideAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
-import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.bottomsheet.BottomSheetProfile;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.ui.MusicHelper;
-import com.example.musichub.model.artist.SectionArtistArtist;
-import com.example.musichub.model.artist.SectionArtistPlaylist;
-import com.example.musichub.model.chart.chart_home.Artists;
 import com.example.musichub.model.chart.chart_home.ChartHome;
 import com.example.musichub.model.chart.chart_home.ItemWeekChart;
 import com.example.musichub.model.chart.chart_home.Items;
@@ -49,11 +45,6 @@ import com.example.musichub.model.chart.home.ItemsData;
 import com.example.musichub.model.chart.new_release.NewRelease;
 import com.example.musichub.model.chart.top100.Top100;
 import com.example.musichub.model.playlist.DataPlaylist;
-import com.example.musichub.model.playlist.Playlist;
-import com.example.musichub.model.sectionBottom.DataSectionBottom;
-import com.example.musichub.model.sectionBottom.DataSectionBottomArtist;
-import com.example.musichub.model.sectionBottom.DataSectionBottomPlaylist;
-import com.example.musichub.model.sectionBottom.SectionBottom;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
@@ -109,12 +100,12 @@ public class MainActivity extends AppCompatActivity {
 
     //top100
     private RecyclerView rv_top100;
-    private Top100MoreAdapter top100MoreAdapter;
+    private PlaylistMoreAdapter playlistMoreAdapter;
     private ArrayList<DataPlaylist> dataPlaylistArrayListTop100 = new ArrayList<>();
 
     private RecyclerView rv_song_remix;
     private TextView txt_title_playlist;
-    private Top100MoreAdapter songRemixMoreAdapter;
+    private PlaylistMoreAdapter songRemixMoreAdapter;
     private ArrayList<DataPlaylist> songRemixArrayList = new ArrayList<>();
 
 
@@ -135,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
         getNewRelease();
         getHome();
         onClick();
-        getAlbum();
     }
 
     private void initData() {
@@ -198,10 +188,10 @@ public class MainActivity extends AppCompatActivity {
         bang_xep_hangAdapter = new SongMoreAdapter(bang_xep_hangArrayList, 2, MainActivity.this, MainActivity.this);
         rv_bang_xep_hang.setAdapter(bang_xep_hangAdapter);
 
-        top100MoreAdapter = new Top100MoreAdapter(dataPlaylistArrayListTop100, MainActivity.this);
-        rv_top100.setAdapter(top100MoreAdapter);
+        playlistMoreAdapter = new PlaylistMoreAdapter(dataPlaylistArrayListTop100, MainActivity.this, MainActivity.this);
+        rv_top100.setAdapter(playlistMoreAdapter);
 
-        songRemixMoreAdapter = new Top100MoreAdapter(songRemixArrayList, MainActivity.this);
+        songRemixMoreAdapter = new PlaylistMoreAdapter(songRemixArrayList, MainActivity.this,MainActivity.this);
         rv_song_remix.setAdapter(songRemixMoreAdapter);
     }
 
@@ -524,7 +514,7 @@ public class MainActivity extends AppCompatActivity {
                                     if (!itemsTop100sNoiBat.isEmpty()) {
                                         runOnUiThread(() -> {
                                             dataPlaylistArrayListTop100 = itemsTop100sNoiBat;
-                                            top100MoreAdapter.setFilterList(itemsTop100sNoiBat);
+                                            playlistMoreAdapter.setFilterList(itemsTop100sNoiBat);
                                         });
                                     } else {
                                         Log.d("TAG", "Items list is empty");
@@ -550,48 +540,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onError(Exception e) {
 
-            }
-        });
-    }
-
-    private void getAlbum() {
-        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
-            @Override
-            public void onServiceCreated(ApiService service) {
-                try {
-                    SongCategories songCategories = new SongCategories(null, null);
-                    Map<String, String> map = songCategories.getSectionBottom("ZWZB969E");
-                    Call<ResponseBody> call = service.SECTION_BOTTOM_CALL("ZWZB969E", map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
-                    call.enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                            if (response.isSuccessful()) {
-                                try {
-                                    String jsonData = response.body().string();
-                                    JSONObject jsonObject = new JSONObject(jsonData);
-                                    SectionBottom sectionBottom = new SectionBottom();
-                                    sectionBottom.parseFromJson(jsonObject);
-                                } catch (Exception e) {
-                                    Log.e("TAG", "Error: " + e.getMessage(), e);
-                                }
-                            } else {
-                                Log.d("TAG", "Failed to retrieve data: " + response.code());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable throwable) {
-                            Log.e("TAG", "API call failed: " + throwable.getMessage(), throwable);
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.e("TAG", "Error: " + e.getMessage(), e);
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e("TAG", "Service creation error: " + e.getMessage(), e);
             }
         });
     }

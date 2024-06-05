@@ -1,17 +1,11 @@
 package com.example.musichub.fragment.BottomSheetPlay;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -19,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.musichub.R;
-import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
+import com.example.musichub.adapter.Song.SongAllAdapter;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 

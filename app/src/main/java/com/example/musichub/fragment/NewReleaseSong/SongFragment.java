@@ -18,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.musichub.R;
-import com.example.musichub.adapter.SongAdapter.SongAllAdapter;
+import com.example.musichub.adapter.Song.SongAllAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
