@@ -94,16 +94,23 @@ public class SectionBottom implements Serializable {
         dataSectionBottomPlaylist.setLink(jsonObject.getString("link"));
         dataSectionBottomPlaylist.setSectionId(jsonObject.getString("sectionId"));
 
-        JSONArray innerItemsArrayPlaylist = jsonObject.getJSONArray("items");
-        ArrayList<DataPlaylist> dataPlaylistArrayList = new ArrayList<>();
-        for (int i = 0; i < innerItemsArrayPlaylist.length(); i++) {
-            JSONObject innerArtistObject = innerItemsArrayPlaylist.getJSONObject(i);
-            DataPlaylist dataPlaylist = DataPlaylist.fromJson(innerArtistObject.toString());
-            dataPlaylistArrayList.add(dataPlaylist);
+        // Kiểm tra xem trường "items" có tồn tại và không null
+        if (jsonObject.has("items") && !jsonObject.isNull("items")) {
+            JSONArray innerItemsArrayPlaylist = jsonObject.getJSONArray("items");
+            ArrayList<DataPlaylist> dataPlaylistArrayList = new ArrayList<>();
+            for (int i = 0; i < innerItemsArrayPlaylist.length(); i++) {
+                JSONObject innerArtistObject = innerItemsArrayPlaylist.getJSONObject(i);
+                DataPlaylist dataPlaylist = DataPlaylist.fromJson(innerArtistObject.toString());
+                dataPlaylistArrayList.add(dataPlaylist);
+            }
+            dataSectionBottomPlaylist.setItems(dataPlaylistArrayList);
+        } else {
+            dataSectionBottomPlaylist.setItems(new ArrayList<>()); // Hoặc có thể giữ null tùy theo yêu cầu của bạn
         }
-        dataSectionBottomPlaylist.setItems(dataPlaylistArrayList);
+
         return dataSectionBottomPlaylist;
     }
+
 
     private DataSectionBottom parseDataBottom(DataSectionBottomArtist dataSectionBottomArtist, DataSectionBottomPlaylist dataSectionBottomPlaylist) throws JSONException {
         DataSectionBottom dataSectionBottom = new DataSectionBottom();

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,14 +86,11 @@ public class SelectArtistAdapter extends RecyclerView.Adapter<SelectArtistAdapte
             @Override
             public void onFollowersFetched(int totalFollow) {
                 holder.artistTextView.setText(Helper.convertToIntString(totalFollow) + " quan tâm");
-                Log.d(">>>>>>>>>>>>", "totalFollow: " + totalFollow);
-                Log.d(">>>>>>>>>>>>", "totalFollow Convert: " + Helper.convertToIntString(totalFollow));
             }
 
             @Override
             public void onError(String error) {
                 holder.artistTextView.setText("Error");
-                Log.e("SelectArtistAdapter", error);
             }
         });
 

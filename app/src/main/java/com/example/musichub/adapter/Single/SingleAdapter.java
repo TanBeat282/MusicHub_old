@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.activity.ViewAlbumActivity;
-import com.example.musichub.activity.ViewPlaylistActivity;
 import com.example.musichub.model.playlist.DataPlaylist;
 import com.makeramen.roundedimageview.RoundedImageView;
 

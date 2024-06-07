@@ -21,9 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.example.musichub.R;
-import com.example.musichub.adapter.Artist.ArtistsAdapter;
 import com.example.musichub.adapter.Artist.ArtistsMoreAdapter;
-import com.example.musichub.adapter.Playlist.PlaylistAdapter;
 import com.example.musichub.adapter.Playlist.PlaylistMoreAdapter;
 import com.example.musichub.adapter.Song.SongAllAdapter;
 import com.example.musichub.api.ApiService;
@@ -62,7 +60,7 @@ public class ViewPlaylistActivity extends AppCompatActivity {
     private TextView txt_name_artist;
     private TextView txt_view;
     private TextView txt_content_playlist;
-    private DataPlaylist dataPlaylist;
+    private Playlist playlist;
     private ArrayList<Items> itemsArrayList = new ArrayList<>();
     private SongAllAdapter songAllAdapter;
     private SharedPreferencesManager sharedPreferencesManager;
@@ -104,16 +102,9 @@ public class ViewPlaylistActivity extends AppCompatActivity {
     private void getDataBundle() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            dataPlaylist = (DataPlaylist) bundle.getSerializable("playlist");
-            assert dataPlaylist != null;
-            getPlaylist(dataPlaylist.getEncodeId());
-            getAlbum(dataPlaylist.getEncodeId());
-
-            // Sử dụng Glide để tải và áp dụng hiệu ứng mờ
-            Glide.with(this)
-                    .load(dataPlaylist.getThumbnailM())
-                    .transform(new CenterCrop(), new BlurAndBlackOverlayTransformation(this, 25, 220)) // 25 là mức độ mờ, 150 là độ mờ của lớp phủ đen
-                    .into(imageBackground);
+            String endCodeId = bundle.getString("encodeId");
+            getPlaylist(endCodeId);
+            getSectionBottom(endCodeId);
         }
     }
 
@@ -170,7 +161,7 @@ public class ViewPlaylistActivity extends AppCompatActivity {
                     // Hiển thị TextView khi người dùng cuộn xuống khỏi đầu trang
                     txt_name_artist.setVisibility(View.VISIBLE);
                     txt_view.setVisibility(View.GONE);
-                    txt_name_artist.setText(dataPlaylist.getTitle());
+                    txt_name_artist.setText(playlist.getData().getTitle());
                     relative_header.setBackgroundColor(ContextCompat.getColor(ViewPlaylistActivity.this, R.color.gray));
                     Helper.changeStatusBarColor(ViewPlaylistActivity.this, R.color.gray);
                 }
@@ -242,27 +233,14 @@ public class ViewPlaylistActivity extends AppCompatActivity {
                             String requestUrl = call.request().url().toString();
                             Log.d(">>>>>>>>>>>>>>>>>>>", " - " + requestUrl);
                             if (response.isSuccessful()) {
-                                Playlist playlist = response.body();
+                                playlist = response.body();
                                 if (playlist != null && playlist.getErr() == 0) {
                                     ArrayList<Items> arrayList = playlist.getData().getSong().getItems();
                                     if (!arrayList.isEmpty()) {
                                         runOnUiThread(() -> {
-
-                                            Glide.with(ViewPlaylistActivity.this)
-                                                    .load(playlist.getData().getThumbnailM())
-                                                    .into(img_playlist);
-
-                                            img_playlist.setVisibility(View.VISIBLE);
-                                            progress_image.setVisibility(View.GONE);
-
-                                            txt_title_playlist.setText(playlist.getData().getTitle());
-                                            txt_user_name.setText(playlist.getData().getUserName());
-
-                                            txt_song_and_time.setText(convertLongToString(arrayList.size(), playlist.getData().getSong().getTotalDuration()));
-                                            txt_content_playlist.setText(playlist.getData().getDescription());
-
                                             itemsArrayList = arrayList;
                                             songAllAdapter.setFilterList(arrayList);
+                                            viewData(playlist);
                                         });
                                     } else {
                                         Log.d("TAG", "Items list is empty");
@@ -292,7 +270,28 @@ public class ViewPlaylistActivity extends AppCompatActivity {
         });
     }
 
-    private void getAlbum(String encodeId) {
+    private void viewData(Playlist playlist) {
+        img_playlist.setVisibility(View.VISIBLE);
+        progress_image.setVisibility(View.GONE);
+
+        txt_title_playlist.setText(playlist.getData().getTitle());
+        txt_user_name.setText(playlist.getData().getUserName());
+
+        txt_song_and_time.setText(convertLongToString(playlist.getData().getSong().getItems().size(), playlist.getData().getSong().getTotalDuration()));
+        txt_content_playlist.setText(playlist.getData().getDescription());
+        // Sử dụng Glide để tải và áp dụng hiệu ứng mờ
+        Glide.with(ViewPlaylistActivity.this)
+                .load(playlist.getData().getThumbnailM())
+                .transform(new CenterCrop(), new BlurAndBlackOverlayTransformation(ViewPlaylistActivity.this, 25, 220)) // 25 là mức độ mờ, 150 là độ mờ của lớp phủ đen
+                .into(imageBackground);
+
+        //avatar
+        Glide.with(ViewPlaylistActivity.this)
+                .load(playlist.getData().getThumbnailM())
+                .into(img_playlist);
+    }
+
+    private void getSectionBottom(String encodeId) {
         ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
             @Override
             public void onServiceCreated(ApiService service) {
@@ -303,6 +302,8 @@ public class ViewPlaylistActivity extends AppCompatActivity {
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                            String requestUrl = call.request().url().toString();
+                            Log.d(">>>>>>>>>>>>>>>>>>>", " - " + requestUrl);
                             if (response.isSuccessful()) {
                                 try {
                                     assert response.body() != null;

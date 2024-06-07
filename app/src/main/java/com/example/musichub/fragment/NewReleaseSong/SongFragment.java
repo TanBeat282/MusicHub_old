@@ -18,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.musichub.R;
-import com.example.musichub.adapter.Song.SongAllAdapter;
+import com.example.musichub.adapter.new_release_song.NewReleaseSongAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
@@ -39,15 +39,13 @@ import retrofit2.Response;
 public class SongFragment extends Fragment {
     private RecyclerView recycler_view_song;
     private ArrayList<Items> itemsArrayList = new ArrayList<>();
-    private SongAllAdapter songAllAdapter;
+    private NewReleaseSongAdapter newReleaseSongAdapter;
     private LinearLayout btn_tat_ca, btn_viet_nam, btn_au_my, btn_han_quoc, btn_other;
-
     private SharedPreferencesManager sharedPreferencesManager;
     private MusicHelper musicHelper;
     private static final String VIETNAM_CATEGORY = "IWZ9Z08I";
     private static final String AU_MY_CATEGORY = "IWZ9Z08O";
     private static final String HAN_QUOC_CATEGORY = "IWZ9Z08W";
-
 
 
     @Override
@@ -91,8 +89,8 @@ public class SongFragment extends Fragment {
 
     private void setupRecyclerView() {
         recycler_view_song.setLayoutManager(new LinearLayoutManager(requireContext()));
-        songAllAdapter = new SongAllAdapter(itemsArrayList, requireActivity(), requireContext());
-        recycler_view_song.setAdapter(songAllAdapter);
+        newReleaseSongAdapter = new NewReleaseSongAdapter(itemsArrayList, requireActivity(), requireContext());
+        recycler_view_song.setAdapter(newReleaseSongAdapter);
     }
 
     private void setupButtonListeners() {
@@ -120,7 +118,7 @@ public class SongFragment extends Fragment {
 
         // Lấy thông tin bài hát hiện tại
         musicHelper.getSongCurrent();
-        musicHelper.initAdapter(songAllAdapter);
+        musicHelper.initAdapter(newReleaseSongAdapter);
     }
 
     private void getNewReleaseSong() {
@@ -143,7 +141,7 @@ public class SongFragment extends Fragment {
                                     if (!arrayList.isEmpty()) {
                                         requireActivity().runOnUiThread(() -> {
                                             itemsArrayList = arrayList;
-                                            songAllAdapter.setFilterList(itemsArrayList);
+                                            newReleaseSongAdapter.setFilterList(itemsArrayList);
                                         });
                                     } else {
                                         Log.d("TAG", "Items list is empty");
@@ -196,15 +194,15 @@ public class SongFragment extends Fragment {
                 break;
             default:
                 setButtonBackgrounds(btn_tat_ca);
-                songAllAdapter.setFilterList(itemsArrayList); // Hiển thị tất cả dữ liệu gốc
-                songAllAdapter.notifyDataSetChanged();
+                newReleaseSongAdapter.setFilterList(itemsArrayList); // Hiển thị tất cả dữ liệu gốc
+                newReleaseSongAdapter.notifyDataSetChanged();
                 recycler_view_song.scrollToPosition(0);
                 return; // Kết thúc phương thức sớm để không tiếp tục xử lý bộ lọc
         }
-        songAllAdapter.setFilterList(filterCategoriesSong(itemsArrayList, selectedCategory, isOther));
-        songAllAdapter.notifyDataSetChanged();
+        newReleaseSongAdapter.setFilterList(filterCategoriesSong(itemsArrayList, selectedCategory, isOther));
+        newReleaseSongAdapter.notifyDataSetChanged();
         recycler_view_song.scrollToPosition(0);
-        musicHelper.checkIsPlayingPlaylist(sharedPreferencesManager.restoreSongState(), itemsArrayList, songAllAdapter);
+        musicHelper.checkIsPlayingPlaylist(sharedPreferencesManager.restoreSongState(), itemsArrayList, newReleaseSongAdapter);
     }
 
     private void setButtonBackgrounds(View selectedButton) {
@@ -234,7 +232,7 @@ public class SongFragment extends Fragment {
     public void onResume() {
         super.onResume();
         musicHelper.registerReceivers();
-        musicHelper.checkIsPlayingPlaylist(sharedPreferencesManager.restoreSongState(), itemsArrayList, songAllAdapter);
+        musicHelper.checkIsPlayingPlaylist(sharedPreferencesManager.restoreSongState(), itemsArrayList, newReleaseSongAdapter);
     }
 
     @Override

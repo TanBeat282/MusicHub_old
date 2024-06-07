@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.musichub.R;
-import com.example.musichub.adapter.NewReleaseSongAdapter.NewReleaseViewPageAdapter;
+import com.example.musichub.adapter.new_release_song.NewReleaseViewPageAdapter;
 import com.example.musichub.helper.ui.Helper;
 import com.google.android.material.tabs.TabLayout;
 

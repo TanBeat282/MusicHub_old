@@ -157,10 +157,6 @@ public class SongMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             buttonViewHolder.btn_more.setOnClickListener(v -> {
                 if (typeOnClicked == 1) {
                     Intent intent = new Intent(context, BXHNewSongActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("bxh_new_release_song", songList);
-                    intent.putExtras(bundle);
-
                     context.startActivity(intent);
                 } else if (typeOnClicked == 2) {
 //                    Intent intent = new Intent(context, BXHNewSongActivity.class);
@@ -179,10 +175,6 @@ public class SongMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     context.startActivity(intent);
                 } else {
                     Intent intent = new Intent(context, NewReleaseSongActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("new_release_song", songList);
-                    intent.putExtras(bundle);
-
                     context.startActivity(intent);
                 }
             });

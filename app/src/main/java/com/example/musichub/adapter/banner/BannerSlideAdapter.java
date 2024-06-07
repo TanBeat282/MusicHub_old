@@ -1,4 +1,4 @@
-package com.example.musichub.adapter.WeekChart;
+package com.example.musichub.adapter.banner;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,30 +15,29 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
-import com.example.musichub.activity.ViewArtistActivity;
+import com.example.musichub.activity.ViewPlaylistActivity;
 import com.example.musichub.activity.WeekChartActivity;
-import com.example.musichub.helper.ui.Helper;
-import com.example.musichub.model.chart.chart_home.Artists;
-import com.example.musichub.model.chart.chart_home.ItemWeekChart;
+import com.example.musichub.model.chart.home.home_new.banner.HomeDataItemBannerItem;
+import com.example.musichub.model.chart.home.home_new.week_chart.HomeDataItemWeekChartItem;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 
-public class WeekChartSlideAdapter extends RecyclerView.Adapter<WeekChartSlideAdapter.ViewHolder> {
-    private ArrayList<ItemWeekChart> itemWeekCharts;
+public class BannerSlideAdapter extends RecyclerView.Adapter<BannerSlideAdapter.ViewHolder> {
+    private ArrayList<HomeDataItemBannerItem> homeDataItemBannerItems;
     private ViewPager2 viewPager2;
     private final Context context;
     private final Activity activity;
 
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setFilterList(ArrayList<ItemWeekChart> itemWeekCharts) {
-        this.itemWeekCharts = itemWeekCharts;
+    public void setFilterList(ArrayList<HomeDataItemBannerItem> homeDataItemBannerItems) {
+        this.homeDataItemBannerItems = homeDataItemBannerItems;
         notifyDataSetChanged();
     }
 
-    public WeekChartSlideAdapter(ArrayList<ItemWeekChart> itemWeekCharts, ViewPager2 viewPager2, Context context, Activity activity) {
-        this.itemWeekCharts = itemWeekCharts;
+    public BannerSlideAdapter(ArrayList<HomeDataItemBannerItem> homeDataItemBannerItems, ViewPager2 viewPager2, Context context, Activity activity) {
+        this.homeDataItemBannerItems = homeDataItemBannerItems;
         this.viewPager2 = viewPager2;
         this.context = context;
         this.activity = activity;
@@ -55,24 +53,25 @@ public class WeekChartSlideAdapter extends RecyclerView.Adapter<WeekChartSlideAd
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        ItemWeekChart itemWeekChart = itemWeekCharts.get(position);
+        HomeDataItemBannerItem homeDataItemBannerItem = homeDataItemBannerItems.get(position);
 
         Glide.with(context)
-                .load(itemWeekChart.getCover())
+                .load(homeDataItemBannerItem.getBanner())
                 .into(holder.roundedImageView);
+
+        if (position == homeDataItemBannerItems.size() -2){
+            viewPager2.post(runnable);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, WeekChartActivity.class);
+                Intent intent = new Intent(context, ViewPlaylistActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("itemWeekChart", itemWeekChart);
-                // 0 us-uk 1 vn 2 k-pop
-                bundle.putInt("position_slide", position);
+                bundle.putString("encodeId", homeDataItemBannerItem.getEncodeId());
                 intent.putExtras(bundle);
 
                 context.startActivity(intent);
-
             }
         });
     }
@@ -80,7 +79,7 @@ public class WeekChartSlideAdapter extends RecyclerView.Adapter<WeekChartSlideAd
 
     @Override
     public int getItemCount() {
-        return itemWeekCharts.size();
+        return homeDataItemBannerItems.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -91,5 +90,14 @@ public class WeekChartSlideAdapter extends RecyclerView.Adapter<WeekChartSlideAd
             roundedImageView = itemView.findViewById(R.id.roundedImageView);
         }
     }
+
+    private final Runnable runnable = new Runnable() {
+        @SuppressLint("NotifyDataSetChanged")
+        @Override
+        public void run() {
+            homeDataItemBannerItems.addAll(homeDataItemBannerItems);
+            notifyDataSetChanged();
+        }
+    };
 
 }

@@ -1,11 +1,11 @@
-package com.example.musichub.model.chart.home;
+package com.example.musichub.model.chart.home.home_new.new_release;
 
 import com.example.musichub.model.chart.chart_home.Items;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ItemsData implements Serializable {
+public class HomeDataItemNewReleaseItem implements Serializable {
     private ArrayList<Items> all;
     private ArrayList<Items> vPop;
     private ArrayList<Items> others;

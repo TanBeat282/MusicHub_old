@@ -1,8 +1,10 @@
-package com.example.musichub.model.chart.home;
+package com.example.musichub.model.chart.home.home_new.banner;
 
 import com.google.gson.Gson;
 
-public class ItemSlider {
+import java.io.Serializable;
+
+public class HomeDataItemBannerItem implements Serializable {
     private int type;
     private String link;
     private String banner;
@@ -84,8 +86,8 @@ public class ItemSlider {
     public void setEncodeId(String encodeId) {
         this.encodeId = encodeId;
     }
-    public static ItemSlider fromJson(String json) {
-        return new Gson().fromJson(json, ItemSlider.class);
+    public static HomeDataItemBannerItem fromJson(String json) {
+        return new Gson().fromJson(json, HomeDataItemBannerItem.class);
     }
 
 }

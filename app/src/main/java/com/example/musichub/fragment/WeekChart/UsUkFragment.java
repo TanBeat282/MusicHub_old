@@ -22,13 +22,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.musichub.R;
-import com.example.musichub.adapter.BXHSong.BXHSongAdapter;
+import com.example.musichub.adapter.bxh_song.BXHSongAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.ui.MusicHelper;
-import com.example.musichub.model.chart.chart_home.ItemWeekChart;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.chart.weekchart.WeekChart;
 import com.example.musichub.sharedpreferences.SharedPreferencesManager;

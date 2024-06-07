@@ -1,4 +1,4 @@
-package com.example.musichub.adapter.WeekChart;
+package com.example.musichub.adapter.week_chart;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -7,15 +7,15 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.example.musichub.fragment.WeekChart.KpopFragment;
 import com.example.musichub.fragment.WeekChart.UsUkFragment;
 import com.example.musichub.fragment.WeekChart.VnFragment;
-import com.example.musichub.model.chart.chart_home.ItemWeekChart;
+import com.example.musichub.model.chart.home.home_new.week_chart.HomeDataItemWeekChartItem;
 
 public class WeekChartViewPageAdapter extends FragmentPagerAdapter {
-    private ItemWeekChart itemWeekChart;
+    private HomeDataItemWeekChartItem homeDataItemWeekChartItem;
     private int weekChartPosition;
 
-    public WeekChartViewPageAdapter(@NonNull FragmentManager fm, int behavior, ItemWeekChart itemWeekChart, int weekChartPosition) {
+    public WeekChartViewPageAdapter(@NonNull FragmentManager fm, int behavior, HomeDataItemWeekChartItem homeDataItemWeekChartItem, int weekChartPosition) {
         super(fm, behavior);
-        this.itemWeekChart = itemWeekChart;
+        this.homeDataItemWeekChartItem = homeDataItemWeekChartItem;
         this.weekChartPosition = weekChartPosition;
     }
 

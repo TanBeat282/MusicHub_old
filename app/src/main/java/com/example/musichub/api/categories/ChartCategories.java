@@ -24,11 +24,12 @@ public class ChartCategories extends Base {
         }
     }
 
-    public Map<String, String> getHome(int page) throws NoSuchAlgorithmException, IOException, Exception {
+    public Map<String, String> getHome(int page, int count) throws NoSuchAlgorithmException, IOException, Exception {
         try {
-            String sig = createNoIdSig("/api/v2/page/get/home");
+            String sig = createHomeSig("/api/v2/page/get/home");
             Map<String, String> params = createRequest();
             params.put("page", String.valueOf(page));
+            params.put("count", String.valueOf(count));
             params.put("sig", sig);
             return params;
         } catch (Exception error) {

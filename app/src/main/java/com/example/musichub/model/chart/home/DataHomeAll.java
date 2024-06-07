@@ -1,7 +1,8 @@
 package com.example.musichub.model.chart.home;
 
+import com.example.musichub.model.chart.home.home_new.new_release.HomeDataItemNewReleaseItem;
+
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class DataHomeAll implements Serializable {
     private String sectionType;
@@ -9,7 +10,7 @@ public class DataHomeAll implements Serializable {
     private String title;
     private String link;
     private String sectionId;
-    private ItemsData items;
+    private HomeDataItemNewReleaseItem items;
 
     public String getSectionType() {
         return sectionType;
@@ -51,11 +52,11 @@ public class DataHomeAll implements Serializable {
         this.sectionId = sectionId;
     }
 
-    public ItemsData getItems() {
+    public HomeDataItemNewReleaseItem getItems() {
         return items;
     }
 
-    public void setItems(ItemsData items) {
+    public void setItems(HomeDataItemNewReleaseItem items) {
         this.items = items;
     }
 }

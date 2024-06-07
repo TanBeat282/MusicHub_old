@@ -8,23 +8,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.musichub.R;
-import com.example.musichub.adapter.Artist.SelectArtistAdapter;
 import com.example.musichub.adapter.Playlist.PlaylistAdapter;
 import com.example.musichub.helper.ui.Helper;
-import com.example.musichub.model.chart.chart_home.Artists;
 import com.example.musichub.model.playlist.DataPlaylist;
 
 import java.util.ArrayList;
@@ -73,7 +66,7 @@ public class ViewAllPlaylistActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void conFigViews() {
-        txt_playlist.setText("Nghệ sĩ đóng góp");
+        txt_playlist.setText("Playlist");
 
         nested_scroll.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @SuppressLint({"ObsoleteSdkInt", "SetTextI18n"})
@@ -91,7 +84,7 @@ public class ViewAllPlaylistActivity extends AppCompatActivity {
                 } else if (scrollY >= 300) {
                     txt_name_artist.setVisibility(View.VISIBLE);
                     txt_view.setVisibility(View.GONE);
-                    txt_name_artist.setText("Nghệ sĩ đóng góp");
+                    txt_name_artist.setText("Playlist");
                     relative_header.setBackgroundColor(ContextCompat.getColor(ViewAllPlaylistActivity.this, R.color.gray));
                     Helper.changeStatusBarColor(ViewAllPlaylistActivity.this, R.color.gray);
                 }

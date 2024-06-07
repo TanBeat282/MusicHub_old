@@ -1,4 +1,4 @@
-package com.example.musichub.adapter.NewReleaseSongAdapter;
+package com.example.musichub.adapter.new_release_song;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

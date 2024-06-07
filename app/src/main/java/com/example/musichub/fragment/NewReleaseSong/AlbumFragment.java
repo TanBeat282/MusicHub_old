@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.musichub.R;
-import com.example.musichub.adapter.Album.AlbumAllAdapter;
+import com.example.musichub.adapter.Album.AlbumNewReleaseAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
@@ -38,7 +38,7 @@ import retrofit2.Response;
 public class AlbumFragment extends Fragment {
     private RecyclerView recycler_view_album;
     private ArrayList<Album> albumArrayList = new ArrayList<>();
-    private AlbumAllAdapter albumAllAdapter;
+    private AlbumNewReleaseAdapter albumNewReleaseAdapter;
     private MusicHelper musicHelper;
     private static final String VIETNAM_CATEGORY = "IWZ9Z08I";
     private static final String AU_MY_CATEGORY = "IWZ9Z08O";
@@ -78,8 +78,8 @@ public class AlbumFragment extends Fragment {
 
     private void setupRecyclerView() {
         recycler_view_album.setLayoutManager(new LinearLayoutManager(requireContext()));
-        albumAllAdapter = new AlbumAllAdapter(albumArrayList, requireActivity(), requireContext());
-        recycler_view_album.setAdapter(albumAllAdapter);
+        albumNewReleaseAdapter = new AlbumNewReleaseAdapter(albumArrayList, requireActivity(), requireContext());
+        recycler_view_album.setAdapter(albumNewReleaseAdapter);
     }
 
     private void setupButtonListeners() {
@@ -126,7 +126,7 @@ public class AlbumFragment extends Fragment {
                                     if (!arrayList.isEmpty()) {
                                         requireActivity().runOnUiThread(() -> {
                                             albumArrayList = arrayList;
-                                            albumAllAdapter.setFilterList(albumArrayList);
+                                            albumNewReleaseAdapter.setFilterList(albumArrayList);
                                         });
                                     } else {
                                         Log.d("TAG", "Items list is empty");

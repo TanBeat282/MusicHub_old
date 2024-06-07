@@ -14,6 +14,7 @@ import com.example.musichub.model.search.Search;
 import com.example.musichub.model.song.Lyric;
 import com.example.musichub.model.song.SongAudio;
 import com.example.musichub.model.song.SongDetail;
+import com.example.musichub.model.user_active_radio.UserActiveRadio;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -42,6 +43,13 @@ public interface ApiService {
     String pathSearchRecommend = "/api/v2/app/get/recommend-keyword?";
 
 
+    //radio
+    String pathUserActiveRadio = "/api/v2/livestream/get/active-user?";
+
+    //hub
+    String pathHub = "/api/v2/page/get/hub-detail?";
+
+
     //HOME
     @GET(pathChartHome)
     Call<ChartHome> CHART_HOME_CALL(@Query("sig") String sig,
@@ -50,7 +58,9 @@ public interface ApiService {
                                     @Query("apiKey") String apiKey);
 
     @GET(pathHome)
-    Call<ResponseBody> HOME_CALL(@Query("sig") String sig,
+    Call<ResponseBody> HOME_CALL(@Query("page") String page,
+                                 @Query("count") String count,
+                                 @Query("sig") String sig,
                                  @Query("ctime") String ctime,
                                  @Query("version") String version,
                                  @Query("apiKey") String apiKey);
@@ -165,7 +175,19 @@ public interface ApiService {
                                        @Query("version") String version,
                                        @Query("apiKey") String apiKey);
 
+    @GET(pathUserActiveRadio)
+    Call<UserActiveRadio> USER_ACTIVE_RADIO_CALL(@Query("ids") String ids,
+                                                 @Query("sig") String sig,
+                                                 @Query("ctime") String ctime,
+                                                 @Query("version") String version,
+                                                 @Query("apiKey") String apiKey);
 
+    @GET(pathHub)
+    Call<ResponseBody> HUB_DETAIL_CALL(@Query("id") String id,
+                                       @Query("sig") String sig,
+                                       @Query("ctime") String ctime,
+                                       @Query("version") String version,
+                                       @Query("apiKey") String apiKey);
     // Method để thiết lập cookie
     void setCookie(String cookie);
 }

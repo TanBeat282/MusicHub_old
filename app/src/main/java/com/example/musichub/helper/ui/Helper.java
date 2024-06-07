@@ -10,6 +10,11 @@ import android.view.WindowManager;
 
 import androidx.core.content.ContextCompat;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 public class Helper {
 
     public static void changeStatusBarColor(Activity activity, int colorResId) {
@@ -64,6 +69,45 @@ public class Helper {
             return String.format("%,d.##B", number);
 
         }
+    }
+
+    public static String convertLongToTime(long timeInMillis) {
+        Date date = new Date(timeInMillis);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        // Lấy thời gian hiện tại
+        Calendar today = Calendar.getInstance();
+
+        // Kiểm tra khoảng cách giữa thời gian hiện tại và thời gian được chuyển đổi
+        long differenceInMillis = today.getTimeInMillis() - calendar.getTimeInMillis();
+
+        // Chuyển đổi khoảng cách thành ngày
+        long differenceInDays = differenceInMillis / (1000 * 60 * 60 * 24);
+
+        // Định dạng lại ngày tháng năm
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        String formattedDate = sdf.format(date);
+
+        // Xác định văn bản tương ứng
+        String text = "";
+        if (differenceInDays == 0) {
+            text = "Hôm nay";
+        } else if (differenceInDays == 1) {
+            text = "Hôm qua";
+        } else if (differenceInDays > 1 && differenceInDays < 7) {
+            text = differenceInDays + " ngày trước";
+        } else if (differenceInDays >= 7 && differenceInDays < 14) {
+            text = "1 tuần trước";
+        } else if (differenceInDays >= 14 && differenceInDays < 21) {
+            text = "2 tuần trước";
+        } else {
+            text = formattedDate;
+        }
+
+        // Trả về kết quả
+        return text;
     }
 
 }

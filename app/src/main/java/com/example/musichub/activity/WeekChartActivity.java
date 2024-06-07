@@ -11,16 +11,16 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.musichub.R;
-import com.example.musichub.adapter.WeekChart.WeekChartViewPageAdapter;
+import com.example.musichub.adapter.week_chart.WeekChartViewPageAdapter;
 import com.example.musichub.helper.ui.Helper;
-import com.example.musichub.model.chart.chart_home.ItemWeekChart;
+import com.example.musichub.model.chart.home.home_new.week_chart.HomeDataItemWeekChartItem;
 import com.google.android.material.tabs.TabLayout;
 
 public class WeekChartActivity extends AppCompatActivity {
     private TabLayout tab_layout_new_release_song;
     private ViewPager view_pager_new_release_song;
     private WeekChartViewPageAdapter mViewPagerAdapter;
-    private ItemWeekChart itemWeekChart;
+    private HomeDataItemWeekChartItem homeDataItemWeekChartItem;
     private int position_slider = -1;
     private int week_chart = 0;
     private LinearLayout linear_filter_song;
@@ -41,9 +41,9 @@ public class WeekChartActivity extends AppCompatActivity {
     private void getBundleSong() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            itemWeekChart = (ItemWeekChart) bundle.getSerializable("itemWeekChart");
+            homeDataItemWeekChartItem = (HomeDataItemWeekChartItem) bundle.getSerializable("itemWeekChart");
             position_slider = bundle.getInt("position_slide");
-            if (itemWeekChart != null && position_slider != -1) {
+            if (homeDataItemWeekChartItem != null && position_slider != -1) {
                 int position = -1;
                 if (position_slider == 1) {
                     position = 0;
@@ -68,7 +68,7 @@ public class WeekChartActivity extends AppCompatActivity {
     }
 
     private void initViewPager() {
-        mViewPagerAdapter = new WeekChartViewPageAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, itemWeekChart, week_chart);
+        mViewPagerAdapter = new WeekChartViewPageAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, homeDataItemWeekChartItem, week_chart);
         view_pager_new_release_song.setAdapter(mViewPagerAdapter);
 
         tab_layout_new_release_song.setupWithViewPager(view_pager_new_release_song);

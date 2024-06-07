@@ -79,7 +79,7 @@ public class PlaylistMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             playlistViewHolder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, ViewPlaylistActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("playlist", dataPlaylist);
+                bundle.putString("encodeId", dataPlaylist.getEncodeId());
                 intent.putExtras(bundle);
 
                 context.startActivity(intent);

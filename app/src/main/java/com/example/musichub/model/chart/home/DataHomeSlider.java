@@ -1,5 +1,7 @@
 package com.example.musichub.model.chart.home;
 
+import com.example.musichub.model.chart.home.home_new.banner.HomeDataItemBannerItem;
+
 import java.util.ArrayList;
 
 public class DataHomeSlider {
@@ -8,7 +10,7 @@ public class DataHomeSlider {
     private String title;
     private String link;
     private String sectionId;
-    private ArrayList<ItemSlider> items;
+    private ArrayList<HomeDataItemBannerItem> items;
 
     public String getSectionType() {
         return sectionType;
@@ -50,11 +52,11 @@ public class DataHomeSlider {
         this.sectionId = sectionId;
     }
 
-    public ArrayList<ItemSlider> getItems() {
+    public ArrayList<HomeDataItemBannerItem> getItems() {
         return items;
     }
 
-    public void setItems(ArrayList<ItemSlider> items) {
+    public void setItems(ArrayList<HomeDataItemBannerItem> items) {
         this.items = items;
     }
 }

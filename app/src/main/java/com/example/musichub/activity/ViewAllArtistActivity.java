@@ -8,19 +8,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.musichub.R;
-import com.example.musichub.adapter.Artist.ArtistsAdapter;
 import com.example.musichub.adapter.Artist.SelectArtistAdapter;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.model.chart.chart_home.Artists;
