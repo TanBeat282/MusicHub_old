@@ -33,11 +33,13 @@ import com.example.musichub.adapter.banner.BannerSlideAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
+import com.example.musichub.api.categories.HubCategories;
 import com.example.musichub.api.categories.RadioCategories;
 import com.example.musichub.bottomsheet.BottomSheetProfile;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.ui.MusicHelper;
 import com.example.musichub.helper.uliti.HomeDataItemTypeAdapter;
+import com.example.musichub.helper.uliti.HubSectionTypeAdapter;
 import com.example.musichub.model.Album.DataAlbum;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.chart.home.home_new.Home;
@@ -56,6 +58,10 @@ import com.example.musichub.model.chart.home.home_new.season_theme.HomeDataItemP
 import com.example.musichub.model.chart.home.home_new.top100.HomeDataItemPlaylistTop100;
 import com.example.musichub.model.chart.home.home_new.week_chart.HomeDataItemWeekChart;
 import com.example.musichub.model.chart.home.home_new.week_chart.HomeDataItemWeekChartItem;
+import com.example.musichub.model.hub.Hub;
+import com.example.musichub.model.hub.HubSection;
+import com.example.musichub.model.hub.SectionHubPlaylist;
+import com.example.musichub.model.hub.SectionHubSong;
 import com.example.musichub.model.playlist.DataPlaylist;
 import com.example.musichub.model.user_active_radio.DataUserActiveRadio;
 import com.example.musichub.model.user_active_radio.UserActiveRadio;
@@ -75,7 +81,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private Handler mHandler;
-    private static final int INTERVAL = 5000; // Độ trễ giữa mỗi lần chạy, tính bằng mili giây (3 giây)
+    private static final int INTERVAL = 15000; // Độ trễ giữa mỗi lần chạy, tính bằng mili giây (3 giây)
     private Home home;
     private SharedPreferencesManager sharedPreferencesManager;
     private MusicHelper musicHelper;
@@ -160,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
         //get data
         getHome();
+        getHub();
         onClick();
         mHandler = new Handler();
     }
@@ -366,6 +373,67 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void getHub() {
+        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
+            @Override
+            public void onServiceCreated(ApiService service) {
+                try {
+                    HubCategories hubCategories = new HubCategories(null, null);
+                    Map<String, String> map = hubCategories.getHub("IWZ9Z0BO");
+
+                    retrofit2.Call<ResponseBody> call = service.HUB_DETAIL_CALL(map.get("id"), map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            Log.d(">>>>>>>>>>>>>>>>>>", "getHub " + call.request().url());
+                            if (response.isSuccessful() && response.body() != null) {
+                                try {
+                                    String jsonData = response.body().string();
+                                    GsonBuilder gsonBuilder = new GsonBuilder();
+                                    gsonBuilder.registerTypeAdapter(HubSection.class, new HubSectionTypeAdapter());
+                                    Gson gson = gsonBuilder.create();
+
+                                    Hub hub = gson.fromJson(jsonData, Hub.class);
+
+                                    if (hub != null && hub.getData() != null) {
+                                        ArrayList<HubSection> items = hub.getData().getSections();
+                                        for (HubSection item : items) {
+                                            if (item instanceof SectionHubPlaylist) {
+                                                SectionHubPlaylist sectionHubSong = (SectionHubPlaylist) item;
+                                                Log.d(">>>>>>>>>>", "onResponse: " + sectionHubSong.getTitle());
+                                            }
+                                        }
+                                    } else {
+                                        Log.d("TAG", "No data found in JSON");
+                                    }
+
+                                } catch (Exception e) {
+                                    Log.e("TAG", "Error: " + e.getMessage(), e);
+                                }
+                            } else {
+                                Log.d("TAG", "Response unsuccessful or empty body");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+                            Log.d(">>>>>>>>>>>>>>>>>>", "getHub1111 " + call.request().url());
+                        }
+                    });
+
+                } catch (Exception e) {
+                    Log.e("TAG", "Error: " + e.getMessage(), e);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("TAG", "Service creation error: " + e.getMessage(), e);
+            }
+        });
+    }
+
+
     // banner slider
     private void getBanner() {
         if (home != null && home.getData() != null && home.getData().getItems() != null) {
@@ -546,6 +614,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("TAG", "No data found in JSON");
         }
     }
+
     Runnable mStatusChecker = new Runnable() {
         @Override
         public void run() {

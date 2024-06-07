@@ -7,6 +7,7 @@ import com.example.musichub.model.chart.chart_home.ItemWeekChart;
 import com.example.musichub.model.chart.new_release.NewRelease;
 import com.example.musichub.model.chart.top100.Top100;
 import com.example.musichub.model.chart.weekchart.WeekChart;
+import com.example.musichub.model.hub.Hub;
 import com.example.musichub.model.new_release.NewReleaseAlbum;
 import com.example.musichub.model.new_release.NewReleaseSong;
 import com.example.musichub.model.playlist.Playlist;
@@ -184,10 +185,10 @@ public interface ApiService {
 
     @GET(pathHub)
     Call<ResponseBody> HUB_DETAIL_CALL(@Query("id") String id,
-                                       @Query("sig") String sig,
-                                       @Query("ctime") String ctime,
-                                       @Query("version") String version,
-                                       @Query("apiKey") String apiKey);
+                              @Query("sig") String sig,
+                              @Query("ctime") String ctime,
+                              @Query("version") String version,
+                              @Query("apiKey") String apiKey);
     // Method để thiết lập cookie
     void setCookie(String cookie);
 }
