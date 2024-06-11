@@ -41,7 +41,7 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.activity:activity:1.9.0'
@@ -55,7 +55,7 @@ dependencies {
     // ảnh tròn
     implementation 'com.makeramen:roundedimageview:2.3.0'
 
-    //ảnh động
+    //animation
     implementation "com.airbnb.android:lottie:6.3.0"
 
     //anh từ link
@@ -72,7 +72,7 @@ dependencies {
 
     implementation 'com.squareup.retrofit2:retrofit:2.10.0'
 
-    //conver song
+    //cover song
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.10.0'
 
@@ -106,4 +106,7 @@ dependencies {
 
     implementation "androidx.room:room-runtime:2.6.1"
     annotationProcessor "androidx.room:room-compiler:2.6.1"
+
+    implementation 'com.intuit.ssp:ssp-android:1.1.1'
+    implementation 'com.intuit.sdp:sdp-android:1.1.1'
 }
