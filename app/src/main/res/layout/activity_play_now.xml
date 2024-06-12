@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cons_layout"
@@ -11,7 +10,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="50dp">
+        android:layout_marginBottom="@dimen/_40sdp">
 
         <ImageView
             android:id="@+id/imageBackground"
@@ -27,27 +26,27 @@
         <RelativeLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
+            android:layout_height="@dimen/_40sdp"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
                 android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/imageBack"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginStart="@dimen/_20sdp"
                     android:src="@drawable/baseline_keyboard_arrow_down_24"
                     app:tint="@color/white" />
 
                 <TextView
                     android:id="@+id/txtPlayForm"
-                    android:layout_width="310dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginStart="10dp"
@@ -56,15 +55,15 @@
                     android:gravity="center"
                     android:text="Now Playing"
                     android:textColor="@color/white"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/_12ssp"
                     android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/imageMore"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginEnd="20dp"
+                    android:layout_marginEnd="@dimen/_20sdp"
                     android:src="@drawable/baseline_info_24"
                     app:tint="@color/white" />
             </LinearLayout>
@@ -74,33 +73,34 @@
         <RelativeLayout
             android:id="@+id/linear_image"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_below="@id/container"
+            android:layout_height="@dimen/_200sdp"
+            android:layout_above="@id/linear_info"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_marginTop="40dp"
+            android:layout_marginBottom="@dimen/_20sdp"
             android:gravity="center">
 
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/imageAlbumArt"
-                android:layout_width="300dp"
-                android:layout_height="300dp"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="@dimen/_200sdp"
                 android:scaleType="centerCrop"
-                android:visibility="gone"
+                android:src="@color/white"
+                android:visibility="visible"
                 app:riv_corner_radius="10dp" />
 
             <ProgressBar
                 android:id="@+id/progress_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:visibility="visible" />
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_below="@id/container"
-            android:layout_marginTop="40dp"
+            android:layout_height="@dimen/_200sdp"
+            android:layout_above="@id/linear_info"
+            android:layout_marginBottom="@dimen/_20sdp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -122,8 +122,8 @@
             android:id="@+id/linear_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/linear_image"
-            android:layout_marginTop="30dp"
+            android:layout_above="@id/linear_button"
+            android:layout_marginTop="@dimen/_20sdp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -131,7 +131,7 @@
                 android:id="@+id/meta_data_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="@dimen/_20sdp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -146,9 +146,9 @@
                     android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
-                    android:text=""
+                    android:text="AAAAAAAAAAAA"
                     android:textColor="@android:color/white"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/_16ssp"
                     android:textStyle="bold"
                     app:layout_constraintTop_toBottomOf="@id/imageAlbumArt" />
 
@@ -156,7 +156,6 @@
                     android:id="@+id/txtArtist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:ellipsize="marquee"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
@@ -164,9 +163,9 @@
                     android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
-                    android:text=""
+                    android:text="aaaaaaaaa"
                     android:textColor="@color/colorSecondaryText1"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/_12ssp"
                     android:textStyle="normal"
                     app:layout_constraintTop_toBottomOf="@id/txtTitle" />
 
@@ -177,6 +176,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/_20sdp"
                 android:layout_weight="5"
                 android:button="@drawable/selector_favorite_check_box"
                 android:clickable="true"
@@ -188,18 +188,19 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linear_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/linear_info"
-            android:layout_marginTop="20dp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_above="@+id/linear_controller"
+            android:layout_marginTop="@dimen/_20sdp"
             android:gravity="center"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="10dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_weight="1"
                 android:background="@drawable/background_button_player"
                 android:gravity="center"
@@ -208,7 +209,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="@dimen/_2sdp"
                     android:src="@drawable/ic_view" />
 
                 <TextView
@@ -216,13 +217,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_10ssp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_marginEnd="10dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_weight="1"
                 android:background="@drawable/background_button_player"
                 android:gravity="center"
@@ -231,7 +233,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="@dimen/_2sdp"
                     android:src="@drawable/ic_like" />
 
                 <TextView
@@ -239,15 +241,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_10ssp" />
 
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_marginEnd="10dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_weight="1"
                 android:background="@drawable/background_button_player"
                 android:gravity="center"
@@ -256,7 +259,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="@dimen/_2sdp"
                     android:src="@drawable/ic_comment" />
 
                 <TextView
@@ -264,40 +267,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_10ssp" />
 
 
             </LinearLayout>
 
-            <!--            <LinearLayout-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="40dp"-->
-            <!--                android:layout_marginStart="20dp"-->
-            <!--                android:layout_marginEnd="10dp"-->
-            <!--                android:layout_weight="1"-->
-            <!--                android:background="@drawable/background_button_player"-->
-            <!--                android:gravity="center"-->
-            <!--                android:orientation="horizontal">-->
-
-            <!--                <ImageView-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_marginEnd="5dp"-->
-            <!--                    android:src="@drawable/ic_playlist_add" />-->
-
-            <!--                <TextView-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:text="Lưu"-->
-            <!--                    android:textColor="@color/white" />-->
-
-            <!--            </LinearLayout>-->
-
             <LinearLayout
                 android:id="@+id/btn_down_audio"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_marginEnd="10dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_weight="1"
                 android:background="@drawable/background_button_player"
                 android:gravity="center"
@@ -307,7 +287,7 @@
                     android:id="@+id/img_download_audio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="@dimen/_2sdp"
                     android:src="@drawable/ic_download" />
 
                 <TextView
@@ -316,26 +296,25 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
                     android:text="Tải xuống"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_10ssp" />
             </LinearLayout>
 
         </LinearLayout>
 
-
         <LinearLayout
+            android:id="@+id/linear_controller"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="100sp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginHorizontal="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
             android:orientation="vertical">
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginTop="@dimen/_20sdp">
 
                 <SeekBar
                     android:id="@+id/playerSeekBar"
@@ -352,34 +331,34 @@
                 android:id="@+id/time_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/tvCurrentTime"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:fontFamily="@font/roboto"
                     android:gravity="start"
-                    android:text=""
+                    android:text="AAAAA"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/_12ssp"
                     android:textStyle="normal" />
 
                 <TextView
                     android:id="@+id/tvFullTime"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:fontFamily="@font/roboto"
                     android:gravity="end"
-                    android:text=""
+                    android:text="AAAAAA"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/_12ssp"
                     android:textStyle="normal" />
 
             </LinearLayout>
@@ -388,13 +367,14 @@
                 android:id="@+id/controler_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="20dp">
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginBottom="@dimen/_20sdp">
 
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/btPlayPause"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
+                    android:layout_width="@dimen/_70sdp"
+                    android:layout_height="@dimen/_70sdp"
                     android:layout_centerInParent="true"
                     android:background="@null"
                     app:lottie_colorFilter="@color/white"
@@ -402,10 +382,9 @@
 
                 <ImageButton
                     android:id="@+id/btNext"
-                    android:layout_width="50sp"
-                    android:layout_height="50sp"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="20sp"
                     android:layout_toEndOf="@+id/btPlayPause"
                     android:background="@null"
                     android:scaleType="fitCenter"
@@ -416,11 +395,11 @@
 
                 <ImageButton
                     android:id="@+id/btRepeat"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="30dp"
-                    android:layout_toEndOf="@+id/btNext"
+                    android:layout_marginStart="@dimen/_20sdp"
                     android:background="@null"
                     android:scaleType="fitCenter"
                     android:src="@drawable/baseline_repeat_24"
@@ -428,10 +407,9 @@
 
                 <ImageButton
                     android:id="@+id/btPrevious"
-                    android:layout_width="50sp"
-                    android:layout_height="50sp"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="20sp"
                     android:layout_toStartOf="@+id/btPlayPause"
                     android:background="@null"
                     android:scaleType="fitCenter"
@@ -442,15 +420,15 @@
 
                 <ImageButton
                     android:id="@+id/btShuffle"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="30dp"
-                    android:layout_toStartOf="@+id/btPrevious"
                     android:background="@null"
                     android:scaleType="fitCenter"
                     android:src="@drawable/baseline_shuffle_24"
-                    app:tint="@color/white" />
+                    app:tint="@color/white"
+                    tools:ignore="RtlHardcoded" />
 
 
             </RelativeLayout>

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,10 +37,26 @@ public class LyricsAdapter extends RecyclerView.Adapter<LyricsAdapter.LyricsView
         notifyDataSetChanged();
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     public void setCurrentPlaybackTime(long currentPlaybackTime) {
+        int previousPosition = findCurrentLyricPosition();
         this.currentPlaybackTime = currentPlaybackTime;
-        notifyDataSetChanged();
+        int currentPosition = findCurrentLyricPosition();
+
+        if (previousPosition != -1) {
+            notifyItemChanged(previousPosition);
+        }
+        if (currentPosition != -1) {
+            notifyItemChanged(currentPosition);
+        }
+    }
+
+    private int findCurrentLyricPosition() {
+        for (int i = 0; i < lyricLines.size(); i++) {
+            if (isCurrentLyric(i)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @NonNull
@@ -54,22 +71,16 @@ public class LyricsAdapter extends RecyclerView.Adapter<LyricsAdapter.LyricsView
         LyricLine lyricLine = lyricLines.get(position);
         holder.textViewContent.setText(lyricLine.getContent());
 
-        // Kiểm tra xem thời gian phát hiện tại có nằm trong khoảng thời gian của dòng lyric không
         if (isCurrentLyric(position)) {
-            // Nếu có, thay đổi màu sắc của item thành màu colorAccent
             holder.textViewContent.setTextColor(ContextCompat.getColor(context, R.color.white));
         } else {
-            // Nếu không, sử dụng màu sắc mặc định cho item
             holder.textViewContent.setTextColor(ContextCompat.getColor(context, R.color.colorSecondaryText2));
         }
 
-        holder.textViewContent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, MyService.class);
-                intent.putExtra("seek_to_position", (int) lyricLine.getStartTime());
-                context.startService(intent);
-            }
+        holder.linear_lyric.setOnClickListener(view -> {
+            Intent intent = new Intent(context, MyService.class);
+            intent.putExtra("seek_to_position", (int) lyricLine.getStartTime());
+            context.startService(intent);
         });
     }
 
@@ -80,10 +91,12 @@ public class LyricsAdapter extends RecyclerView.Adapter<LyricsAdapter.LyricsView
 
     static class LyricsViewHolder extends RecyclerView.ViewHolder {
         TextView textViewContent;
+        LinearLayout linear_lyric;
 
         public LyricsViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewContent = itemView.findViewById(R.id.textViewContent);
+            linear_lyric = itemView.findViewById(R.id.linear_lyric);
         }
     }
 
@@ -93,10 +106,8 @@ public class LyricsAdapter extends RecyclerView.Adapter<LyricsAdapter.LyricsView
             LyricLine nextLine = lyricLines.get(position + 1);
             return currentPlaybackTime >= currentLine.getStartTime() && currentPlaybackTime < nextLine.getStartTime();
         } else {
-            // Trường hợp này xảy ra khi position là dòng lyric cuối cùng
             LyricLine currentLine = lyricLines.get(position);
             return currentPlaybackTime >= currentLine.getStartTime();
         }
     }
 }
-

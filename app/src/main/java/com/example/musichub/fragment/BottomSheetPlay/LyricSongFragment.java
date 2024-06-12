@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -49,7 +50,7 @@ public class LyricSongFragment extends Fragment {
     private int action;
     private GetUrlAudioHelper getUrlAudioHelper;
     private SharedPreferencesManager sharedPreferencesManager;
-
+    private MediaPlayer mediaPlayer;
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -112,6 +113,8 @@ public class LyricSongFragment extends Fragment {
 
         lyrics = new ArrayList<>();
 
+        mediaPlayer = new MediaPlayer();
+
         getDataSong(sharedPreferencesManager.restoreSongState());
 
     }
@@ -159,7 +162,6 @@ public class LyricSongFragment extends Fragment {
 
     private void updateLyricDisplay() {
         if (lyrics != null && !lyrics.isEmpty()) {
-
             int currentLineIndex = -1;
             for (int i = 0; i < lyrics.size(); i++) {
                 LyricLine currentLine = lyrics.get(i);
@@ -169,26 +171,36 @@ public class LyricSongFragment extends Fragment {
                     break;
                 }
             }
-            // Kiểm tra nếu có item trùng với currentTime
+
             if (currentLineIndex != -1) {
-                smoothScrollToPosition(currentLineIndex + 10); // Cuộn đến vị trí hiện tại cộng thêm 12 để tạo khoảng trống phía trên
+                smoothScrollToPosition(currentLineIndex + 10); // Cuộn đến vị trí hiện tại cộng thêm 10 để tạo khoảng trống phía trên
             }
 
             lyricsAdapter.updateLyricLines(lyrics);
             lyricsAdapter.setCurrentPlaybackTime(currentTime);
-
         }
     }
 
     private void smoothScrollToPosition(int position) {
+        final int currentPosition = ((LinearLayoutManager) recyclerViewLyrics.getLayoutManager()).findFirstVisibleItemPosition();
+        final int distance = Math.abs(position - currentPosition);
+
         LinearSmoothScroller smoothScroller = new LinearSmoothScroller(requireContext()) {
-            private static final float MILLISECONDS_PER_INCH = 500f; // Điều chỉnh tốc độ cuộn ở đây
+            private static final float MILLISECONDS_PER_INCH_NORMAL = 1000f; // Thời gian cuộn bình thường
+            private static final float MILLISECONDS_PER_INCH_FAST = 50f; // Thời gian cuộn nhanh khi khoảng cách xa
 
             @Override
             protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-                return MILLISECONDS_PER_INCH / displayMetrics.densityDpi;
+                if (distance > 15) { // Nếu khoảng cách quá xa
+                    return MILLISECONDS_PER_INCH_FAST / displayMetrics.densityDpi;
+                } else if (distance < 15) {
+                    return MILLISECONDS_PER_INCH_FAST / displayMetrics.densityDpi;
+                } else {
+                    return MILLISECONDS_PER_INCH_NORMAL / displayMetrics.densityDpi;
+                }
             }
         };
+
         smoothScroller.setTargetPosition(position);
         recyclerViewLyrics.getLayoutManager().startSmoothScroll(smoothScroller);
     }

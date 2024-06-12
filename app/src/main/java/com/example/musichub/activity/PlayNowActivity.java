@@ -320,9 +320,9 @@ public class PlayNowActivity extends AppCompatActivity {
                 btnPlay.setMinAndMaxProgress(0.5f, 1.0f); // pause >
                 btnPlay.playAnimation();
             } else {
-                sendActionToService(MyService.ACTION_RESUME);
                 btnPlay.setMinAndMaxProgress(0.0f, 0.5f); // play ||
                 btnPlay.playAnimation();
+                sendActionToService(MyService.ACTION_RESUME);
             }
         });
 
