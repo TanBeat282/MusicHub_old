@@ -7,8 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 public class SearchCategories extends Base {
-    public SearchCategories(String apiKey, String secretKey) {
-        super(apiKey, secretKey);
+    public SearchCategories() {
     }
 
     public Map<String, String> getResult(String q) throws Exception {

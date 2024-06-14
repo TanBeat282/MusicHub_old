@@ -126,7 +126,7 @@ public class SongFragment extends Fragment {
             @Override
             public void onServiceCreated(ApiService service) {
                 try {
-                    SongCategories songCategories = new SongCategories(null, null);
+                    SongCategories songCategories = new SongCategories();
                     Map<String, String> map = songCategories.getNewRelease("song");
 
                     retrofit2.Call<NewReleaseSong> call = service.NEW_RELEASE_SONG_CALL("song", map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));

@@ -153,7 +153,7 @@ public class SelectArtistAdapter extends RecyclerView.Adapter<SelectArtistAdapte
             @Override
             public void onServiceCreated(ApiService service) {
                 try {
-                    SongCategories songCategories = new SongCategories(null, null);
+                    SongCategories songCategories = new SongCategories();
                     Map<String, String> map = songCategories.getArtist(artistId);
 
                     Call<ResponseBody> call = service.ARTISTS_CALL(artistId, map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));

@@ -1,8 +1,10 @@
 package com.example.musichub.api;
 
+import com.example.musichub.constants.Constants;
 import com.example.musichub.helper.uliti.AddCookiesInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -36,6 +39,7 @@ public class ApiServiceFactory {
 
     public interface ApiServiceCallback {
         void onServiceCreated(ApiService service);
+
         void onError(Exception e);
     }
 
@@ -43,9 +47,8 @@ public class ApiServiceFactory {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
-                String cookie = getCookie();
                 OkHttpClient client = new OkHttpClient.Builder()
-                        .addInterceptor(new AddCookiesInterceptor(cookie))
+                        .addInterceptor(new AddCookiesInterceptor(getCookie()))
                         .build();
 
                 Gson gson = new GsonBuilder()

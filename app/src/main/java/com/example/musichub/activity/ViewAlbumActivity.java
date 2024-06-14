@@ -166,7 +166,7 @@ public class ViewAlbumActivity extends AppCompatActivity {
             @Override
             public void onServiceCreated(ApiService service) {
                 try {
-                    SongCategories songCategories = new SongCategories(null, null);
+                    SongCategories songCategories = new SongCategories();
                     Map<String, String> map = songCategories.getPlaylist(encodeId);
 
                     retrofit2.Call<Playlist> call = service.PLAYLIST_CALL(encodeId, map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));

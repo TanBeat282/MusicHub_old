@@ -35,6 +35,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -173,7 +174,7 @@ public class LyricSongFragment extends Fragment {
             }
 
             if (currentLineIndex != -1) {
-                smoothScrollToPosition(currentLineIndex + 10); // Cuộn đến vị trí hiện tại cộng thêm 10 để tạo khoảng trống phía trên
+                smoothScrollToPosition(currentLineIndex + 10);
             }
 
             lyricsAdapter.updateLyricLines(lyrics);
@@ -182,27 +183,17 @@ public class LyricSongFragment extends Fragment {
     }
 
     private void smoothScrollToPosition(int position) {
-        final int currentPosition = ((LinearLayoutManager) recyclerViewLyrics.getLayoutManager()).findFirstVisibleItemPosition();
-        final int distance = Math.abs(position - currentPosition);
-
         LinearSmoothScroller smoothScroller = new LinearSmoothScroller(requireContext()) {
-            private static final float MILLISECONDS_PER_INCH_NORMAL = 1000f; // Thời gian cuộn bình thường
-            private static final float MILLISECONDS_PER_INCH_FAST = 50f; // Thời gian cuộn nhanh khi khoảng cách xa
-
+            private static final float MILLISECONDS_PER_INCH_NORMAL = 1000f;
             @Override
             protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-                if (distance > 15) { // Nếu khoảng cách quá xa
-                    return MILLISECONDS_PER_INCH_FAST / displayMetrics.densityDpi;
-                } else if (distance < 15) {
-                    return MILLISECONDS_PER_INCH_FAST / displayMetrics.densityDpi;
-                } else {
-                    return MILLISECONDS_PER_INCH_NORMAL / displayMetrics.densityDpi;
-                }
+
+                return MILLISECONDS_PER_INCH_NORMAL / displayMetrics.densityDpi;
             }
         };
 
         smoothScroller.setTargetPosition(position);
-        recyclerViewLyrics.getLayoutManager().startSmoothScroll(smoothScroller);
+        Objects.requireNonNull(recyclerViewLyrics.getLayoutManager()).startSmoothScroll(smoothScroller);
     }
 
 

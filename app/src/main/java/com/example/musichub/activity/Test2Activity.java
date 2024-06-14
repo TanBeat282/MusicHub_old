@@ -18,9 +18,6 @@ public class Test2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test2);
-        SongCategories songCategories = new SongCategories(null, null);
-        VideoCategories videoCategories = new VideoCategories(null, null);
-        SearchCategories searchCategories = new SearchCategories(null, null);
 
 
         Button button = findViewById(R.id.btn);

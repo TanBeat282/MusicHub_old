@@ -225,6 +225,7 @@ public class PlayNowActivity extends AppCompatActivity {
     }
 
     private void configView() {
+
         playerSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -247,39 +248,57 @@ public class PlayNowActivity extends AppCompatActivity {
 
         });
 
+        // Đặt trạng thái ban đầu của layout
+        layoutPlayer.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
+        linear_tabLayout.setVisibility(View.VISIBLE);
+
         bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @SuppressLint("SwitchIntDef")
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
                     case BottomSheetBehavior.STATE_HIDDEN:
+                        layoutPlayer.setVisibility(View.GONE);
+                        tabLayout.setVisibility(View.GONE);
+                        viewPager.setVisibility(View.GONE);
+                        linear_tabLayout.setVisibility(View.VISIBLE);
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
                         layoutPlayer.setVisibility(View.VISIBLE);
-
                         tabLayout.setVisibility(View.VISIBLE);
                         viewPager.setVisibility(View.VISIBLE);
                         linear_tabLayout.setVisibility(View.GONE);
+                        createTabLayout();
                         setDataSongBottomSheet();
                         break;
                     case BottomSheetBehavior.STATE_COLLAPSED:
                         layoutPlayer.setVisibility(View.GONE);
-
                         tabLayout.setVisibility(View.GONE);
                         viewPager.setVisibility(View.GONE);
                         linear_tabLayout.setVisibility(View.VISIBLE);
+                        break;
+                    default:
+                        // Xử lý các trạng thái khác nếu cần thiết
                         break;
                 }
             }
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                // Đây bạn có thể thực hiện các tương tác khác dựa trên slideOffset nếu cần
+                // Bạn có thể thực hiện các tương tác khác dựa trên slideOffset nếu cần
             }
         });
 
+        createTabLayout();
+        setRepeatButtonState();
+
+    }
+
+    private void createTabLayout() {
         int selectedColor = ContextCompat.getColor(this, R.color.white);
-        int unselectedColor = ContextCompat.getColor(this, R.color.colorSecondaryText1);
+        int unselectedColor = ContextCompat.getColor(this, R.color.colorSecondaryText);
         tabLayout.setTabTextColors(unselectedColor, selectedColor);
         tabLayout.setSelectedTabIndicatorColor(selectedColor);
 
@@ -300,8 +319,6 @@ public class PlayNowActivity extends AppCompatActivity {
                 }
         ).attach();
         viewPager.setCurrentItem(1);
-
-        setRepeatButtonState();
     }
 
     @SuppressLint("SetTextI18n")
@@ -538,6 +555,8 @@ public class PlayNowActivity extends AppCompatActivity {
             switch (position) {
                 case 0:
                     return new ContinueSongFragment();
+                case 1:
+                    return new LyricSongFragment();
                 case 2:
                     return new RelatedSongFragment();
                 default:
@@ -563,7 +582,7 @@ public class PlayNowActivity extends AppCompatActivity {
             @Override
             public void onServiceCreated(ApiService service) {
                 try {
-                    SongCategories songCategories = new SongCategories(null, null);
+                    SongCategories songCategories = new SongCategories();
                     Map<String, String> map = songCategories.getDetail(encodeId);
 
                     retrofit2.Call<SongDetail> call = service.SONG_DETAIL_CALL(encodeId, map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));

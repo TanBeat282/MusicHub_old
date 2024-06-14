@@ -7,8 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 public class ChartCategories extends Base {
-    public ChartCategories(String apiKey, String secretKey) {
-        super(apiKey, secretKey);
+    public ChartCategories() {
     }
 
     // home

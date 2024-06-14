@@ -7,8 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 public class HomeCategories extends Base {
-    public HomeCategories(String apiKey, String secretKey) {
-        super(apiKey, secretKey);
+    public HomeCategories() {
     }
 
     // home

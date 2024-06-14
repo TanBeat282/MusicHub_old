@@ -26,6 +26,7 @@ import com.example.musichub.activity.BXHNewSongActivity;
 import com.example.musichub.activity.NewReleaseSongActivity;
 import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.activity.ViewAllSongActivity;
+import com.example.musichub.activity.ViewArtistActivity;
 import com.example.musichub.bottomsheet.BottomSheetOptionSong;
 import com.example.musichub.helper.ui.PlayingStatusUpdater;
 import com.example.musichub.model.chart.chart_home.Items;
@@ -166,13 +167,13 @@ public class SongMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //
 //                    context.startActivity(intent);
                 } else if (typeOnClicked == 3) {
-                    Intent intent = new Intent(context, ViewAllSongActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("song_arraylist", songList);
-                    bundle.putString("name_artist", "name");
-                    intent.putExtras(bundle);
-
-                    context.startActivity(intent);
+//                    Intent intent = new Intent(context, ViewAllSongActivity.class);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("id", id);
+//                    bundle.putString("sectionId", sectionArtistSong.getSectionId());
+//                    intent.putExtras(bundle);
+//
+//                    context.startActivity(intent);
                 } else {
                     Intent intent = new Intent(context, NewReleaseSongActivity.class);
                     context.startActivity(intent);

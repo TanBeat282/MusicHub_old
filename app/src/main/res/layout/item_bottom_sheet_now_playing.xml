@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
     android:orientation="vertical"
-    app:behavior_peekHeight="75dp"
+    app:behavior_peekHeight="@dimen/_50sdp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <include
@@ -29,11 +30,11 @@
 
         <com.google.android.material.card.MaterialCardView
             style="@style/Widget.Material3.CardView.Filled"
-            android:layout_width="50dp"
-            android:layout_height="4dp"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_3sdp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"
-            app:cardBackgroundColor="@color/colorStroke">
+            android:layout_marginTop="@dimen/_10sdp"
+            app:cardBackgroundColor="@color/colorSecondaryText">
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -41,7 +42,7 @@
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/_5sdp"
             android:background="@color/black"
             android:visibility="gone"
             app:tabGravity="fill"
@@ -53,7 +54,7 @@
             android:id="@+id/linear_tablayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/_20sdp"
             android:orientation="horizontal"
             android:visibility="visible">
 
@@ -66,10 +67,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
                     android:text="TIẾP THEO"
-                    android:fontFamily="@font/roboto"
-                    android:textColor="@color/colorSecondaryText1"
-                    android:textSize="14sp" />
+                    android:textColor="@color/colorSecondaryText"
+                    android:textSize="@dimen/_11ssp"
+                    tools:ignore="HardcodedText" />
 
             </LinearLayout>
 
@@ -82,10 +84,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
                     android:text="LỜI NHẠC"
-                    android:fontFamily="@font/roboto"
                     android:textColor="@color/white"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/_11ssp"
+                    tools:ignore="HardcodedText" />
 
             </LinearLayout>
 
@@ -98,10 +101,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="LIÊN QUAN"
-                    android:textColor="@color/colorSecondaryText1"
                     android:fontFamily="@font/roboto"
-                    android:textSize="14sp" />
+                    android:text="LIÊN QUAN"
+                    android:textColor="@color/colorSecondaryText"
+                    android:textSize="@dimen/_11ssp"
+                    tools:ignore="HardcodedText" />
 
             </LinearLayout>
         </LinearLayout>
@@ -110,7 +114,9 @@
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/tabLayout" />
+            android:layout_below="@id/tabLayout"
+            android:layout_marginTop="@dimen/_10sdp"
+            tools:ignore="ObsoleteLayoutParam" />
     </LinearLayout>
 
 </LinearLayout>

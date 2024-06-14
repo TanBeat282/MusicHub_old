@@ -136,7 +136,7 @@ public class SearchActivity extends AppCompatActivity {
                 @Override
                 public void onServiceCreated(ApiService service) {
                     try {
-                        SearchCategories searchCategories = new SearchCategories(null, null);
+                        SearchCategories searchCategories = new SearchCategories();
                         Map<String, String> map = searchCategories.getResult(textSearch);
 
                         retrofit2.Call<Search> call = service.SEARCH_CALL(textSearch, map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
@@ -194,7 +194,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onServiceCreated(ApiService service) {
                 try {
-                    SearchCategories searchCategories = new SearchCategories(null, null);
+                    SearchCategories searchCategories = new SearchCategories();
                     Map<String, String> map = searchCategories.getResultByType("jack", 3, 1);
 
                     retrofit2.Call<Search> call = service.SEARCH_TYPE_CALL(map.get("q"), map.get("type"), map.get("count"), map.get("page"), map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));

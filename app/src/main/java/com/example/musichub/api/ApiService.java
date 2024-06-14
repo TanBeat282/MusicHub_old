@@ -15,6 +15,7 @@ import com.example.musichub.model.search.Search;
 import com.example.musichub.model.song.Lyric;
 import com.example.musichub.model.song.SongAudio;
 import com.example.musichub.model.song.SongDetail;
+import com.example.musichub.model.song_of_artist.SongOfArtist;
 import com.example.musichub.model.user_active_radio.UserActiveRadio;
 
 import okhttp3.ResponseBody;
@@ -34,6 +35,7 @@ public interface ApiService {
     String pathDetailSong = "/api/v2/song/get/info?";
     String pathAudioSong = "/api/v2/song/get/streaming?";
     String pathArtist = "/api/v2/page/get/artist?";
+    String pathSongListOfArtist = "/api/v2/song/get/list?";
     String pathPlaylist = "/api/v2/page/get/playlist?";
     String pathAlbum = "/api/v2/page/get/album?";
     String pathLyric = "/api/v2/lyric/get/lyric?";
@@ -46,6 +48,7 @@ public interface ApiService {
 
     //radio
     String pathUserActiveRadio = "/api/v2/livestream/get/active-user?";
+    String pathInfoRadio = "/api/v2/livestream/get/info?";
 
     //hub
     String pathHub = "/api/v2/page/get/hub-detail?";
@@ -138,6 +141,18 @@ public interface ApiService {
                                     @Query("version") String version,
                                     @Query("apiKey") String apiKey);
 
+    @GET(pathSongListOfArtist)
+    Call<SongOfArtist> SONG_LIST_OF_ARTIST_CALL(@Query("id") String id,
+                                                @Query("type") String type,
+                                                @Query("page") String page,
+                                                @Query("count") String count,
+                                                @Query("sort") String sort,
+                                                @Query("sectionId") String sectionId,
+                                                @Query("sig") String sig,
+                                                @Query("ctime") String ctime,
+                                                @Query("version") String version,
+                                                @Query("apiKey") String apiKey);
+
     @GET(pathPlaylist)
     Call<Playlist> PLAYLIST_CALL(@Query("id") String id,
                                  @Query("sig") String sig,
@@ -183,12 +198,21 @@ public interface ApiService {
                                                  @Query("version") String version,
                                                  @Query("apiKey") String apiKey);
 
+    @GET(pathInfoRadio)
+    Call<ResponseBody> INFO_RADIO_CALL(@Query("id") String id,
+                                       @Query("sig") String sig,
+                                       @Query("ctime") String ctime,
+                                       @Query("version") String version,
+                                       @Query("apiKey") String apiKey);
+
+
     @GET(pathHub)
     Call<ResponseBody> HUB_DETAIL_CALL(@Query("id") String id,
-                              @Query("sig") String sig,
-                              @Query("ctime") String ctime,
-                              @Query("version") String version,
-                              @Query("apiKey") String apiKey);
+                                       @Query("sig") String sig,
+                                       @Query("ctime") String ctime,
+                                       @Query("version") String version,
+                                       @Query("apiKey") String apiKey);
+
     // Method để thiết lập cookie
     void setCookie(String cookie);
 }

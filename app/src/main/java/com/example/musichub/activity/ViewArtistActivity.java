@@ -102,7 +102,7 @@ public class ViewArtistActivity extends AppCompatActivity {
     private TextView txt_date_birth;
     private TextView txt_country;
     private TextView txt_genre;
-    private String name;
+    private String name, id;
 
 
     //noi bat
@@ -320,8 +320,8 @@ public class ViewArtistActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ViewArtistActivity.this, ViewAllSongActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("song_arraylist", itemsArrayListNoiBat);
-                bundle.putString("name_artist", name);
+                bundle.putString("id", id);
+                bundle.putString("sectionId", sectionArtistSong.getSectionId());
                 intent.putExtras(bundle);
 
                 startActivity(intent);
@@ -361,7 +361,7 @@ public class ViewArtistActivity extends AppCompatActivity {
             @Override
             public void onServiceCreated(ApiService service) {
                 try {
-                    SongCategories songCategories = new SongCategories(null, null);
+                    SongCategories songCategories = new SongCategories();
                     Map<String, String> map = songCategories.getArtist(artistId);
 
                     Call<ResponseBody> call = service.ARTISTS_CALL(artistId, map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
@@ -378,6 +378,7 @@ public class ViewArtistActivity extends AppCompatActivity {
 
                                     if (jsonObject.getInt("err") == 0) {
                                         JSONObject data = jsonObject.getJSONObject("data");
+                                        id = data.getString("id");
                                         name = data.getString("name");
                                         int totalFollow = data.getInt("totalFollow");
                                         String thumbnailM = data.getString("thumbnailM");
@@ -534,7 +535,7 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                 }
 
                                                 //single
-                                                if (sectionArtistPlaylistSingle != null && sectionArtistPlaylistSingle.getItems() != null  && !sectionArtistPlaylistSingle.getItems().isEmpty()) {
+                                                if (sectionArtistPlaylistSingle != null && sectionArtistPlaylistSingle.getItems() != null && !sectionArtistPlaylistSingle.getItems().isEmpty()) {
                                                     relative_single.setVisibility(View.VISIBLE);
                                                     singleAdapter.setFilterList(sectionArtistPlaylistSingle.getItems());
                                                 } else {
@@ -565,7 +566,6 @@ public class ViewArtistActivity extends AppCompatActivity {
                                                 } else {
                                                     relative_other_single.setVisibility(View.GONE);
                                                 }
-
 
 
                                                 CharSequence styledText = Html.fromHtml(biography);

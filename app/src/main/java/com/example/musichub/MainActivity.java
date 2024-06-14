@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onServiceCreated(ApiService service) {
                 try {
-                    ChartCategories chartCategories = new ChartCategories(null, null);
+                    ChartCategories chartCategories = new ChartCategories();
                     Map<String, String> map = chartCategories.getHome(1, 30);
 
                     retrofit2.Call<ResponseBody> call = service.HOME_CALL(map.get("page"), map.get("count"), map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
@@ -378,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onServiceCreated(ApiService service) {
                 try {
-                    HubCategories hubCategories = new HubCategories(null, null);
+                    HubCategories hubCategories = new HubCategories();
                     Map<String, String> map = hubCategories.getHub("IWZ9Z0BO");
 
                     retrofit2.Call<ResponseBody> call = service.HUB_DETAIL_CALL(map.get("id"), map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
@@ -689,7 +689,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onServiceCreated(ApiService service) {
                 try {
-                    RadioCategories radioCategories = new RadioCategories(null, null);
+                    RadioCategories radioCategories = new RadioCategories();
                     StringBuilder idsBuilder = new StringBuilder();
                     for (int i = 0; i < homeDataItemRadioItemArrayList.size(); i++) {
                         HomeDataItemRadioItem item = homeDataItemRadioItemArrayList.get(i);

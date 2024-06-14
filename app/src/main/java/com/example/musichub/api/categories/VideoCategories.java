@@ -5,8 +5,7 @@ import com.example.musichub.api.base.Base;
 import java.util.Map;
 
 public class VideoCategories extends Base {
-    public VideoCategories(String apiKey, String secretKey) {
-        super(apiKey, secretKey);
+    public VideoCategories() {
     }
 
     public Map<String, String> getRelatedVideos(String videoId) throws Exception {

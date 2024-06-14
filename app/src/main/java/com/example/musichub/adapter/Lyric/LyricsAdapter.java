@@ -25,6 +25,7 @@ public class LyricsAdapter extends RecyclerView.Adapter<LyricsAdapter.LyricsView
     private final Context context;
     private List<LyricLine> lyricLines;
     private long currentPlaybackTime;
+    private static final int EXTRA_ITEMS_COUNT = 10;
 
     public LyricsAdapter(Context context, List<LyricLine> lyricLines) {
         this.context = context;

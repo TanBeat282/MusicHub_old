@@ -125,7 +125,7 @@ public class KpopFragment extends Fragment {
             @Override
             public void onServiceCreated(ApiService service) {
                 try {
-                    ChartCategories chartCategories = new ChartCategories(null, null);
+                    ChartCategories chartCategories = new ChartCategories();
                     Map<String, String> map = chartCategories.getWeekChart(encodeId);
 
                     retrofit2.Call<WeekChart> call = service.WEEK_CHART_CALL(encodeId, week, year, map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));

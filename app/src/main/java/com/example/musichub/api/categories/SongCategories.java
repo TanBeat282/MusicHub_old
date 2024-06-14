@@ -7,8 +7,7 @@ import java.util.Map;
 
 public class SongCategories extends Base {
 
-    public SongCategories(String apiKey, String secretKey) {
-        super(apiKey, secretKey);
+    public SongCategories() {
     }
 
     public Map<String, String> getAudio(String songId) throws Exception {

@@ -15,7 +15,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class GetUrlAudioHelper {
-    private SongCategories songCategories = new SongCategories(null, null);
+    private SongCategories songCategories = new SongCategories();
 
     public interface SongAudioCallback {
         void onSuccess(SongAudio songAudio);

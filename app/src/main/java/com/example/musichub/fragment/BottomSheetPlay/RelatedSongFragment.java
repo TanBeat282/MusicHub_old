@@ -43,7 +43,7 @@ public class RelatedSongFragment extends Fragment {
     private GetUrlAudioHelper getUrlAudioHelper;
     private Items song;
     private SharedPreferencesManager sharedPreferencesManager;
-    private SongCategories songCategories = new SongCategories(null, null);
+    private SongCategories songCategories = new SongCategories();
 
     private ArrayList<Sentences> sentences;
 

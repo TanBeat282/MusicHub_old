@@ -9,7 +9,7 @@
     tools:context=".activity.ViewAllSongActivity">
 
 
-    <androidx.core.widget.NestedScrollView
+    <RelativeLayout
         android:id="@+id/nested_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -53,7 +53,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="Mới nhất"
+                        android:text="Nghe nhiều"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
 
@@ -98,7 +98,7 @@
         </RelativeLayout>
 
 
-    </androidx.core.widget.NestedScrollView>
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/relative_header"

@@ -55,7 +55,7 @@
                     android:gravity="center"
                     android:text="Now Playing"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_12ssp"
+                    android:textSize="@dimen/_10ssp"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -73,17 +73,16 @@
         <RelativeLayout
             android:id="@+id/linear_image"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_200sdp"
+            android:layout_height="@dimen/_280sdp"
             android:layout_above="@id/linear_info"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_marginBottom="@dimen/_20sdp"
             android:gravity="center">
 
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/imageAlbumArt"
-                android:layout_width="@dimen/_200sdp"
-                android:layout_height="@dimen/_200sdp"
+                android:layout_width="@dimen/_280sdp"
+                android:layout_height="@dimen/_280sdp"
                 android:scaleType="centerCrop"
                 android:src="@color/white"
                 android:visibility="visible"
@@ -98,9 +97,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_200sdp"
+            android:layout_height="@dimen/_280sdp"
             android:layout_above="@id/linear_info"
-            android:layout_marginBottom="@dimen/_20sdp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -171,20 +169,6 @@
 
             </LinearLayout>
 
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/cbFavorite"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:layout_weight="5"
-                android:button="@drawable/selector_favorite_check_box"
-                android:clickable="true"
-                android:focusable="true"
-                app:buttonIconTint="@color/red"
-                app:buttonTint="@color/white">
-
-            </com.google.android.material.checkbox.MaterialCheckBox>
         </LinearLayout>
 
         <LinearLayout
@@ -192,7 +176,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/_30sdp"
             android:layout_above="@+id/linear_controller"
-            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -209,7 +193,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_4sdp"
                     android:src="@drawable/ic_view" />
 
                 <TextView
@@ -233,7 +217,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_4sdp"
                     android:src="@drawable/ic_like" />
 
                 <TextView
@@ -259,7 +243,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_4sdp"
                     android:src="@drawable/ic_comment" />
 
                 <TextView
@@ -287,7 +271,7 @@
                     android:id="@+id/img_download_audio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_4sdp"
                     android:src="@drawable/ic_download" />
 
                 <TextView
@@ -308,7 +292,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginHorizontal="@dimen/_10sdp"
-            android:layout_marginBottom="@dimen/_10sdp"
             android:orientation="vertical">
 
             <FrameLayout
@@ -332,7 +315,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_2sdp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -368,7 +351,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginBottom="@dimen/_20sdp">
 
                 <com.airbnb.lottie.LottieAnimationView

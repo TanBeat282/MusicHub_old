@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
+import com.example.musichub.activity.PlayRadioActivity;
 import com.example.musichub.activity.ViewAllArtistActivity;
 import com.example.musichub.activity.ViewArtistActivity;
 import com.example.musichub.helper.ui.Helper;
@@ -85,12 +86,12 @@ public class RadioMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             artistViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    Intent intent = new Intent(context, ViewArtistActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("artist", artist);
-//                    intent.putExtras(bundle);
-//
-//                    context.startActivity(intent);
+                    Intent intent = new Intent(context, PlayRadioActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("radio_endCodeID", homeDataItemRadioItem.getEncodeId());
+                    intent.putExtras(bundle);
+
+                    context.startActivity(intent);
                 }
             });
         } else {

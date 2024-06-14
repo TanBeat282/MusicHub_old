@@ -153,7 +153,7 @@ public class BXHNewSongActivity extends AppCompatActivity {
             @Override
             public void onServiceCreated(ApiService service) {
                 try {
-                    ChartCategories chartCategories = new ChartCategories(null, null);
+                    ChartCategories chartCategories = new ChartCategories();
                     Map<String, String> map = chartCategories.getNewReleaseChart();
 
                     retrofit2.Call<NewRelease> call = service.CHART_NEW_RELEASE_CALL(map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));

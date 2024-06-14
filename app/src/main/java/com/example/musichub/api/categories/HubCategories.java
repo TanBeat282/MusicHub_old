@@ -7,8 +7,7 @@ import java.util.Map;
 
 public class HubCategories extends Base {
 
-    public HubCategories(String apiKey, String secretKey) {
-        super(apiKey, secretKey);
+    public HubCategories() {
     }
 
     public Map<String, String> getHub(String id) throws Exception {
