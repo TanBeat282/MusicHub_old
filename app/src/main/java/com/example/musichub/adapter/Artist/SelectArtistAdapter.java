@@ -18,7 +18,7 @@ import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.activity.ViewArtistActivity;
 import com.example.musichub.api.ApiService;
-import com.example.musichub.api.ApiServiceFactory;
+import com.example.musichub.api.service.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.model.chart.chart_home.Artists;

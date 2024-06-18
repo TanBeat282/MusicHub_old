@@ -62,12 +62,14 @@
 
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/layoutPlayerBottom"
         android:layout_below="@+id/action_bar"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -114,13 +116,18 @@
                             android:textColor="@color/white"
                             android:textSize="20sp" />
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="10dp"
-                            android:rotation="-180"
-                            android:src="@drawable/ic_back" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:rotation="-180"
+                                android:src="@drawable/ic_back" />
+                        </LinearLayout>
                     </LinearLayout>
 
                     <LinearLayout
@@ -205,6 +212,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/linear_playlist_1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -217,36 +225,31 @@
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/txt_title_playlist_1"
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_bold"
-                        android:textColor="@color/white"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                        android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/txt_title_playlist_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12sp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/background_phat_tat_ca"
-                        android:fontFamily="@font/roboto"
-                        android:padding="6dp"
-                        android:text="Xem tất cả"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:rotation="-180"
+                                android:src="@drawable/ic_back" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -265,6 +268,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/linear_playlist_2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -274,40 +278,34 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto"
-                        android:text="ĐỀ XUẤT"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/txt_title_playlist_2"
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_bold"
-                        android:textColor="@color/white"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                        android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/txt_title_playlist_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12sp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/background_phat_tat_ca"
-                        android:fontFamily="@font/roboto"
-                        android:padding="6dp"
-                        android:text="Xem tất cả"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:rotation="-180"
+                                android:src="@drawable/ic_back" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -326,6 +324,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/linear_playlist_3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -335,40 +334,34 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto"
-                        android:text="ĐỀ XUẤT"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/txt_title_playlist_3"
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_bold"
-                        android:textColor="@color/white"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                        android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/txt_title_playlist_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12sp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/background_phat_tat_ca"
-                        android:fontFamily="@font/roboto"
-                        android:padding="6dp"
-                        android:text="Xem tất cả"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:rotation="-180"
+                                android:src="@drawable/ic_back" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -414,13 +407,18 @@
                             android:textColor="@color/white"
                             android:textSize="20sp" />
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="10dp"
-                            android:rotation="-180"
-                            android:src="@drawable/ic_back" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:rotation="-180"
+                                android:src="@drawable/ic_back" />
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -441,6 +439,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/linear_chart_home"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -466,13 +465,18 @@
                             android:textColor="@color/white"
                             android:textSize="20sp" />
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="10dp"
-                            android:rotation="-180"
-                            android:src="@drawable/ic_back" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:rotation="-180"
+                                android:src="@drawable/ic_back" />
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -516,6 +520,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/linear_top100"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -525,41 +530,34 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto"
-                        android:text="ĐỀ XUẤT"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/txt_title_top100"
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_bold"
-                        android:text="Top 100"
-                        android:textColor="@color/white"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                        android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/txt_title_top100"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12sp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/background_phat_tat_ca"
-                        android:fontFamily="@font/roboto"
-                        android:padding="6dp"
-                        android:text="Xem tất cả"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:rotation="-180"
+                                android:src="@drawable/ic_back" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -579,6 +577,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/linear_album"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -588,40 +587,34 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto"
-                        android:text="ĐỀ XUẤT"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/txt_title_album"
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_bold"
-                        android:textColor="@color/white"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                        android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/txt_title_album"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12sp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/background_phat_tat_ca"
-                        android:fontFamily="@font/roboto"
-                        android:padding="6dp"
-                        android:text="Xem tất cả"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:rotation="-180"
+                                android:src="@drawable/ic_back" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -641,6 +634,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/linear_radio"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -650,40 +644,34 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto"
-                        android:text="ĐỀ XUẤT"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/txt_title_radio"
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_bold"
-                        android:textColor="@color/white"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                        android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/txt_title_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12sp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/background_phat_tat_ca"
-                        android:fontFamily="@font/roboto"
-                        android:padding="6dp"
-                        android:text="Xem tất cả"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:rotation="-180"
+                                android:src="@drawable/ic_back" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -700,6 +688,22 @@
 
     </androidx.core.widget.NestedScrollView>
 
+    <RelativeLayout
+        android:id="@+id/relative_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        android:layout_above="@id/layoutPlayerBottom"
+        android:layout_below="@id/action_bar">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:indeterminateTint="@android:color/white"
+            android:progressTint="@android:color/white" />
+    </RelativeLayout>
 
     <include
         android:id="@+id/layoutPlayerBottom"

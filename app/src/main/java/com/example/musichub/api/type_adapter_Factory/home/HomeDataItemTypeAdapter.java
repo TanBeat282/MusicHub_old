@@ -1,4 +1,4 @@
-package com.example.musichub.helper.uliti;
+package com.example.musichub.api.type_adapter_Factory.home;
 
 import com.example.musichub.model.chart.home.home_new.ad_banner.HomeDataItemAdBanner;
 import com.example.musichub.model.chart.home.home_new.album.HomeDataItemPlaylistAlbum;

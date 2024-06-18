@@ -24,7 +24,7 @@ import android.widget.TextView;
 import com.example.musichub.R;
 import com.example.musichub.adapter.bxh_song.BXHSongAdapter;
 import com.example.musichub.api.ApiService;
-import com.example.musichub.api.ApiServiceFactory;
+import com.example.musichub.api.service.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.ui.MusicHelper;

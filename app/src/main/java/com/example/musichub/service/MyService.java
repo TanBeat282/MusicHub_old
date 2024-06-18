@@ -35,6 +35,7 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 
 import com.example.musichub.activity.PlayNowActivity;
+import com.example.musichub.constants.Constants;
 import com.example.musichub.helper.uliti.GetUrlAudioHelper;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.song.SongAudio;
@@ -64,7 +65,6 @@ public class MyService extends Service {
     private final Handler stopServiceHandler = new Handler();
     private final Handler autoNextSongHandler = new Handler();
     private final GetUrlAudioHelper getUrlAudioHelper = new GetUrlAudioHelper();
-    private final String urlImageDefault = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/3/2/a/3/32a35f4d26ee56366397c09953f6c269.jpg";
 
     @Override
     public void onCreate() {
@@ -144,6 +144,7 @@ public class MyService extends Service {
         getUrlAudioHelper.getSongAudio(song.getEncodeId(), new GetUrlAudioHelper.SongAudioCallback() {
             @Override
             public void onSuccess(SongAudio songAudio) {
+
                 if (mediaPlayer == null) {
                     mediaPlayer = new MediaPlayer();
 
@@ -157,7 +158,7 @@ public class MyService extends Service {
                 if (sharedPreferencesManager.restoreIsRepeatOneState()) {
                     try {
                         mediaPlayer.reset();
-                        mediaPlayer.setDataSource(songAudio.getData().getLow());
+                        mediaPlayer.setDataSource(sharedPreferencesManager.restoreQualityAudioState() == 1 ? songAudio.getData().getHigh() : sharedPreferencesManager.restoreQualityAudioState() == 2 ? songAudio.getData().getLossless() : songAudio.getData().getLow());
                         mediaPlayer.prepareAsync();
                         mediaPlayer.setOnPreparedListener(mp -> {
 
@@ -399,7 +400,7 @@ public class MyService extends Service {
     }
 
     private void getColor(String urlImage) {
-        if (urlImage.equals(urlImageDefault)) {
+        if (urlImage.equals(Constants.URL_IMAGE_DEFAULT)) {
             int blackColor = ContextCompat.getColor(this, R.color.black);
             int grayColor = ContextCompat.getColor(this, R.color.colorPrimaryText);
             sharedPreferencesManager.saveColorBackgroundState(blackColor, grayColor);

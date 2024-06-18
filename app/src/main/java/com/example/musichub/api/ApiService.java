@@ -1,17 +1,13 @@
 package com.example.musichub.api;
 
-import com.example.musichub.model.Album.Album;
-import com.example.musichub.model.artist.ArtistDetail;
 import com.example.musichub.model.chart.chart_home.ChartHome;
-import com.example.musichub.model.chart.chart_home.ItemWeekChart;
 import com.example.musichub.model.chart.new_release.NewRelease;
 import com.example.musichub.model.chart.top100.Top100;
 import com.example.musichub.model.chart.weekchart.WeekChart;
-import com.example.musichub.model.hub.Hub;
 import com.example.musichub.model.new_release.NewReleaseAlbum;
 import com.example.musichub.model.new_release.NewReleaseSong;
 import com.example.musichub.model.playlist.Playlist;
-import com.example.musichub.model.search.Search;
+import com.example.musichub.model.search.search_suggestion.SearchSuggestions;
 import com.example.musichub.model.song.Lyric;
 import com.example.musichub.model.song.SongAudio;
 import com.example.musichub.model.song.SongDetail;
@@ -43,6 +39,7 @@ public interface ApiService {
     //search
     String pathSearch = "/api/v2/search/multi?";
     String pathSearchType = "/api/v2/search?";
+    String pathSearchSuggestion = "/v1/web/ac-suggestions?";
     String pathSearchRecommend = "/api/v2/app/get/recommend-keyword?";
 
 
@@ -168,28 +165,37 @@ public interface ApiService {
                                                             @Query("apiKey") String apiKey);
 
     @GET(pathSearch)
-    Call<Search> SEARCH_CALL(@Query("q") String q,
-                             @Query("sig") String sig,
-                             @Query("ctime") String ctime,
-                             @Query("version") String version,
-                             @Query("apiKey") String apiKey);
+    Call<SearchSuggestions> SEARCH_CALL(@Query("q") String q,
+                                        @Query("sig") String sig,
+                                        @Query("ctime") String ctime,
+                                        @Query("version") String version,
+                                        @Query("apiKey") String apiKey);
+
+    @GET(pathSearchSuggestion)
+    Call<ResponseBody> SEARCH_SUGGESTIONS_CALL(@Query("num") String num,
+                                               @Query("query") String query,
+                                               @Query("language") String language,
+                                               @Query("sig") String sig,
+                                               @Query("ctime") String ctime,
+                                               @Query("version") String version,
+                                               @Query("apiKey") String apiKey);
 
     @GET(pathSearchType)
-    Call<Search> SEARCH_TYPE_CALL(@Query("q") String q,
-                                  @Query("type") String type,
-                                  @Query("count") String count,
-                                  @Query("page") String page,
-                                  @Query("sig") String sig,
-                                  @Query("ctime") String ctime,
-                                  @Query("version") String version,
-                                  @Query("apiKey") String apiKey);
+    Call<SearchSuggestions> SEARCH_TYPE_CALL(@Query("q") String q,
+                                             @Query("type") String type,
+                                             @Query("count") String count,
+                                             @Query("page") String page,
+                                             @Query("sig") String sig,
+                                             @Query("ctime") String ctime,
+                                             @Query("version") String version,
+                                             @Query("apiKey") String apiKey);
 
     @GET(pathSearchRecommend)
-    Call<Search> SEARCH_RECOMMEND_CALL(@Query("q") String q,
-                                       @Query("sig") String sig,
-                                       @Query("ctime") String ctime,
-                                       @Query("version") String version,
-                                       @Query("apiKey") String apiKey);
+    Call<SearchSuggestions> SEARCH_RECOMMEND_CALL(@Query("q") String q,
+                                                  @Query("sig") String sig,
+                                                  @Query("ctime") String ctime,
+                                                  @Query("version") String version,
+                                                  @Query("apiKey") String apiKey);
 
     @GET(pathUserActiveRadio)
     Call<UserActiveRadio> USER_ACTIVE_RADIO_CALL(@Query("ids") String ids,

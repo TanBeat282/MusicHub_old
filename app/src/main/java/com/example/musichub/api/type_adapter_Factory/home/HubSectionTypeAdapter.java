@@ -1,4 +1,4 @@
-package com.example.musichub.helper.uliti;
+package com.example.musichub.api.type_adapter_Factory.home;
 
 import com.example.musichub.model.hub.HubSection;
 import com.example.musichub.model.hub.SectionHubPlaylist;

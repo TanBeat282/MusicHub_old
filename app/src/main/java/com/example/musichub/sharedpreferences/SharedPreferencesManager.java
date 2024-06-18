@@ -234,6 +234,20 @@ public class SharedPreferencesManager {
         return new int[]{sharedPreferences.getInt("color_background", 0), sharedPreferences.getInt("color_bottomsheet", 0)};
     }
 
+
+    // 0 low 1 high 2 lossless
+    public void saveQualityAudioState(int quality_audio) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("quality_audio", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("quality_audio", quality_audio).apply();
+    }
+
+    public int restoreQualityAudioState() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("quality_audio", Context.MODE_PRIVATE);
+        return sharedPreferences.getInt("quality_audio", 0);
+    }
+
+
     public void clearAll() {
         SharedPreferences musicPrefs = context.getSharedPreferences("music_prefs", Context.MODE_PRIVATE);
         SharedPreferences musicActionPrefs = context.getSharedPreferences("music_action", Context.MODE_PRIVATE);

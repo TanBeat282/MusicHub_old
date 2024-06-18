@@ -1,36 +1,37 @@
 <!-- item_song.xml -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="150dp"
+    android:layout_width="140dp"
     android:layout_height="210dp"
     android:layout_marginEnd="20dp">
 
     <RelativeLayout
         android:id="@+id/relative_img"
         android:layout_width="match_parent"
-        android:layout_height="150dp">
+        android:layout_height="140dp">
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/img_avatar"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             android:background="@drawable/background_radio_live"
             android:padding="3dp"
             app:riv_corner_radius="100dp" />
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/img_user"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
+           android:layout_margin="5dp"
             app:riv_corner_radius="100dp" />
 
     </RelativeLayout>
 
     <ImageView
         android:layout_width="50dp"
-        android:layout_height="130dp"
+        android:layout_height="150dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:src="@drawable/ic_live" />

@@ -8,11 +8,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +23,7 @@ import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.musichub.activity.BXHNewSongActivity;
+import com.example.musichub.activity.ChartHomeActivity;
 import com.example.musichub.activity.HistoryActivity;
 import com.example.musichub.activity.NewReleaseSongActivity;
 import com.example.musichub.activity.SearchActivity;
@@ -31,15 +34,15 @@ import com.example.musichub.adapter.Song.SongMoreAdapter;
 import com.example.musichub.adapter.week_chart.WeekChartSlideAdapter;
 import com.example.musichub.adapter.banner.BannerSlideAdapter;
 import com.example.musichub.api.ApiService;
-import com.example.musichub.api.ApiServiceFactory;
+import com.example.musichub.api.service.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
 import com.example.musichub.api.categories.HubCategories;
 import com.example.musichub.api.categories.RadioCategories;
 import com.example.musichub.bottomsheet.BottomSheetProfile;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.ui.MusicHelper;
-import com.example.musichub.helper.uliti.HomeDataItemTypeAdapter;
-import com.example.musichub.helper.uliti.HubSectionTypeAdapter;
+import com.example.musichub.api.type_adapter_Factory.home.HomeDataItemTypeAdapter;
+import com.example.musichub.api.type_adapter_Factory.home.HubSectionTypeAdapter;
 import com.example.musichub.model.Album.DataAlbum;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.chart.home.home_new.Home;
@@ -61,7 +64,6 @@ import com.example.musichub.model.chart.home.home_new.week_chart.HomeDataItemWee
 import com.example.musichub.model.hub.Hub;
 import com.example.musichub.model.hub.HubSection;
 import com.example.musichub.model.hub.SectionHubPlaylist;
-import com.example.musichub.model.hub.SectionHubSong;
 import com.example.musichub.model.playlist.DataPlaylist;
 import com.example.musichub.model.user_active_radio.DataUserActiveRadio;
 import com.example.musichub.model.user_active_radio.UserActiveRadio;
@@ -70,7 +72,6 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -90,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
     //view
     private ViewPager2 view_pager_banner;
     private final Handler bannerHandler = new Handler();
+
+    private NestedScrollView nested_scroll;
+    private RelativeLayout relative_loading;
 
 
     private LinearLayout btn_tat_ca, btn_viet_nam, btn_quoc_te;
@@ -112,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     // bxh nhac
+    private LinearLayout linear_chart_home;
     private RecyclerView rv_bang_xep_hang;
     private SongMoreAdapter bang_xep_hangAdapter;
     private ArrayList<Items> bang_xep_hangArrayList = new ArrayList<>();
@@ -180,8 +185,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        nested_scroll = findViewById(R.id.nested_scroll);
+        relative_loading = findViewById(R.id.relative_loading);
         rv_new_release_song = findViewById(R.id.rv_new_release_song);
         rv_bxh_new_release_song = findViewById(R.id.rv_bxh_new_release_song);
+
+        linear_chart_home = findViewById(R.id.linear_chart_home);
         rv_bang_xep_hang = findViewById(R.id.rv_bang_xep_hang);
 
         view_pager_week_chart = findViewById(R.id.view_pager_week_chart);
@@ -306,6 +315,13 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, BXHNewSongActivity.class);
             startActivity(intent);
         });
+        linear_chart_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ChartHomeActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //btn nhac moi phat hanh
         btn_viet_nam.setOnClickListener(view -> checkCategoriesNewReleaseSong(1));
@@ -345,6 +361,8 @@ public class MainActivity extends AppCompatActivity {
                                             getWeekChart();
                                             getPlaylist();
                                             getRadioLive();
+                                            relative_loading.setVisibility(View.GONE);
+                                            nested_scroll.setVisibility(View.VISIBLE);
                                         });
                                     }
 

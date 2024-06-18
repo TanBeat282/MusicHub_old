@@ -1,6 +1,6 @@
-package com.example.musichub.api;
+package com.example.musichub.api.service;
 
-import com.example.musichub.constants.Constants;
+import com.example.musichub.api.ApiService;
 import com.example.musichub.helper.uliti.AddCookiesInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

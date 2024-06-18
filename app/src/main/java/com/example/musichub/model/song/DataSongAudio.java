@@ -8,6 +8,8 @@ public class DataSongAudio {
     private String low;
     @SerializedName("320")
     private String high;
+    @SerializedName("lossless")
+    private String lossless;
 
     public String getLow() {
         return low;
@@ -23,5 +25,13 @@ public class DataSongAudio {
 
     public void setHigh(String high) {
         this.high = high;
+    }
+
+    public String getLossless() {
+        return lossless;
+    }
+
+    public void setLossless(String lossless) {
+        this.lossless = lossless;
     }
 }

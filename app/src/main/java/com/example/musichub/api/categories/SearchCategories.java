@@ -69,4 +69,15 @@ public class SearchCategories extends Base {
             throw error;
         }
     }
+
+    public Map<String, String> getSuggestion() throws NoSuchAlgorithmException, IOException, Exception {
+        try {
+            String sig = createNoIdSig("/v1/web/ac-suggestions");
+            Map<String, String> params = createRequest();
+            params.put("sig", sig);
+            return params;
+        } catch (Exception error) {
+            throw error;
+        }
+    }
 }

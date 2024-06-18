@@ -20,7 +20,7 @@ import android.view.ViewGroup;
 import com.example.musichub.R;
 import com.example.musichub.adapter.Lyric.SentencesAdapter;
 import com.example.musichub.api.ApiService;
-import com.example.musichub.api.ApiServiceFactory;
+import com.example.musichub.api.service.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.helper.uliti.GetUrlAudioHelper;
 import com.example.musichub.model.chart.chart_home.Items;

@@ -27,7 +27,7 @@ import com.example.musichub.adapter.Playlist.PlaylistAdapter;
 import com.example.musichub.adapter.Single.SingleAdapter;
 import com.example.musichub.adapter.Song.SongMoreAdapter;
 import com.example.musichub.api.ApiService;
-import com.example.musichub.api.ApiServiceFactory;
+import com.example.musichub.api.service.ApiServiceFactory;
 import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.ui.MusicHelper;
