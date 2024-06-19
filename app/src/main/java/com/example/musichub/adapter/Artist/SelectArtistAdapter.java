@@ -104,7 +104,7 @@ public class SelectArtistAdapter extends RecyclerView.Adapter<SelectArtistAdapte
 
             Intent intent = new Intent(context, ViewArtistActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putSerializable("artist", artists);
+            bundle.putSerializable("alias", artists.getAlias());
             intent.putExtras(bundle);
 
             context.startActivity(intent);
@@ -116,7 +116,7 @@ public class SelectArtistAdapter extends RecyclerView.Adapter<SelectArtistAdapte
             }
             Intent intent = new Intent(context, ViewArtistActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putSerializable("artist", artists);
+            bundle.putSerializable("alias", artists.getAlias());
             intent.putExtras(bundle);
 
             context.startActivity(intent);

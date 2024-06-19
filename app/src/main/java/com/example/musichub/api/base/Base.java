@@ -75,7 +75,7 @@ public class Base {
     }
 
     protected String createSearchSig(String path, String type, int page) throws NoSuchAlgorithmException, Exception {
-        return createHashAndHmac(path, "count=20ctime=" + this.ctime + "page=" + page + "type=" + type + "version=" + this.version);
+        return createHashAndHmac(path, "count=18ctime=" + this.ctime + "page=" + page + "type=" + type + "version=" + this.version);
     }
 
     protected String createCommentSig(String path, String id) throws NoSuchAlgorithmException, Exception {

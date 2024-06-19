@@ -13,4 +13,5 @@ public class Constants {
             "atmpv=3; " +
             "zmp3_rqid=MHwxNC4xOTEdUngOTmUsICdUngODN8djEdUngMTAdUngMzR8MTmUsICxODI4MTU3MzMxMw";
     public static final String URL_IMAGE_DEFAULT = "https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_jpeg/cover/3/2/a/3/32a35f4d26ee56366397c09953f6c269.jpg";
+    public static final String TAG = ">>>>>>>>>>>>>>>>>>>>";
 }

@@ -53,7 +53,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ViewArtistActivity extends AppCompatActivity {
-    private Artists artists;
     private DataPlaylist dataPlaylistNewSong;
     boolean isFirstPlaylist = true;
     private RelativeLayout relative_header;
@@ -299,7 +298,7 @@ public class ViewArtistActivity extends AppCompatActivity {
                     // Hiển thị TextView khi người dùng cuộn xuống khỏi đầu trang
                     txt_name_artist.setVisibility(View.VISIBLE);
                     txt_view.setVisibility(View.GONE);
-                    txt_name_artist.setText(artists.getName());
+                    txt_name_artist.setText(name);
                     relative_header.setBackgroundColor(ContextCompat.getColor(ViewArtistActivity.this, R.color.gray));
                     Helper.changeStatusBarColor(ViewArtistActivity.this, R.color.gray);
                 }
@@ -334,10 +333,10 @@ public class ViewArtistActivity extends AppCompatActivity {
     private void getBundleSong() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            artists = (Artists) bundle.getSerializable("artist");
+            String alias = bundle.getString("alias");
 
-            if (artists != null) {
-                getArtist(artists.getAlias());
+            if (alias != null) {
+                getArtist(alias);
             }
         }
 

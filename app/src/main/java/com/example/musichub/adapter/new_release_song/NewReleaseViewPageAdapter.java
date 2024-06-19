@@ -41,6 +41,7 @@ public class NewReleaseViewPageAdapter extends FragmentPagerAdapter {
                 break;
             case 1:
                 title = "Album";
+                break;
         }
         return title;
     }

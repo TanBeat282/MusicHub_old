@@ -26,6 +26,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activity.search.SearchMultiActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.ChartHomeActivity"
             android:exported="false" />
         <activity
@@ -80,7 +83,7 @@
             android:name=".activity.TestActivity"
             android:exported="true" />
         <activity
-            android:name=".activity.SearchActivity"
+            android:name=".activity.search.SearchSuggestionActivity"
             android:exported="false" />
         <activity
             android:name=".activity.PlayNowActivity"

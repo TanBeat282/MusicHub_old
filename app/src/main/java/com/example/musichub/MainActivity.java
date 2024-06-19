@@ -26,7 +26,7 @@ import com.example.musichub.activity.BXHNewSongActivity;
 import com.example.musichub.activity.ChartHomeActivity;
 import com.example.musichub.activity.HistoryActivity;
 import com.example.musichub.activity.NewReleaseSongActivity;
-import com.example.musichub.activity.SearchActivity;
+import com.example.musichub.activity.search.SearchSuggestionActivity;
 import com.example.musichub.adapter.Playlist.PlaylistMoreAdapter;
 import com.example.musichub.adapter.Album.AlbumMoreAdapter;
 import com.example.musichub.adapter.radio.RadioMoreAdapter;
@@ -299,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onClick() {
-        img_search.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SearchActivity.class)));
+        img_search.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SearchSuggestionActivity.class)));
         img_history.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, HistoryActivity.class)));
         img_account.setOnClickListener(view -> {
             BottomSheetProfile bottomSheetProfile = new BottomSheetProfile(MainActivity.this, MainActivity.this);

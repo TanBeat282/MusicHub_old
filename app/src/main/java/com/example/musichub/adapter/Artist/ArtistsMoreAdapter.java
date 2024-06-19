@@ -83,7 +83,7 @@ public class ArtistsMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ViewArtistActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("artist", artist);
+                    bundle.putSerializable("alias", artist.getAlias());
                     intent.putExtras(bundle);
 
                     context.startActivity(intent);

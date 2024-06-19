@@ -9,15 +9,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,14 +22,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
-import com.example.musichub.activity.PlayNowActivity;
 import com.example.musichub.activity.ViewAlbumActivity;
 import com.example.musichub.activity.ViewArtistActivity;
-import com.example.musichub.activity.ViewPlaylistActivity;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.uliti.CheckIsFile;
 import com.example.musichub.helper.uliti.DownloadAudio;
@@ -40,8 +34,6 @@ import com.example.musichub.helper.uliti.GetUrlAudioHelper;
 import com.example.musichub.helper.uliti.PermissionUtils;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.song.SongAudio;
-import com.example.musichub.model.song.SongDetail;
-import com.example.musichub.sharedpreferences.SharedPreferencesManager;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.checkbox.MaterialCheckBox;
@@ -51,7 +43,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 public class BottomSheetOptionSong extends BottomSheetDialogFragment {
     private final Context context;
     private final Activity activity;
-    private Items items;
+    private final Items items;
     private BottomSheetDialog bottomSheetDialog;
     private TextView txtTile, txtArtist, txtDownload;
     private ImageView img_Download;
@@ -86,7 +78,6 @@ public class BottomSheetOptionSong extends BottomSheetDialogFragment {
         img_album_song = bottomSheetDialog.findViewById(R.id.img_album_song);
         txtTile = bottomSheetDialog.findViewById(R.id.txtTile);
         txtArtist = bottomSheetDialog.findViewById(R.id.txtArtist);
-        MaterialCheckBox cbFavorite = bottomSheetDialog.findViewById(R.id.cbFavorite);
 
         LinearLayout linear_play_cont = bottomSheetDialog.findViewById(R.id.linear_play_cont);
         LinearLayout linear_playlist_add = bottomSheetDialog.findViewById(R.id.linear_playlist_add);
@@ -97,6 +88,7 @@ public class BottomSheetOptionSong extends BottomSheetDialogFragment {
         LinearLayout linear_album = bottomSheetDialog.findViewById(R.id.linear_album);
         LinearLayout linear_artist = bottomSheetDialog.findViewById(R.id.linear_artist);
 
+        assert linear_download != null;
         linear_download.setOnClickListener(v -> {
             if (CheckIsFile.isFileDownloaded(items.getTitle() + " - " + items.getArtistsNames() + ".mp3")) {
                 if (CheckIsFile.deleteFileIfExists(items.getTitle() + " - " + items.getArtistsNames() + ".mp3")) {
@@ -110,34 +102,30 @@ public class BottomSheetOptionSong extends BottomSheetDialogFragment {
                 xinquyen();
             }
         });
-        linear_artist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (items.getArtists().size() >= 2) {
-                    BottomSheetSelectArtist bottomSheetSelectArtist = new BottomSheetSelectArtist(context, activity, items.getArtists());
-                    bottomSheetSelectArtist.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheetSelectArtist.getTag());
-                } else {
-                    Intent intent = new Intent(context, ViewArtistActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("artist", items.getArtists().get(0));
-                    intent.putExtras(bundle);
-
-                    context.startActivity(intent);
-                }
-                bottomSheetDialog.dismiss();
-            }
-        });
-        linear_album.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, ViewAlbumActivity.class);
+        assert linear_artist != null;
+        linear_artist.setOnClickListener(view1 -> {
+            if (items.getArtists().size() >= 2) {
+                BottomSheetSelectArtist bottomSheetSelectArtist = new BottomSheetSelectArtist(context, activity, items.getArtists());
+                bottomSheetSelectArtist.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheetSelectArtist.getTag());
+            } else {
+                Intent intent = new Intent(context, ViewArtistActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("album_endCodeId", items.getAlbum().getEncodeId());
+                bundle.putSerializable("alias", items.getArtists().get(0).getAlias());
                 intent.putExtras(bundle);
 
                 context.startActivity(intent);
-                bottomSheetDialog.dismiss();
             }
+            bottomSheetDialog.dismiss();
+        });
+        assert linear_album != null;
+        linear_album.setOnClickListener(view12 -> {
+            Intent intent = new Intent(context, ViewAlbumActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("album_endCodeId", items.getAlbum().getEncodeId());
+            intent.putExtras(bundle);
+
+            context.startActivity(intent);
+            bottomSheetDialog.dismiss();
         });
 
         if (items.getAlbum() == null){
@@ -152,6 +140,7 @@ public class BottomSheetOptionSong extends BottomSheetDialogFragment {
         return bottomSheetDialog;
     }
 
+    @SuppressLint("SetTextI18n")
     private void setInfoSong(Items items) {
         txtTile.setText(items.getTitle());
         txtArtist.setText(items.getArtistsNames());

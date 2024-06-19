@@ -1,9 +1,11 @@
-package com.example.musichub.adapter.Search;
+package com.example.musichub.adapter.Search.search_suggestion;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
+import com.example.musichub.activity.ViewArtistActivity;
+import com.example.musichub.activity.ViewPlaylistActivity;
+import com.example.musichub.adapter.Artist.SelectArtistAdapter;
 import com.example.musichub.helper.ui.PlayingStatusUpdater;
 import com.example.musichub.model.search.search_suggestion.keyword.SearchSuggestionsDataItemKeyWordsItem;
 import com.example.musichub.model.search.search_suggestion.playlist.SearchSuggestionsDataItemSuggestionsPlaylist;
@@ -41,6 +46,8 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.V
     private final Activity activity;
     private int selectedPosition = -1;
     private int keywordCount, artistCount, songCount, playlistCount;
+
+    private KeyWordItemClickListener listener;
 
     public SearchSuggestionAdapter(Context context, Activity activity, ArrayList<SearchSuggestionsDataItemKeyWordsItem> searchSuggestionsDataItemKeyWordsItems, ArrayList<SearchSuggestionsDataItemSuggestionsArtist> searchSuggestionsDataItemSuggestionsArtists, ArrayList<SearchSuggestionsDataItemSuggestionsPlaylist> searchSuggestionsDataItemSuggestionsPlaylists, ArrayList<SearchSuggestionsDataItemSuggestionsSong> searchSuggestionsDataItemSuggestionsSongs) {
         this.context = context;
@@ -86,6 +93,18 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.V
         notifyDataSetChanged();
     }
 
+    // Setter method for the listener
+    public void setListener(KeyWordItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    // ViewHolder class and other adapter methods...
+
+    public interface KeyWordItemClickListener {
+        void onKeyWordItemClick(String keyword);
+    }
+
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -116,6 +135,11 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.V
                 KeyWordViewHolder keywordViewHolder = (KeyWordViewHolder) holder;
                 SearchSuggestionsDataItemKeyWordsItem keywordItem = searchSuggestionsDataItemKeyWordsItems.get(position);
                 keywordViewHolder.txt_keyword.setText(keywordItem.getKeyword());
+                keywordViewHolder.linear_keyword.setOnClickListener(view -> {
+                    if (listener != null) {
+                        listener.onKeyWordItemClick(keywordItem.getKeyword());
+                    }
+                });
                 break;
             case VIEW_TYPE_ARTIST:
                 ArtistViewHolder artistViewHolder = (ArtistViewHolder) holder;
@@ -127,6 +151,18 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.V
                     Glide.with(context)
                             .load(artistItem.getAvatar())
                             .into(artistViewHolder.thumbImageView);
+
+                    artistViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(context, ViewArtistActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("alias", artistItem.getAliasName());
+                            intent.putExtras(bundle);
+
+                            context.startActivity(intent);
+                        }
+                    });
                 }
                 break;
             case VIEW_TYPE_PLAYLIST:
@@ -148,6 +184,17 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.V
                     Glide.with(context)
                             .load(playlistItem.getThumb())
                             .into(playlistViewHolder.thumbImageView);
+                    playlistViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(context, ViewPlaylistActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("encodeId", playlistItem.getId());
+                            intent.putExtras(bundle);
+
+                            context.startActivity(intent);
+                        }
+                    });
                 }
                 break;
             case VIEW_TYPE_SONG:
