@@ -1,5 +1,8 @@
 package com.example.musichub.fragment.search_multi;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,6 +16,7 @@ import com.example.musichub.R;
 public class PlaylistAlbumSeachMultiFragment extends Fragment {
     private static final String ARG_DATA = "query";
     private String query;
+
 
     public static PlaylistAlbumSeachMultiFragment newInstance(String data) {
         PlaylistAlbumSeachMultiFragment fragment = new PlaylistAlbumSeachMultiFragment();

@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +25,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.musichub.R;
 import com.example.musichub.activity.ViewArtistActivity;
+import com.example.musichub.adapter.Artist.ArtistsMoreAdapter;
+import com.example.musichub.adapter.Playlist.PlaylistMoreAdapter;
+import com.example.musichub.adapter.Search.search_multi.top.SearchSongTopAdapter;
+import com.example.musichub.adapter.Song.SongMoreAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.categories.SearchCategories;
 import com.example.musichub.api.categories.SongCategories;
@@ -29,11 +36,18 @@ import com.example.musichub.api.service.ApiServiceFactory;
 import com.example.musichub.constants.Constants;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.uliti.log.LogUtil;
+import com.example.musichub.model.chart.chart_home.Artists;
+import com.example.musichub.model.chart.chart_home.Items;
+import com.example.musichub.model.playlist.DataPlaylist;
 import com.example.musichub.model.search.search_multil.SearchMulti;
+import com.example.musichub.model.search.search_multil.SearchMultiDataArtistVideo;
 import com.example.musichub.model.search.search_multil.SearchMultiDataTop;
+import com.example.musichub.model.search.search_suggestion.suggestion.SearchSuggestionsDataItemSuggestionsArtist;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Map;
 
 import okhttp3.ResponseBody;
@@ -53,6 +67,25 @@ public class AllSeachMultiFragment extends Fragment {
     private RoundedImageView img_avatar;
     private TextView tv_name;
     private TextView txt_followers;
+    private RecyclerView rv_song_noibat;
+    private SearchSongTopAdapter searchSongTopAdapter;
+    private final ArrayList<Items> searchSongTopArrayList = new ArrayList<>();
+
+    private LinearLayout linear_playlist;
+    private RoundedImageView img_avatar_artist_playlist;
+    private TextView txt_name_artist_playlist;
+    private RecyclerView rv_playlist;
+    private PlaylistMoreAdapter playlistMoreAdapter;
+    private final ArrayList<DataPlaylist> dataPlaylistArrayList = new ArrayList<>();
+
+    private RecyclerView rv_song;
+    private SongMoreAdapter songMoreAdapter;
+    private final ArrayList<Items> songArrayList = new ArrayList<>();
+
+    private LinearLayout linear_artist;
+    private RecyclerView rv_artist;
+    private ArtistsMoreAdapter artistsMoreAdapter;
+    private final ArrayList<Artists> artistsArrayList = new ArrayList<>();
 
 
     private final BroadcastReceiver broadcastReceiverSearchMulti = new BroadcastReceiver() {
@@ -106,10 +139,40 @@ public class AllSeachMultiFragment extends Fragment {
         img_avatar = view.findViewById(R.id.img_avatar);
         tv_name = view.findViewById(R.id.tv_name);
         txt_followers = view.findViewById(R.id.txt_followers);
+
+        rv_song_noibat = view.findViewById(R.id.rv_song_noibat);
+
+        linear_playlist = view.findViewById(R.id.linear_playlist);
+        img_avatar_artist_playlist = view.findViewById(R.id.img_avatar_artist_playlist);
+        txt_name_artist_playlist = view.findViewById(R.id.txt_name_artist_playlist);
+        rv_playlist = view.findViewById(R.id.rv_playlist);
+
+        rv_song = view.findViewById(R.id.rv_song);
+
+        linear_artist = view.findViewById(R.id.linear_artist);
+        rv_artist = view.findViewById(R.id.rv_artist);
     }
 
     private void initAdapter() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+        rv_song_noibat.setLayoutManager(linearLayoutManager);
+        searchSongTopAdapter = new SearchSongTopAdapter(searchSongTopArrayList, requireActivity(), requireContext());
+        rv_song_noibat.setAdapter(searchSongTopAdapter);
 
+        LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+        rv_playlist.setLayoutManager(linearLayoutManager1);
+        playlistMoreAdapter = new PlaylistMoreAdapter(dataPlaylistArrayList, requireActivity(), requireContext());
+        rv_playlist.setAdapter(playlistMoreAdapter);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireContext(), 4, RecyclerView.HORIZONTAL, false);
+        rv_song.setLayoutManager(gridLayoutManager);
+        songMoreAdapter = new SongMoreAdapter(songArrayList, 3, requireActivity(), requireContext());
+        rv_song.setAdapter(songMoreAdapter);
+
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+        rv_artist.setLayoutManager(linearLayoutManager2);
+        artistsMoreAdapter = new ArtistsMoreAdapter(artistsArrayList, requireActivity(), requireContext());
+        rv_artist.setAdapter(artistsMoreAdapter);
     }
 
     private void onClick() {
@@ -121,6 +184,14 @@ public class AllSeachMultiFragment extends Fragment {
 
             requireContext().startActivity(intent);
         });
+
+        linear_playlist.setOnClickListener(view -> {
+            sendBroadcast(2);
+        });
+
+        linear_artist.setOnClickListener(view -> {
+            sendBroadcast(3);
+        });
     }
 
     public interface ArtistFollowersCallback {
@@ -130,15 +201,15 @@ public class AllSeachMultiFragment extends Fragment {
     }
 
     @SuppressLint("SetTextI18n")
-    private void setDataTop(SearchMultiDataTop searchMultiDataTop) {
+    private void setDataTop(Artists artists) {
         if (!isAdded() || getActivity() == null) {
             return;
         }
-        tv_name.setText(searchMultiDataTop.getName());
-        Glide.with(requireContext()).load(searchMultiDataTop.getThumbnail()).into(img_avatar);
+        tv_name.setText(artists.getName());
+        Glide.with(requireContext()).load(artists.getThumbnail()).into(img_avatar);
 
         txt_followers.setText("Loading...");
-        getFollowerOfArtist(searchMultiDataTop.getAlias(), new ArtistFollowersCallback() {
+        getFollowerOfArtist(artists.getAlias(), new ArtistFollowersCallback() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onFollowersFetched(int totalFollow) {
@@ -151,6 +222,32 @@ public class AllSeachMultiFragment extends Fragment {
                 txt_followers.setText("Error");
             }
         });
+    }
+
+    private void setDataSongTop(ArrayList<Items> itemsArrayList) {
+        if (itemsArrayList != null) {
+            searchSongTopAdapter.setFilterList(itemsArrayList);
+        }
+    }
+
+    private void setDataPlaylist(ArrayList<DataPlaylist> dataPlaylistArrayList, Artists artists) {
+        if (dataPlaylistArrayList != null && artists != null) {
+            txt_name_artist_playlist.setText(artists.getName());
+            Glide.with(requireContext()).load(artists.getThumbnail()).into(img_avatar_artist_playlist);
+            playlistMoreAdapter.setFilterList(dataPlaylistArrayList);
+        }
+    }
+
+    private void setDataSong(ArrayList<Items> itemsArrayList) {
+        if (itemsArrayList != null) {
+            songMoreAdapter.setFilterList(itemsArrayList);
+        }
+    }
+
+    private void setDataArtist(ArrayList<Artists> artists) {
+        if (artists != null) {
+            artistsMoreAdapter.setFilterList(artists);
+        }
     }
 
     private void searchMulti(String query) {
@@ -169,7 +266,11 @@ public class AllSeachMultiFragment extends Fragment {
                             if (response.isSuccessful()) {
                                 searchMulti = response.body();
                                 if (searchMulti != null && searchMulti.getErr() == 0) {
-                                    setDataTop(searchMulti.getData().getTop());
+                                    setDataTop(searchMulti.getData().getArtists().get(0));
+                                    setDataSongTop(searchMulti.getData().getSongs());
+                                    setDataPlaylist(searchMulti.getData().getPlaylists(), searchMulti.getData().getArtists().get(0));
+                                    setDataSong(searchMulti.getData().getSongs());
+                                    setDataArtist(searchMulti.getData().getArtists());
                                 } else {
                                     Log.d("TAG", "Error: ");
                                 }
@@ -240,6 +341,14 @@ public class AllSeachMultiFragment extends Fragment {
                 requireActivity().runOnUiThread(() -> callback.onError("Service creation error: " + e.getMessage()));
             }
         });
+    }
+
+    private void sendBroadcast(int tab_layout_position) {
+        Intent intent = new Intent("tab_layout_position");
+        Bundle bundle = new Bundle();
+        bundle.putInt("position", tab_layout_position);
+        intent.putExtras(bundle);
+        LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(intent);
     }
 
     @Override

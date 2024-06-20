@@ -57,7 +57,7 @@ public class SearchMultiViewPageAdapter extends FragmentPagerAdapter {
                 title = "Bài hát";
                 break;
             case 2:
-                title = "Playlist/Album";
+                title = "Playlist";
                 break;
             case 3:
                 title = "Nghệ sĩ";

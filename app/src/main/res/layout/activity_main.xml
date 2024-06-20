@@ -16,44 +16,44 @@
         android:layout_marginTop="10dp">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_android_black_24dp"
-            app:tint="@color/white" />
+            android:src="@drawable/app" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:fontFamily="@font/roboto_bold"
             android:padding="10dp"
             android:text="Music Hub"
             android:textColor="@color/white"
-            android:textSize="20sp" />
-
-        <ImageView
-            android:id="@+id/img_history"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:layout_gravity="center"
-            android:layout_marginEnd="20dp"
-            android:src="@drawable/ic_history"
-            app:tint="@color/white" />
+            android:textSize="@dimen/_14ssp" />
 
         <ImageView
             android:id="@+id/img_search"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
+            android:layout_width="@dimen/_22sdp"
+            android:layout_height="@dimen/_22sdp"
             android:layout_gravity="center"
             android:layout_marginEnd="20dp"
             android:src="@drawable/baseline_search_24"
             app:tint="@color/white" />
 
         <ImageView
+            android:id="@+id/img_history"
+            android:layout_width="@dimen/_22sdp"
+            android:layout_height="@dimen/_22sdp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_history"
+            app:tint="@color/white" />
+
+        <ImageView
             android:id="@+id/img_account"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
+            android:layout_width="@dimen/_22sdp"
+            android:layout_height="@dimen/_22sdp"
             android:layout_gravity="center"
             android:src="@drawable/baseline_account_circle_24"
             app:tint="@color/white" />
@@ -68,7 +68,7 @@
         android:layout_above="@+id/layoutPlayerBottom"
         android:layout_below="@+id/action_bar"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/_5sdp"
         android:visibility="gone">
 
         <LinearLayout
@@ -692,9 +692,9 @@
         android:id="@+id/relative_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
         android:layout_above="@id/layoutPlayerBottom"
-        android:layout_below="@id/action_bar">
+        android:layout_below="@id/action_bar"
+        android:visibility="visible">
 
         <ProgressBar
             android:layout_width="wrap_content"

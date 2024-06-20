@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/layoutPlayerBottom"
-        android:layout_below="@+id/relative_header">
+        android:layout_below="@+id/relative_header"
+        android:layout_marginHorizontal="@dimen/_20sdp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,18 +25,17 @@
                 android:id="@+id/txt_new_release"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/_20sdp"
                 android:fontFamily="@font/roboto_bold"
                 android:text="Lịch sử nghe"
                 android:textColor="@color/white"
-                android:textSize="30sp" />
+                android:textSize="@dimen/_24ssp" />
 
             <LinearLayout
                 android:id="@+id/linear_nghe_nhieu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/_20sdp"
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:visibility="visible">
@@ -51,14 +51,20 @@
                         android:fontFamily="@font/roboto_bold"
                         android:text="Nghe nhiều nhất"
                         android:textColor="@color/white"
-                        android:textSize="20sp" />
+                        android:textSize="@dimen/_14ssp" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:rotation="-180"
-                        android:src="@drawable/ic_back" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="5dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:rotation="-180"
+                            android:src="@drawable/ic_back" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -94,12 +100,18 @@
                         android:textColor="@color/white"
                         android:textSize="20sp" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:rotation="-180"
-                        android:src="@drawable/ic_back" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="5dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:rotation="-180"
+                            android:src="@drawable/ic_back" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -129,7 +141,7 @@
             android:gravity="center"
             android:text="Không có bài hát nào ở đây"
             android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textSize="@dimen/_14ssp" />
     </LinearLayout>
 
     <RelativeLayout
@@ -142,6 +154,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginHorizontal="@dimen/_20sdp"
             android:orientation="horizontal">
 
             <ImageView
@@ -149,7 +162,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="20dp"
                 android:src="@drawable/ic_back" />
 
             <TextView
@@ -176,7 +188,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="20dp"
                 android:src="@drawable/baseline_more_vert_24" />
         </LinearLayout>
 

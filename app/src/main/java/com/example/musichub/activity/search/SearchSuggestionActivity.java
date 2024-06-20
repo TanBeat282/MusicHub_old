@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -75,6 +78,7 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
     //no data
     private LinearLayout txtNoData;
     private TextView txtNoMusic;
+    private ProgressBar progress_bar_loading;
 
 
     private SearchSuggestionAdapter searchSuggestionAdapter;
@@ -89,6 +93,18 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
     private MusicHelper musicHelper;
 
     private ApiService apiService;
+
+    private final BroadcastReceiver broadcastReceiverTabLayout = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            if (bundle == null) {
+                return;
+            }
+            int tab_layout_position = bundle.getInt("position");
+            tab_layout_search_multi.getTabAt(tab_layout_position).select();
+        }
+    };
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -126,6 +142,7 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
         rv_search_suggestion = findViewById(R.id.rv_search_suggestion);
         txtNoData = findViewById(R.id.txtNoData);
         txtNoMusic = findViewById(R.id.txtNoMusic);
+        progress_bar_loading = findViewById(R.id.progress_bar_loading);
         img_back = findViewById(R.id.img_back);
     }
 
@@ -155,6 +172,7 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
                 sendBroadcast(query);
                 relative_search_suggestion.setVisibility(View.GONE);
                 relative_search_multi.setVisibility(View.VISIBLE);
+
                 // Close the keyboard
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (inputMethodManager != null) {
@@ -170,10 +188,15 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
 
                 if (newText == null || newText.isEmpty()) {
                     txtNoData.setVisibility(View.VISIBLE);
+                    txtNoMusic.setVisibility(View.VISIBLE);
                     rv_search_suggestion.setVisibility(View.GONE);
+                    progress_bar_loading.setVisibility(View.GONE);
                 } else {
-                    txtNoData.setVisibility(View.GONE);
-                    rv_search_suggestion.setVisibility(View.VISIBLE);
+                    txtNoData.setVisibility(View.VISIBLE);
+                    txtNoMusic.setVisibility(View.GONE);
+                    progress_bar_loading.setVisibility(View.VISIBLE);
+
+                    rv_search_suggestion.setVisibility(View.GONE);
                     handler.removeCallbacks(searchRunnable);
                     handler.postDelayed(searchRunnable, DELAY);
                 }
@@ -249,6 +272,10 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
                                     }
                                 }
                             }
+                            txtNoData.setVisibility(View.GONE);
+                            txtNoMusic.setVisibility(View.GONE);
+                            progress_bar_loading.setVisibility(View.VISIBLE);
+                            rv_search_suggestion.setVisibility(View.VISIBLE);
                             searchSuggestionAdapter.setFilterList(searchSuggestionsDataItemKeyWordsItems, searchSuggestionsDataItemSuggestionsArtists, searchSuggestionsDataItemSuggestionsPlaylists, searchSuggestionsDataItemSuggestionsSongs);
                         });
 
@@ -288,5 +315,17 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
         if (inputMethodManager != null) {
             inputMethodManager.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiverTabLayout, new IntentFilter("tab_layout_position"));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiverTabLayout);
     }
 }
