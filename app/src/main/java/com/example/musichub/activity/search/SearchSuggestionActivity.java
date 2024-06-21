@@ -27,9 +27,11 @@ import android.widget.TextView;
 
 import com.example.musichub.R;
 import com.example.musichub.adapter.Search.search_multi.SearchMultiViewPageAdapter;
+import com.example.musichub.adapter.Search.search_recommend.SearchRecommendAdapter;
 import com.example.musichub.adapter.Search.search_suggestion.SearchSuggestionAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.categories.SearchCategories;
+import com.example.musichub.api.categories.SongCategories;
 import com.example.musichub.api.service.ApiServiceFactory;
 import com.example.musichub.api.service.RetrofitClient;
 import com.example.musichub.api.type_adapter_Factory.search.SearchTypeAdapter;
@@ -37,7 +39,11 @@ import com.example.musichub.constants.Constants;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.ui.MusicHelper;
 import com.example.musichub.helper.uliti.log.LogUtil;
+import com.example.musichub.model.chart.chart_home.Items;
+import com.example.musichub.model.playlist.Playlist;
 import com.example.musichub.model.search.search_multil.SearchMulti;
+import com.example.musichub.model.search.search_recommend.DataSearchRecommend;
+import com.example.musichub.model.search.search_recommend.SearchRecommend;
 import com.example.musichub.model.search.search_suggestion.SearchSuggestions;
 import com.example.musichub.model.search.search_suggestion.SearchSuggestionsDataItem;
 import com.example.musichub.model.search.search_suggestion.keyword.SearchSuggestionsDataItemKeyWords;
@@ -60,7 +66,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SearchSuggestionActivity extends AppCompatActivity implements SearchSuggestionAdapter.KeyWordItemClickListener {
+public class SearchSuggestionActivity extends AppCompatActivity implements SearchSuggestionAdapter.KeyWordItemClickListener, SearchRecommendAdapter.SearchRecommendClickListener {
 
     private SearchView searchView;
     private ImageView img_back;
@@ -76,9 +82,11 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
     private static final String allowCorrect = "1";
 
     //no data
-    private LinearLayout txtNoData;
-    private TextView txtNoMusic;
+    private LinearLayout linear_search_recommend;
+    private RecyclerView rv_search_recommend;
     private ProgressBar progress_bar_loading;
+    private SearchRecommendAdapter searchRecommendAdapter;
+    private ArrayList<DataSearchRecommend> dataSearchRecommendArrayList = new ArrayList<>();
 
 
     private SearchSuggestionAdapter searchSuggestionAdapter;
@@ -125,6 +133,7 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
 
         initAdapter();
         onClick();
+        getSearchRecommend();
 
         searchRunnable = () -> {
             try {
@@ -140,8 +149,8 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
         searchView = findViewById(R.id.searchView);
         relative_search_suggestion = findViewById(R.id.relative_search_suggestion);
         rv_search_suggestion = findViewById(R.id.rv_search_suggestion);
-        txtNoData = findViewById(R.id.txtNoData);
-        txtNoMusic = findViewById(R.id.txtNoMusic);
+        linear_search_recommend = findViewById(R.id.linear_search_recommend);
+        rv_search_recommend = findViewById(R.id.rv_search_recommend);
         progress_bar_loading = findViewById(R.id.progress_bar_loading);
         img_back = findViewById(R.id.img_back);
     }
@@ -161,9 +170,9 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
 
     @SuppressLint("SetTextI18n")
     private void conFigViewSearchSuggestion() {
-        txtNoData.setVisibility(View.VISIBLE);
+        linear_search_recommend.setVisibility(View.VISIBLE);
+        progress_bar_loading.setVisibility(View.GONE);
         rv_search_suggestion.setVisibility(View.GONE);
-        txtNoMusic.setText("Không có bài hát nào ở đây");
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -187,15 +196,12 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
                 relative_search_multi.setVisibility(View.GONE);
 
                 if (newText == null || newText.isEmpty()) {
-                    txtNoData.setVisibility(View.VISIBLE);
-                    txtNoMusic.setVisibility(View.VISIBLE);
-                    rv_search_suggestion.setVisibility(View.GONE);
+                    linear_search_recommend.setVisibility(View.VISIBLE);
                     progress_bar_loading.setVisibility(View.GONE);
+                    rv_search_suggestion.setVisibility(View.GONE);
                 } else {
-                    txtNoData.setVisibility(View.VISIBLE);
-                    txtNoMusic.setVisibility(View.GONE);
+                    linear_search_recommend.setVisibility(View.GONE);
                     progress_bar_loading.setVisibility(View.VISIBLE);
-
                     rv_search_suggestion.setVisibility(View.GONE);
                     handler.removeCallbacks(searchRunnable);
                     handler.postDelayed(searchRunnable, DELAY);
@@ -211,6 +217,11 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
         searchSuggestionAdapter = new SearchSuggestionAdapter(this, this, searchSuggestionsDataItemKeyWordsItems, searchSuggestionsDataItemSuggestionsArtists, searchSuggestionsDataItemSuggestionsPlaylists, searchSuggestionsDataItemSuggestionsSongs);
         rv_search_suggestion.setAdapter(searchSuggestionAdapter);
         searchSuggestionAdapter.setListener(this);
+
+        rv_search_recommend.setLayoutManager(new LinearLayoutManager(this));
+        searchRecommendAdapter = new SearchRecommendAdapter(dataSearchRecommendArrayList, this, this);
+        rv_search_recommend.setAdapter(searchRecommendAdapter);
+        searchRecommendAdapter.setListener(this);
     }
 
     private void onClick() {
@@ -218,6 +229,51 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
             finish();
         });
     }
+
+    private void getSearchRecommend() {
+        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
+            @Override
+            public void onServiceCreated(ApiService service) {
+                try {
+                    SearchCategories searchCategories = new SearchCategories();
+                    Map<String, String> map = searchCategories.getRecommendKeyword();
+
+                    retrofit2.Call<SearchRecommend> call = service.SEARCH_RECOMMEND_CALL(map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
+                    call.enqueue(new Callback<SearchRecommend>() {
+                        @Override
+                        public void onResponse(Call<SearchRecommend> call, Response<SearchRecommend> response) {
+                            LogUtil.d(Constants.TAG, "getSearchRecommend: " + call.request().url());
+                            if (response.isSuccessful()) {
+                                SearchRecommend searchRecommend = response.body();
+                                if (searchRecommend != null) {
+                                    ArrayList<DataSearchRecommend> data = searchRecommend.getData();
+                                    if (!data.isEmpty()) {
+                                        runOnUiThread(() -> {
+                                            dataSearchRecommendArrayList = data;
+                                            searchRecommendAdapter.setFilterList(dataSearchRecommendArrayList);
+                                        });
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<SearchRecommend> call, Throwable throwable) {
+
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("TAG", "Error: " + e.getMessage(), e);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
 
     private void searchSuggestion(String query) throws Exception {
         // Clear previous data before making a new search request
@@ -272,9 +328,8 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
                                     }
                                 }
                             }
-                            txtNoData.setVisibility(View.GONE);
-                            txtNoMusic.setVisibility(View.GONE);
-                            progress_bar_loading.setVisibility(View.VISIBLE);
+                            linear_search_recommend.setVisibility(View.GONE);
+                            progress_bar_loading.setVisibility(View.GONE);
                             rv_search_suggestion.setVisibility(View.VISIBLE);
                             searchSuggestionAdapter.setFilterList(searchSuggestionsDataItemKeyWordsItems, searchSuggestionsDataItemSuggestionsArtists, searchSuggestionsDataItemSuggestionsPlaylists, searchSuggestionsDataItemSuggestionsSongs);
                         });
@@ -318,6 +373,20 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
     }
 
     @Override
+    public void onSearchRecommendClickListener(String keyword) {
+        initViewPager(keyword);
+        sendBroadcast(keyword);
+        relative_search_suggestion.setVisibility(View.GONE);
+        relative_search_multi.setVisibility(View.VISIBLE);
+        // Close the keyboard
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputMethodManager != null) {
+            inputMethodManager.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+        }
+        searchView.setQuery(keyword, true);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiverTabLayout, new IntentFilter("tab_layout_position"));
@@ -328,4 +397,5 @@ public class SearchSuggestionActivity extends AppCompatActivity implements Searc
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiverTabLayout);
     }
+
 }

@@ -2,18 +2,19 @@ package com.example.musichub.api;
 
 import com.example.musichub.model.chart.chart_home.ChartHome;
 import com.example.musichub.model.chart.new_release.NewRelease;
-import com.example.musichub.model.chart.top100.Top100;
 import com.example.musichub.model.chart.weekchart.WeekChart;
 import com.example.musichub.model.new_release.NewReleaseAlbum;
 import com.example.musichub.model.new_release.NewReleaseSong;
 import com.example.musichub.model.playlist.Playlist;
 import com.example.musichub.model.search.search_multil.SearchMulti;
+import com.example.musichub.model.search.search_recommend.SearchRecommend;
 import com.example.musichub.model.search.search_suggestion.SearchSuggestions;
 import com.example.musichub.model.search.song.SearchSong;
 import com.example.musichub.model.song.Lyric;
 import com.example.musichub.model.song.SongAudio;
 import com.example.musichub.model.song.SongDetail;
 import com.example.musichub.model.song_of_artist.SongOfArtist;
+import com.example.musichub.model.top100.Top100;
 import com.example.musichub.model.user_active_radio.UserActiveRadio;
 
 import okhttp3.ResponseBody;
@@ -195,6 +196,13 @@ public interface ApiService {
                                         @Query("ctime") String ctime,
                                         @Query("version") String version,
                                         @Query("apiKey") String apiKey);
+
+    @GET(pathSearchRecommend)
+    Call<SearchRecommend> SEARCH_RECOMMEND_CALL(@Query("sig") String sig,
+                                                @Query("ctime") String ctime,
+                                                @Query("version") String version,
+                                                @Query("apiKey") String apiKey);
+
 
     //RADIO
     @GET(pathUserActiveRadio)

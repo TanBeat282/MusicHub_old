@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.musichub.R;
@@ -38,6 +40,8 @@ import retrofit2.Response;
 
 public class SongFragment extends Fragment {
     private RecyclerView recycler_view_song;
+    private NestedScrollView nested_scroll_view_song;
+    private RelativeLayout relative_loading;
     private ArrayList<Items> itemsArrayList = new ArrayList<>();
     private NewReleaseSongAdapter newReleaseSongAdapter;
     private LinearLayout btn_tat_ca, btn_viet_nam, btn_au_my, btn_han_quoc, btn_other;
@@ -79,6 +83,8 @@ public class SongFragment extends Fragment {
     }
 
     private void initializeViews(View view) {
+        nested_scroll_view_song = view.findViewById(R.id.nested_scroll_view_song);
+        relative_loading = view.findViewById(R.id.relative_loading);
         recycler_view_song = view.findViewById(R.id.recycler_view_song);
         btn_tat_ca = view.findViewById(R.id.btn_tat_ca);
         btn_viet_nam = view.findViewById(R.id.btn_viet_nam);
@@ -142,6 +148,8 @@ public class SongFragment extends Fragment {
                                         requireActivity().runOnUiThread(() -> {
                                             itemsArrayList = arrayList;
                                             newReleaseSongAdapter.setFilterList(itemsArrayList);
+                                            nested_scroll_view_song.setVisibility(View.VISIBLE);
+                                            relative_loading.setVisibility(View.GONE);
                                         });
                                     } else {
                                         Log.d("TAG", "Items list is empty");

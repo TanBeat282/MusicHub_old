@@ -67,11 +67,10 @@ public class SearchCategories extends Base {
         }
     }
 
-    public Map<String, String> getRecommendKeyword(String q) throws NoSuchAlgorithmException, IOException, Exception {
+    public Map<String, String> getRecommendKeyword() throws NoSuchAlgorithmException, IOException, Exception {
         try {
             String sig = createNoIdSig("/api/v2/app/get/recommend-keyword");
             Map<String, String> params = createRequest();
-            params.put("q", q);
             params.put("sig", sig);
             return params;
         } catch (Exception error) {

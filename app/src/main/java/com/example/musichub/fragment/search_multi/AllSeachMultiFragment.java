@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -20,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -61,6 +63,10 @@ public class AllSeachMultiFragment extends Fragment {
     private String query;
 
     private SearchMulti searchMulti;
+
+    //view
+    private NestedScrollView nested_scroll_view;
+    private RelativeLayout relative_loading;
 
     private LinearLayout linear_top;
     private LinearLayout linear_info;
@@ -129,11 +135,15 @@ public class AllSeachMultiFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initView(view);
+        conFigViews();
         initAdapter();
         onClick();
     }
 
     private void initView(View view) {
+        nested_scroll_view = view.findViewById(R.id.nested_scroll_view);
+        relative_loading = view.findViewById(R.id.relative_loading);
+
         linear_top = view.findViewById(R.id.linear_top);
         linear_info = view.findViewById(R.id.linear_info);
         img_avatar = view.findViewById(R.id.img_avatar);
@@ -151,6 +161,9 @@ public class AllSeachMultiFragment extends Fragment {
 
         linear_artist = view.findViewById(R.id.linear_artist);
         rv_artist = view.findViewById(R.id.rv_artist);
+    }
+    private void conFigViews(){
+
     }
 
     private void initAdapter() {
@@ -266,6 +279,9 @@ public class AllSeachMultiFragment extends Fragment {
                             if (response.isSuccessful()) {
                                 searchMulti = response.body();
                                 if (searchMulti != null && searchMulti.getErr() == 0) {
+                                    relative_loading.setVisibility(View.GONE);
+                                    nested_scroll_view.setVisibility(View.VISIBLE);
+
                                     setDataTop(searchMulti.getData().getArtists().get(0));
                                     setDataSongTop(searchMulti.getData().getSongs());
                                     setDataPlaylist(searchMulti.getData().getPlaylists(), searchMulti.getData().getArtists().get(0));

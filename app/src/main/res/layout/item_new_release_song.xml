@@ -80,7 +80,7 @@
             android:scrollHorizontally="true"
             android:singleLine="true"
             android:textColor="@color/colorSecondaryText1"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
     </LinearLayout>
 

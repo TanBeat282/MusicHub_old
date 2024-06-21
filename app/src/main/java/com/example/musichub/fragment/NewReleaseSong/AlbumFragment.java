@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.musichub.R;
@@ -36,6 +38,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AlbumFragment extends Fragment {
+    private NestedScrollView nested_scroll_view_album;
+    private RelativeLayout relative_loading;
     private RecyclerView recycler_view_album;
     private ArrayList<Album> albumArrayList = new ArrayList<>();
     private AlbumNewReleaseAdapter albumNewReleaseAdapter;
@@ -74,6 +78,8 @@ public class AlbumFragment extends Fragment {
 
     private void initializeViews(View view) {
         recycler_view_album = view.findViewById(R.id.recycler_view_album);
+        nested_scroll_view_album = view.findViewById(R.id.nested_scroll_view_album);
+        relative_loading = view.findViewById(R.id.relative_loading);
     }
 
     private void setupRecyclerView() {
@@ -127,6 +133,8 @@ public class AlbumFragment extends Fragment {
                                         requireActivity().runOnUiThread(() -> {
                                             albumArrayList = arrayList;
                                             albumNewReleaseAdapter.setFilterList(albumArrayList);
+                                            nested_scroll_view_album.setVisibility(View.VISIBLE);
+                                            relative_loading.setVisibility(View.GONE);
                                         });
                                     } else {
                                         Log.d("TAG", "Items list is empty");

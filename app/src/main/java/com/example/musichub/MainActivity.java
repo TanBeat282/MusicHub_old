@@ -26,7 +26,9 @@ import com.example.musichub.activity.BXHNewSongActivity;
 import com.example.musichub.activity.ChartHomeActivity;
 import com.example.musichub.activity.HistoryActivity;
 import com.example.musichub.activity.NewReleaseSongActivity;
+import com.example.musichub.activity.hub.ViewHubActivity;
 import com.example.musichub.activity.search.SearchSuggestionActivity;
+import com.example.musichub.activity.top100.ViewTop100Activity;
 import com.example.musichub.adapter.Playlist.PlaylistMoreAdapter;
 import com.example.musichub.adapter.Album.AlbumMoreAdapter;
 import com.example.musichub.adapter.radio.RadioMoreAdapter;
@@ -36,13 +38,11 @@ import com.example.musichub.adapter.banner.BannerSlideAdapter;
 import com.example.musichub.api.ApiService;
 import com.example.musichub.api.service.ApiServiceFactory;
 import com.example.musichub.api.categories.ChartCategories;
-import com.example.musichub.api.categories.HubCategories;
 import com.example.musichub.api.categories.RadioCategories;
 import com.example.musichub.bottomsheet.BottomSheetProfile;
 import com.example.musichub.helper.ui.Helper;
 import com.example.musichub.helper.ui.MusicHelper;
 import com.example.musichub.api.type_adapter_Factory.home.HomeDataItemTypeAdapter;
-import com.example.musichub.api.type_adapter_Factory.home.HubSectionTypeAdapter;
 import com.example.musichub.model.Album.DataAlbum;
 import com.example.musichub.model.chart.chart_home.Items;
 import com.example.musichub.model.chart.home.home_new.Home;
@@ -61,9 +61,6 @@ import com.example.musichub.model.chart.home.home_new.season_theme.HomeDataItemP
 import com.example.musichub.model.chart.home.home_new.top100.HomeDataItemPlaylistTop100;
 import com.example.musichub.model.chart.home.home_new.week_chart.HomeDataItemWeekChart;
 import com.example.musichub.model.chart.home.home_new.week_chart.HomeDataItemWeekChartItem;
-import com.example.musichub.model.hub.Hub;
-import com.example.musichub.model.hub.HubSection;
-import com.example.musichub.model.hub.SectionHubPlaylist;
 import com.example.musichub.model.playlist.DataPlaylist;
 import com.example.musichub.model.user_active_radio.DataUserActiveRadio;
 import com.example.musichub.model.user_active_radio.UserActiveRadio;
@@ -82,7 +79,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private Handler mHandler;
-    private static final int INTERVAL = 15000; // Độ trễ giữa mỗi lần chạy, tính bằng mili giây (3 giây)
+    private static final int INTERVAL = 15000;
     private Home home;
     private SharedPreferencesManager sharedPreferencesManager;
     private MusicHelper musicHelper;
@@ -128,13 +125,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     //top100
+    private LinearLayout linear_top100;
     private RecyclerView rv_top100;
     private TextView txt_title_top100;
     private PlaylistMoreAdapter playlistMoreAdapter;
     private final ArrayList<DataPlaylist> dataPlaylistArrayListTop100 = new ArrayList<>();
 
 
-    //playlist
+    private HomeDataItemPlaylistEditorTheme3 homeDataItemPlaylistEditorTheme3;
+    private LinearLayout linear_playlist_1;
     private TextView txt_title_playlist_1;
     private RecyclerView rv_playlist_1;
     private final ArrayList<DataPlaylist> dataPlaylistArrayList1 = new ArrayList<>();
@@ -171,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
 
         //get data
         getHome();
-        getHub();
         onClick();
         mHandler = new Handler();
     }
@@ -208,12 +206,15 @@ public class MainActivity extends AppCompatActivity {
         btn_viet_nam = findViewById(R.id.btn_viet_nam);
         btn_quoc_te = findViewById(R.id.btn_quoc_te);
 
+        linear_playlist_1 = findViewById(R.id.linear_playlist_3);
         txt_title_playlist_1 = findViewById(R.id.txt_title_playlist_1);
         rv_playlist_1 = findViewById(R.id.rv_playlist_1);
         txt_title_playlist_2 = findViewById(R.id.txt_title_playlist_2);
         rv_playlist_2 = findViewById(R.id.rv_playlist_2);
         txt_title_playlist_3 = findViewById(R.id.txt_title_playlist_3);
         rv_playlist_3 = findViewById(R.id.rv_playlist_3);
+
+        linear_top100 = findViewById(R.id.linear_top100);
         txt_title_top100 = findViewById(R.id.txt_title_top100);
         rv_top100 = findViewById(R.id.rv_top100);
 
@@ -311,16 +312,25 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        linear_playlist_1.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, ViewHubActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("encodeId", Helper.extractEndCodeID(homeDataItemPlaylistEditorTheme3.getLink()));
+            intent.putExtras(bundle);
+            startActivity(intent);
+        });
+
         linear_bxh_new_release_song.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, BXHNewSongActivity.class);
             startActivity(intent);
         });
-        linear_chart_home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ChartHomeActivity.class);
-                startActivity(intent);
-            }
+        linear_chart_home.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, ChartHomeActivity.class);
+            startActivity(intent);
+        });
+        linear_top100.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, ViewTop100Activity.class);
+            startActivity(intent);
         });
 
         //btn nhac moi phat hanh
@@ -379,66 +389,6 @@ public class MainActivity extends AppCompatActivity {
                             Log.e("TAG", "API call failed: " + throwable.getMessage(), throwable);
                         }
                     });
-                } catch (Exception e) {
-                    Log.e("TAG", "Error: " + e.getMessage(), e);
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e("TAG", "Service creation error: " + e.getMessage(), e);
-            }
-        });
-    }
-
-    private void getHub() {
-        ApiServiceFactory.createServiceAsync(new ApiServiceFactory.ApiServiceCallback() {
-            @Override
-            public void onServiceCreated(ApiService service) {
-                try {
-                    HubCategories hubCategories = new HubCategories();
-                    Map<String, String> map = hubCategories.getHub("IWZ9Z0BO");
-
-                    retrofit2.Call<ResponseBody> call = service.HUB_DETAIL_CALL(map.get("id"), map.get("sig"), map.get("ctime"), map.get("version"), map.get("apiKey"));
-                    call.enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            Log.d(">>>>>>>>>>>>>>>>>>", "getHub " + call.request().url());
-                            if (response.isSuccessful() && response.body() != null) {
-                                try {
-                                    String jsonData = response.body().string();
-                                    GsonBuilder gsonBuilder = new GsonBuilder();
-                                    gsonBuilder.registerTypeAdapter(HubSection.class, new HubSectionTypeAdapter());
-                                    Gson gson = gsonBuilder.create();
-
-                                    Hub hub = gson.fromJson(jsonData, Hub.class);
-
-                                    if (hub != null && hub.getData() != null) {
-                                        ArrayList<HubSection> items = hub.getData().getSections();
-                                        for (HubSection item : items) {
-                                            if (item instanceof SectionHubPlaylist) {
-                                                SectionHubPlaylist sectionHubSong = (SectionHubPlaylist) item;
-                                                Log.d(">>>>>>>>>>", "onResponse: " + sectionHubSong.getTitle());
-                                            }
-                                        }
-                                    } else {
-                                        Log.d("TAG", "No data found in JSON");
-                                    }
-
-                                } catch (Exception e) {
-                                    Log.e("TAG", "Error: " + e.getMessage(), e);
-                                }
-                            } else {
-                                Log.d("TAG", "Response unsuccessful or empty body");
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable throwable) {
-                            Log.d(">>>>>>>>>>>>>>>>>>", "getHub1111 " + call.request().url());
-                        }
-                    });
-
                 } catch (Exception e) {
                     Log.e("TAG", "Error: " + e.getMessage(), e);
                 }
@@ -525,7 +475,9 @@ public class MainActivity extends AppCompatActivity {
 
                 if (item instanceof HomeDataItemPlaylistSeasonTheme) {
                     // hSeasonTheme
+                    //playlist
                     HomeDataItemPlaylistSeasonTheme homeDataItemPlaylistSeasonTheme = (HomeDataItemPlaylistSeasonTheme) item;
+
                     txt_title_playlist_1.setText(homeDataItemPlaylistSeasonTheme.getTitle());
                     dataPlaylistArrayList1.addAll(homeDataItemPlaylistSeasonTheme.getItems());
                     playlistMoreAdapter1.setFilterList(homeDataItemPlaylistSeasonTheme.getItems());
@@ -537,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
                     playlistMoreAdapter2.setFilterList(homeDataItemPlaylistEditorTheme.getItems());
                 } else if (item instanceof HomeDataItemPlaylistEditorTheme3) {
                     // hEditorTheme3
-                    HomeDataItemPlaylistEditorTheme3 homeDataItemPlaylistEditorTheme3 = (HomeDataItemPlaylistEditorTheme3) item;
+                    homeDataItemPlaylistEditorTheme3 = (HomeDataItemPlaylistEditorTheme3) item;
                     txt_title_playlist_3.setText(homeDataItemPlaylistEditorTheme3.getTitle());
                     dataPlaylistArrayList3.addAll(homeDataItemPlaylistEditorTheme3.getItems());
                     playlistMoreAdapter3.setFilterList(homeDataItemPlaylistEditorTheme3.getItems());
@@ -723,7 +675,7 @@ public class MainActivity extends AppCompatActivity {
 
                     call.enqueue(new Callback<UserActiveRadio>() {
                         @Override
-                        public void onResponse(Call<UserActiveRadio> call, Response<UserActiveRadio> response) {
+                        public void onResponse(@NonNull Call<UserActiveRadio> call, @NonNull Response<UserActiveRadio> response) {
                             Log.d(">>>>>>>>>>>>>>>>>>", "getUserActiveRadio " + call.request().url());
                             if (response.isSuccessful()) {
                                 UserActiveRadio userActiveRadio = response.body();
@@ -741,7 +693,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<UserActiveRadio> call, Throwable throwable) {
+                        public void onFailure(@NonNull Call<UserActiveRadio> call, @NonNull Throwable throwable) {
                         }
                     });
                 } catch (Exception e) {

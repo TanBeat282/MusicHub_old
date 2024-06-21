@@ -135,6 +135,15 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.V
                 KeyWordViewHolder keywordViewHolder = (KeyWordViewHolder) holder;
                 SearchSuggestionsDataItemKeyWordsItem keywordItem = searchSuggestionsDataItemKeyWordsItems.get(position);
                 keywordViewHolder.txt_keyword.setText(keywordItem.getKeyword());
+
+                // Kiểm tra xem position có phải là item cuối cùng không
+                if (position == searchSuggestionsDataItemKeyWordsItems.size() - 1) {
+                    // Nếu là item cuối cùng, thêm marginBottom
+                    ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) keywordViewHolder.itemView.getLayoutParams();
+                    layoutParams.bottomMargin = 100; // Đặt giá trị marginBottom bạn muốn
+                    keywordViewHolder.itemView.setLayoutParams(layoutParams);
+                }
+
                 keywordViewHolder.linear_keyword.setOnClickListener(view -> {
                     if (listener != null) {
                         listener.onKeyWordItemClick(keywordItem.getKeyword());

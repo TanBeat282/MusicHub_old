@@ -26,6 +26,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activity.top100.ViewTop100Activity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.hub.ViewHubActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
@@ -36,9 +42,6 @@
         </activity>
         <activity
             android:name=".activity.ChartHomeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.ViewHubActivity"
             android:exported="false" />
         <activity
             android:name=".activity.PlayRadioActivity"
@@ -76,9 +79,6 @@
         <activity
             android:name=".activity.ViewPlaylistActivity"
             android:exported="false" />
-        <activity
-            android:name=".activity.Test2Activity"
-            android:exported="true" />
         <activity
             android:name=".activity.PlayNowVideoActivity"
             android:exported="false" />

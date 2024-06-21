@@ -255,6 +255,7 @@ public class SongSearchMultiFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        searchSong(query, TYPE, currentPage);
         LocalBroadcastManager.getInstance(requireContext()).registerReceiver(broadcastReceiverSearchMulti, new IntentFilter("search_query"));
     }
 

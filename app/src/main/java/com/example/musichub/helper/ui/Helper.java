@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -109,5 +110,22 @@ public class Helper {
         // Trả về kết quả
         return text;
     }
+
+    public static String extractEndCodeID(String url) {
+        int startIndex = url.lastIndexOf("/") + 1;
+        int endIndex = url.lastIndexOf(".html");
+        return url.substring(startIndex, endIndex);
+    }
+    public static String extractFullEndCodeID(String url) {
+        // Tìm vị trí bắt đầu của mã sau dấu "/"
+        int startIndex = url.lastIndexOf("/") + 1;
+
+        // Tìm vị trí kết thúc của mã trước phần mở rộng ".html"
+        int endIndex = url.lastIndexOf(".html");
+
+        // Lấy chuỗi mã từ vị trí startIndex đến endIndex
+        return url.substring(startIndex, endIndex);
+    }
+
 
 }
