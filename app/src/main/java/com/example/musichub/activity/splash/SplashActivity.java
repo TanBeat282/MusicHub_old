@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.musichub.MainActivity;
 import com.example.musichub.R;
+import com.example.musichub.helper.ui.Helper;
 
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
@@ -24,6 +25,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        Helper.changeStatusBarColor(this, R.color.black);
+        Helper.changeNavigationColor(this, R.color.black, true);
 
         progress_bar = findViewById(R.id.progress_bar);
 

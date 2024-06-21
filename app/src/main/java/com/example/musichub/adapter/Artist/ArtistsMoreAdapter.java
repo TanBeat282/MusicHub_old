@@ -110,8 +110,13 @@ public class ArtistsMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (artistsArrayList == null || artistsArrayList.isEmpty()) {
             return 0;
         }
-        return Math.min(artistsArrayList.size(), 5) + 1; // Showing 5 items + 1 "More" button
+        if (artistsArrayList.size() <= 5) {
+            return artistsArrayList.size();
+        } else {
+            return 5 + 1; // Showing 5 items + 1 "More" button
+        }
     }
+
 
     public static class ArtistViewHolder extends RecyclerView.ViewHolder {
         public RoundedImageView img_avatar;
