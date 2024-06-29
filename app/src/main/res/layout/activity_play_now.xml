@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_40sdp">
 
         <ImageView
@@ -84,7 +84,6 @@
                 android:layout_width="@dimen/_280sdp"
                 android:layout_height="@dimen/_280sdp"
                 android:scaleType="centerCrop"
-                android:src="@color/white"
                 android:visibility="visible"
                 app:riv_corner_radius="10dp" />
 
@@ -144,7 +143,6 @@
                     android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
-                    android:text="AAAAAAAAAAAA"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/_16ssp"
                     android:textStyle="bold"
@@ -161,7 +159,6 @@
                     android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
-                    android:text="aaaaaaaaa"
                     android:textColor="@color/colorSecondaryText1"
                     android:textSize="@dimen/_12ssp"
                     android:textStyle="normal"
@@ -326,7 +323,6 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/roboto"
                     android:gravity="start"
-                    android:text="AAAAA"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_12ssp"
                     android:textStyle="normal" />
@@ -339,7 +335,6 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/roboto"
                     android:gravity="end"
-                    android:text="AAAAAA"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_12ssp"
                     android:textStyle="normal" />
